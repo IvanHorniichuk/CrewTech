@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">CrewTech</string>
+    <string name="title_activity_home">Home</string>
+    <string name="check_lists">Check Lists</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Status</string>
+    <string name="Static">Admin</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="forget_password"><u>Forget Password</u></string>
+
+
+    <!--<string name="agreement">I agree the terms and conditions.</string>-->
+    <string name="clear_pad">Clear Pad</string>
+    <string name="save_signature">Save Signature</string>
+
+</resources>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.aap.medicore">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:name=".BaseClasses.BaseApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".Activities.FormSection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+
+        </activity>
+        <activity
+            android:name=".Activities.SignatureActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
+        <activity android:name=".Activities.VehicleCheckList"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:screenOrientation="portrait"
+
+            />
+        <activity android:name=".Activities.EquipmentCheckList"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:screenOrientation="portrait"
+
+
+            />
+        <activity
+            android:name=".Activities.IncidentReport"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".Activities.StateActivity"
+            android:screenOrientation="portrait"
+
+            />
+        <activity android:name=".Activities.VehicleDetails"
+            android:screenOrientation="portrait"
+
+            />
+        <activity
+            android:name=".Activities.TaskDetails"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".Activities.Home"
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".Activities.Login"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".Activities.Splash"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Activities.ScanActivity" />
+        <activity android:name=".Activities.GameView"
+            android:screenOrientation="portrait"
+            />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="fdcf3277d6914f2aaa29a85aaf6177ffb2bcb7ee" />
+
+        <service android:name=".Utils.UploaderService" />
+        <service
+            android:name="com.novoda.merlin.MerlinService"
+            android:exported="false" />
+    </application>
+
+</manifest>

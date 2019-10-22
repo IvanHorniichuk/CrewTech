@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activities.TaskDetails">
+
+    <LinearLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:padding="10dp"
+            android:tint="@color/colorGray"
+            app:srcCompat="@drawable/ic_arrow_left" />
+
+        <RelativeLayout
+            android:id="@+id/rlHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp">
+
+            <com.aap.medicore.Utils.CustomTextView
+                android:id="@+id/heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="Ambulance Details"
+                android:textColor="@color/colorBlack"
+                android:textSize="26dp"
+                android:textStyle="bold" />
+
+            <com.aap.medicore.Utils.CustomTextView
+                android:id="@+id/tvTaskLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/heading"
+                android:layout_marginLeft="4dp"
+                android:singleLine="true"
+                android:text="Your assigned Ambulance details are here."
+                android:textColor="@color/colorGray"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="40dp"
+
+        android:background="@color/colorSlightGray"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimaryDark"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorWhite">
+
+                <LinearLayout
+                    android:id="@+id/llVehicleDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:selectableItemBackground"
+                    android:orientation="vertical">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:gravity="center_vertical"
+                        android:padding="4dp">
+
+                        <View
+                            android:layout_width="24dp"
+                            android:layout_height="1dp"
+                            android:background="@color/colorLightGray" />
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:text="Details"
+                            android:textSize="14dp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorLightGray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.4"
+                            android:text="Registration No"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:id="@+id/tvRegistrationNo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.6"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.4"
+                            android:text="Vehicle Name"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:id="@+id/tvColor"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.6"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.4"
+                            android:text="Engine Horsepower"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:id="@+id/tvEngineHorsepower"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.6"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.4"
+                            android:text="Number of beds"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:id="@+id/tvBedsCount"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.6"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.4"
+                            android:text="Registration Year"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:id="@+id/tvRegistrationYear"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.6"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.4"
+                            android:text="Manufacturing Year"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+
+                        <com.aap.medicore.Utils.CustomTextView
+                            android:id="@+id/tvManufacturingYear"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.6"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

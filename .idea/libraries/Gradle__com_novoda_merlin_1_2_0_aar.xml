@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.novoda:merlin:1.2.0@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/525c6567d9d559b06dd79b03ae5c059e/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/525c6567d9d559b06dd79b03ae5c059e/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.novoda/merlin/1.2.0/7e5561964a2496f0bdac9850429c263b4ec49ee5/merlin-1.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2196f3"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".Activities.Splash">
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:tint="#ffffff"
+        app:srcCompat="@drawable/white_logo" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ic_splash_design" />
+
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:layout_marginBottom="80dp"
+        android:indeterminateTint="@color/colorRating" />
+
+
+</RelativeLayout>
