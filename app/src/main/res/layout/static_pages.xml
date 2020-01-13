@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragments.DashbordFragment">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/pullToRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/rlHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <com.aap.medicore.Utils.CustomTextView
+                    android:id="@+id/heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="Static Pages"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="24sp" />
+
+                <!--  <com.aap.medicore.Utils.CustomTextView
+                      android:id="@+id/tvDesc"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_below="@+id/heading"
+                      android:layout_marginLeft="4dp"
+                      android:text=""
+                      android:layout_marginTop="8dp"
+                      android:textColor="@color/colorGray"
+                      android:textSize="18sp" />-->
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:layout_below="@id/heading"
+                    android:background="@drawable/shadow_gradient" />
+            </RelativeLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/rlHeading"
+                android:fillViewport="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                >
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorSlightGray"
+                    android:orientation="vertical">
+
+                    <!--                    <RelativeLayout-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginLeft="8dp"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:layout_marginRight="8dp"-->
+                    <!--                        android:background="@color/colorWhite">-->
+
+
+                    <!--                        <LinearLayout-->
+                    <!--                            android:visibility="gone"-->
+                    <!--                            android:id="@+id/llVehicleDetails"-->
+                    <!--                            android:layout_width="match_parent"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:background="?android:selectableItemBackground"-->
+                    <!--                            android:orientation="vertical">-->
+
+
+                    <!--                            <LinearLayout-->
+                    <!--                                android:layout_width="match_parent"-->
+                    <!--                                android:layout_height="wrap_content"-->
+                    <!--                                android:layout_marginLeft="4dp"-->
+                    <!--                                android:layout_marginTop="4dp"-->
+                    <!--                                android:layout_marginRight="20dp"-->
+                    <!--                                android:layout_marginBottom="4dp"-->
+                    <!--                                android:gravity="center_vertical"-->
+                    <!--                                android:padding="4dp">-->
+
+                    <!--                                <View-->
+                    <!--                                    android:layout_width="24dp"-->
+                    <!--                                    android:layout_height="1dp"-->
+                    <!--                                    android:background="@color/colorLightGray" />-->
+
+                    <!--                                <com.aap.medicore.Utils.CustomTextView-->
+                    <!--                                    android:layout_width="wrap_content"-->
+                    <!--                                    android:layout_height="wrap_content"-->
+                    <!--                                    android:layout_marginLeft="4dp"-->
+                    <!--                                    android:layout_marginRight="4dp"-->
+                    <!--                                    android:text="Admin Forms"-->
+                    <!--                                    android:textSize="14dp" />-->
+
+                    <!--                                <View-->
+                    <!--                                    android:layout_width="match_parent"-->
+                    <!--                                    android:layout_height="1dp"-->
+                    <!--                                    android:background="@color/colorLightGray" />-->
+
+                    <!--                            </LinearLayout>-->
+
+                    <!--                            <LinearLayout-->
+                    <!--                                android:id="@+id/llVRegistration"-->
+                    <!--                                android:layout_width="match_parent"-->
+                    <!--                                android:layout_height="wrap_content"-->
+                    <!--                                android:layout_marginLeft="20dp"-->
+                    <!--                                android:layout_marginTop="4dp"-->
+                    <!--                                android:layout_marginRight="20dp"-->
+                    <!--                                android:visibility="gone"-->
+                    <!--                                android:layout_marginBottom="4dp"-->
+                    <!--                                android:orientation="horizontal"-->
+                    <!--                                android:weightSum="1">-->
+
+                    <!--                                <com.aap.medicore.Utils.CustomTextView-->
+                    <!--                                    android:layout_width="match_parent"-->
+                    <!--                                    android:layout_height="wrap_content"-->
+                    <!--                                    android:background="?selectableItemBackground"-->
+                    <!--                                    android:clickable="true"-->
+                    <!--                                    android:padding="8dp"-->
+                    <!--                                    android:id="@+id/tvVehicleCheckList"-->
+                    <!--                                    android:text="Vehicle Check List"-->
+                    <!--                                    android:textColor="@color/colorPrimary"-->
+                    <!--                                    android:textSize="20sp"-->
+                    <!--                                    android:textStyle="bold" />-->
+                    <!--                            </LinearLayout>-->
+
+                    <!--                            <LinearLayout-->
+                    <!--                                android:id="@+id/llVName"-->
+                    <!--                                android:layout_width="match_parent"-->
+                    <!--                                android:layout_height="wrap_content"-->
+                    <!--                                android:layout_marginLeft="20dp"-->
+                    <!--                                android:layout_marginTop="4dp"-->
+                    <!--                                android:layout_marginRight="20dp"-->
+                    <!--                                android:layout_marginBottom="8dp"-->
+                    <!--                                android:orientation="horizontal"-->
+                    <!--                                android:visibility="gone"-->
+                    <!--                                android:weightSum="1">-->
+
+                    <!--                                <com.aap.medicore.Utils.CustomTextView-->
+                    <!--                                    android:layout_width="match_parent"-->
+                    <!--                                    android:layout_height="wrap_content"-->
+                    <!--                                    android:background="?selectableItemBackground"-->
+                    <!--                                    android:clickable="true"-->
+                    <!--                                    android:padding="8dp"-->
+                    <!--                                    android:id="@+id/tvEquipmentCheckList"-->
+                    <!--                                    android:text="Equipment Check List"-->
+                    <!--                                    android:textColor="@color/colorPrimary"-->
+                    <!--                                    android:textSize="20sp"-->
+                    <!--                                    android:textStyle="bold" />-->
+                    <!--                            </LinearLayout>-->
+
+                    <!--                        </LinearLayout>-->
+
+                    <!--                    </RelativeLayout>-->
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_admin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+
+                        >
+
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <!--<androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+    <!--android:id="@+id/pullToRefresh"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+    <!---->
+    <!--</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+</FrameLayout>

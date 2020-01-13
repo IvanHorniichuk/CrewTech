@@ -1,0 +1,28 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/root-admin/AndroidStudioProjects/CrewTech-Android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v11/values-v11.xml",
+            "map": [
+                {
+                    "source": "/home/root-admin/.gradle/caches/transforms-2/files-2.1/4035bee9fd0d8bd45ed00d67d76770da/res/values-v11/values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "4",
+                        "startOffsets": "182",
+                        "endLines": "5",
+                        "endColumns": "12",
+                        "endOffsets": "265"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "3",
+                        "endColumns": "12",
+                        "endOffsets": "138"
+                    }
+                }
+            ]
+        }
+    ]
+}

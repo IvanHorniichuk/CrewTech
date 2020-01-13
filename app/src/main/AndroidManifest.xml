@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.aap.medicore">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:name=".BaseClasses.BaseApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".Activities.FormSection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
+        <activity
+            android:name=".Activities.SignatureActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
+        <activity android:name=".Activities.VehicleCheckList"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:screenOrientation="portrait"
+
+            />
+        <activity android:name=".Activities.EquipmentCheckList"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"
+
+
+            />
+        <activity
+            android:name=".Activities.IncidentReport"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".Activities.StateActivity"
+            android:screenOrientation="portrait"
+
+            />
+        <activity android:name=".Activities.VehicleDetails"
+            android:screenOrientation="portrait"
+
+            />
+        <activity
+            android:name=".Activities.TaskDetails"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".Activities.Home"
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".Activities.Login"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".Activities.Splash"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Activities.ScanActivity" />
+        <activity android:name=".Activities.GameView"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".Activities.PINVerificationActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+
+
+        <service android:name=".Utils.UploaderService" />
+        <service
+            android:name="com.novoda.merlin.MerlinService"
+            android:exported="false" />
+        <service
+            android:name=".Utils.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+
+<!--            <meta-data-->
+<!--                android:name="com.google.firebase.messaging.default_notification_icon"-->
+<!--                android:resource="@drawable/ic_launcher" />-->
+
+<!--            <meta-data-->
+<!--                android:name="com.google.firebase.messaging.default_notification_color"-->
+<!--                android:resource="#FFF" />-->
+        </service>
+
+
+        <receiver
+            android:name=".Utils.NetworkReciever"
+            android:enabled="true" >
+            <intent-filter>
+
+                <!-- Intent filters for broadcast receiver -->
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
+            </intent-filter>
+        </receiver>
+
+
+    </application>
+
+</manifest>

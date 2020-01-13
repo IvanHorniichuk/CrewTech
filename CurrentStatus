@@ -1,0 +1,16 @@
+Current Status:
+1) Image upload a given places throughout form. Not just at end. (Complete from both ends)
+2) Remove status button as not needed for user.(Not required)
+3) Move logout to seperate area (ideas).(Complete from frontend)
+4) In clinical forms save forms as uploaded. (mentioned in the issues doc)
+5) Ability to force logout from backend? (Complete form both ends, just the time interval is required from the client, currently it is every 24 hrs)
+6) Is the loading wheel visible when network slow?(Not required)
+7) Form image icons not setable from backend?(Client dependency)
+8) Layout of clinical forms not great(Ideas)?(Work in progress)
+9) All forms GPS function? (mentioned in the issues doc)
+10) "Draw over Image" issue. (mentioned in the issues doc)
+
+
+
+
+

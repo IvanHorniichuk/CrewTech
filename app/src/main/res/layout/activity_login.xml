@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2196f3"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".Activities.Splash">
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:tint="#ffffff"
+        app:srcCompat="@drawable/white_logo" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ic_splash_design" />
+
+    <com.aap.medicore.Utils.CustomTextView
+        android:id="@+id/tvSlogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:text="LOGIN"
+        android:textColor="#ffffff"
+        android:textSize="18dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSlogan"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llUsername"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/btn_background"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.15">
+
+                <ImageView
+                    android:id="@+id/icUsername"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_centerInParent="true"
+                    android:tint="@color/colorWhite"
+                    app:srcCompat="@drawable/ic_user" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.85">
+
+
+                <com.aap.medicore.Utils.CustomEditText
+                    android:id="@+id/etUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Username"
+                    android:inputType="textAutoComplete"
+                    android:maxLength="40"
+                    android:paddingLeft="4dp"
+                    android:singleLine="true"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorWhite"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llPass"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_below="@+id/llUsername"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/btn_background"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.15">
+
+                <ImageView
+                    android:id="@+id/icPass"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+
+                    android:layout_centerInParent="true"
+                    android:tint="@color/colorWhite"
+                    app:srcCompat="@drawable/ic_pass" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.85">
+
+
+                <com.aap.medicore.Utils.CustomEditText
+                    android:id="@+id/etPass"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:maxLength="40"
+                    android:paddingLeft="4dp"
+                    android:singleLine="true"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorWhite"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_below="@+id/llPass"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="200dp"
+            android:background="@drawable/btn_background"
+            android:visibility="gone">
+
+            <com.aap.medicore.Utils.CustomButton
+                android:id="@+id/btnLogin"
+                android:layout_width="200dp"
+                android:layout_height="45dp"
+                android:background="@android:color/transparent"
+                android:text="Login"
+                android:textColor="@color/colorWhite"
+                android:textSize="14dp" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:indeterminateTint="@color/colorRating"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</RelativeLayout>

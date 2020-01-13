@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:orientation="vertical">
+    <com.aap.medicore.Utils.CustomButton
+        android:id="@+id/plus"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:visibility="visible"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:background="@drawable/add"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="27dp"
+        android:layout_marginBottom="4dp"
+>
+
+        <com.aap.medicore.Utils.CustomButton
+            android:id="@+id/btnTab"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp"
+            android:text="Submit Form"
+            android:textColor="@color/colorPrimary"
+            android:background="@drawable/btn_background_primary_color"
+            android:textSize="14sp" />
+
+
+
+    </RelativeLayout>
+</RelativeLayout>

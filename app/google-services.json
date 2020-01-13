@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "912686558358",
+    "firebase_url": "https://crewtech-58728.firebaseio.com",
+    "project_id": "crewtech-58728",
+    "storage_bucket": "crewtech-58728.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912686558358:android:f8b70fac69c243c9cc66b7",
+        "android_client_info": {
+          "package_name": "com.aap.medicore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "912686558358-7f90fthe5frpojqap0kvsqppao5ki1f5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMcN1umf7a9qoPfrm2xsHr9YACroEDLIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "912686558358-7f90fthe5frpojqap0kvsqppao5ki1f5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

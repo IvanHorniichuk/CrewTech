@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/rectangle_rounded_white"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="4dp"
+    >
+
+    <com.aap.medicore.Utils.CustomTextView
+        android:id="@+id/tvAnimalName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:layout_marginLeft="8dp"
+        android:layout_alignParentStart="true"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_toLeftOf="@+id/ivArrow"/>
+
+    <ImageView
+        android:id="@+id/ivArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_arrow_right"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        />
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:background="@color/colorSlightGray"-->
+<!--        android:layout_below="@+id/tvAnimalName"/>-->
+
+</RelativeLayout>
