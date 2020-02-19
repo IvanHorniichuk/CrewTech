@@ -17,6 +17,16 @@ public class Option {
     @Expose
     private String label;
 
+    private String value;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     private boolean selected;
 
     public Integer getFieldId() {

@@ -11,9 +11,34 @@ public class AdminFromsData {
     @SerializedName("form_id")
     @Expose
     private Integer formId;
+
     @SerializedName("title")
     @Expose
     private String title;
+
+    @SerializedName("sub_title")
+    @Expose
+    private String subTitle;
+
+    @SerializedName("fields")
+    @Expose
+    private String fields;
+
+    public String getSubTitle() {
+        return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
+    }
+
+    public String getFields() {
+        return fields;
+    }
+
+    public void setFields(String fields) {
+        this.fields = fields;
+    }
 
     public Integer getFormId() {
         return formId;

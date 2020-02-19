@@ -2,6 +2,8 @@ package com.aap.medicore.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -31,7 +33,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.aap.medicore.Activities.Splash.version;
 import static com.aap.medicore.Utils.UIUtils.shakeView;
 import static com.aap.medicore.Utils.UIUtils.showSnackbar;
 
@@ -80,7 +81,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         btnLogin = (CustomButton) findViewById(R.id.btnLogin);
         tvVersion = (CustomTextView) findViewById(R.id.version_no);
         progressBar = findViewById(R.id.progress);
-        tvVersion.setText("Version " + version);
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+            tvVersion.setText("Version " + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 //        KeyboardVisibilityEvent.setEventListener(
 //                Login.this,
 //                new KeyboardVisibilityEventListener() {

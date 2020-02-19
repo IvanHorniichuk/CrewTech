@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,11 +28,14 @@ import com.aap.medicore.Activities.Login;
 import com.aap.medicore.Activities.StateActivity;
 import com.aap.medicore.Activities.VehicleDetails;
 import com.aap.medicore.Adapters.AdapterTasksList;
+import com.aap.medicore.Adapters.SectionTasksAdapter;
+import com.aap.medicore.Adapters.SortingModelAdapter;
 import com.aap.medicore.BaseClasses.BaseActivity;
 import com.aap.medicore.BaseClasses.BaseFragment;
 import com.aap.medicore.DatabaseHandler.DatabaseHandler;
 import com.aap.medicore.Models.AssignedIncidencesModel;
 import com.aap.medicore.Models.QueueModel;
+import com.aap.medicore.Models.SortingModel;
 import com.aap.medicore.Models.TasksListResponse;
 import com.aap.medicore.Models.VehicleDetail;
 import com.aap.medicore.Models.VehicleResponse;
@@ -41,23 +45,33 @@ import com.aap.medicore.Utils.CircularTextView;
 import com.aap.medicore.Utils.Constants;
 import com.aap.medicore.Utils.CustomButton;
 import com.aap.medicore.Utils.CustomTextView;
+import com.aap.medicore.Utils.DateComparator;
 import com.aap.medicore.Utils.SessionTimeoutDialog;
 import com.aap.medicore.Utils.TinyDB;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class DashbordFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
-    private RecyclerView rvVisits;
+    private StickyListHeadersListView rvVisits;
     private View view;
     private LinearLayoutManager manager;
-    private AdapterTasksList adapter;
+//    private AdapterTasksList adapter;
+//    private SortingModelAdapter adapter;
+    private SectionTasksAdapter adapter;
     private CustomTextView tvBedsCount, tvEngineHorsepower, tvColor, tvRegistrationNo, tvStatus, tvState, tvVehicleErrorMessage, tvNoCalls;
     //    private LinearLayout llVRegistration, llVName;
     private TinyDB tinyDB;
@@ -67,13 +81,17 @@ public class DashbordFragment extends BaseFragment {
     private ImageView ivStatus, ivState;
     //    private ImageView profileImage;
     private DatabaseHandler databaseHandler;
-    Response<TasksListResponse> responselist;
-    public static ArrayList<Bitmap> bitmapArray = new ArrayList<Bitmap>();
+    private Response<TasksListResponse> responselist;
+    public static List<Bitmap> bitmapArray = new ArrayList<Bitmap>();
     private CircularTextView tvCallsCount;
+    private int numDates = 1;
 
     Handler h = new Handler();
     int delay = 5 * 1000; //1 second=1000 milisecond, 15*1000=15seconds
     Runnable runnable;
+    private ArrayList<AssignedIncidencesModel> assignedIncidencesModels, assignedIncidencesModels2;
+    private List<SortingModel> sortingModelList;
+    private Set<Date> dateList;
 
 
     public DashbordFragment() {
@@ -96,44 +114,47 @@ public class DashbordFragment extends BaseFragment {
         tvCallsCount.setStrokeWidth(1);
         tvCallsCount.setStrokeColor("#79C730");
         tvCallsCount.setSolidColor("#FFFFFF");
+        sortingModelList = new ArrayList<>();
+        assignedIncidencesModels2 = new ArrayList<>();
+        dateList = new HashSet<>();
         if (isConnected(getActivity())) {
             fetchVehicleData();
             hitTasksList();
         } else {
-            adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, responselist*/);
-            tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
-            rvVisits.setLayoutManager(manager);
-            rvVisits.setAdapter(adapter);
-            if (!(tinyDB.getString(Constants.vehicle_details).isEmpty())) {
-                llNoVehicleData.setVisibility(View.GONE);
-                llVehicleDetails.setVisibility(View.VISIBLE);
-
-                Gson gson = new Gson();
-                String json = tinyDB.getString(Constants.vehicle_details);
-
-                final VehicleDetail obj = gson.fromJson(json, VehicleDetail.class);
-
-                tvBedsCount.setText(obj.getBedSpace() + "");
-                tvColor.setText(obj.getVehicleName());
-                tvEngineHorsepower.setText(obj.getEnginHouspower() + "");
-                tvRegistrationNo.setText(obj.getRegistrationno());
-
-                llVehicleDetails.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(getActivity(), VehicleDetails.class);
-                        i.putExtra(Constants.user_id, obj.getUserId());
-                        startActivity(i);
-                    }
-                });
-
-
-            } else {
-
-                llNoVehicleData.setVisibility(View.VISIBLE);
-                llVehicleDetails.setVisibility(View.GONE);
-
-            }
+//            adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, responselist*/);
+//            tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
+//            rvVisits.setLayoutManager(manager);
+//            rvVisits.setAdapter(adapter);
+//            if (!(tinyDB.getString(Constants.vehicle_details).isEmpty())) {
+//                llNoVehicleData.setVisibility(View.GONE);
+//                llVehicleDetails.setVisibility(View.VISIBLE);
+//
+//                Gson gson = new Gson();
+//                String json = tinyDB.getString(Constants.vehicle_details);
+//
+//                final VehicleDetail obj = gson.fromJson(json, VehicleDetail.class);
+//
+//                tvBedsCount.setText(obj.getBedSpace() + "");
+//                tvColor.setText(obj.getVehicleName());
+//                tvEngineHorsepower.setText(obj.getEnginHouspower() + "");
+//                tvRegistrationNo.setText(obj.getRegistrationno());
+//
+//                llVehicleDetails.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent i = new Intent(getActivity(), VehicleDetails.class);
+//                        i.putExtra(Constants.user_id, obj.getUserId());
+//                        startActivity(i);
+//                    }
+//                });
+//
+//
+//            } else {
+//
+//                llNoVehicleData.setVisibility(View.VISIBLE);
+//                llVehicleDetails.setVisibility(View.GONE);
+//
+//            }
         }
 
         return view;
@@ -150,6 +171,7 @@ public class DashbordFragment extends BaseFragment {
 //                Glide.with(getActivity()).load(tinyDB.getString(Constants.profile_image)).into(profileImage);
 
                 rvVisits = v.findViewById(R.id.rvVisits);
+
         manager = new LinearLayoutManager(getActivity());
         tvCallsCount = v.findViewById(R.id.tvCallsCount);
         llLogout = v.findViewById(R.id.llLogout);
@@ -199,7 +221,8 @@ public class DashbordFragment extends BaseFragment {
             @Override
             public void onRefresh() {
 
-                hitPullToRefreshTasksList(pullToRefresh);
+//                hitPullToRefreshTasksList(pullToRefresh);
+                hitTasksList();
                 fetchVehicleData();
                 pullToRefresh.setRefreshing(false);
             }
@@ -257,17 +280,17 @@ public class DashbordFragment extends BaseFragment {
 
 
     public void hitTasksList() {
-        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
-        tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
-        rvVisits.setLayoutManager(manager);
-        rvVisits.setAdapter(adapter);
-        if (databaseHandler.getAllIncidences().size() > 0) {
-            rvVisits.setVisibility(View.VISIBLE);
-            tvNoCalls.setVisibility(View.GONE);
-        } else {
-            rvVisits.setVisibility(View.GONE);
-            tvNoCalls.setVisibility(View.VISIBLE);
-        }
+//        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
+//        tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
+//        rvVisits.setLayoutManager(manager);
+//        rvVisits.setAdapter(adapter);
+//        if (databaseHandler.getAllIncidences().size() > 0) {
+//            rvVisits.setVisibility(View.VISIBLE);
+//            tvNoCalls.setVisibility(View.GONE);
+//        } else {
+//            rvVisits.setVisibility(View.GONE);
+//            tvNoCalls.setVisibility(View.VISIBLE);
+//        }
         retrofit2.Call<TasksListResponse> call;
 
         call = RetrofitClass.getInstance().getWebRequestsInstance().hitTasksList(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id));
@@ -291,21 +314,30 @@ public class DashbordFragment extends BaseFragment {
                             Gson gson = new Gson();
                             String json = gson.toJson(response.body().getTaskList().get(i));
                             model.setJson(json);
+                            model.setDate(response.body().getTaskList().get(i).getJobDate());
                             QueueModel queueIncidenceStateOnIncidenceID = databaseHandler.getQueueIncidenceStateOnIncidenceID(model.getId() + "");
                             if (queueIncidenceStateOnIncidenceID.getId().isEmpty())
                                 databaseHandler.addIncidences(model);
                             Log.d("SIZE ARRAY", "Array size is: " + databaseHandler.getAllIncidences());
                             Log.d("SIZE ARRAY", "server Array size is: " + response.body().getTaskList().size());
-                            adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
                         }
 
+                        assignedIncidencesModels = databaseHandler.getAllIncidences();
 
-                        tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
-                        rvVisits.setLayoutManager(manager);
-                        rvVisits.setAdapter(adapter);
-                        if (databaseHandler.getAllIncidences().size() > 0) {
+                        if (assignedIncidencesModels.size() > 0) {
                             rvVisits.setVisibility(View.VISIBLE);
                             tvNoCalls.setVisibility(View.GONE);
+                            assignedIncidencesModels2.clear();
+                            sortingModelList.clear();
+                            dateList.clear();
+//                            sortList();
+//                            adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
+                            Collections.sort(assignedIncidencesModels,new DateComparator());
+//                            adapter = new SortingModelAdapter(sortingModelList, getContext(),bitmapArray);
+                            tvCallsCount.setText(Integer.toString(assignedIncidencesModels.size()));
+//                            rvVisits.setLayoutManager(manager);
+                            adapter = new SectionTasksAdapter(getContext(),assignedIncidencesModels,bitmapArray);
+                            rvVisits.setAdapter(adapter);
                         } else {
                             rvVisits.setVisibility(View.GONE);
                             tvNoCalls.setVisibility(View.VISIBLE);
@@ -325,18 +357,18 @@ public class DashbordFragment extends BaseFragment {
 //                        }
                     } else if (response.body().getStatus() == 404) {
 
-                        databaseHandler.deleteAssignedIncidencesTable();
-                        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
-                        tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
-                        rvVisits.setLayoutManager(manager);
-                        rvVisits.setAdapter(adapter);
-                        if (databaseHandler.getAllIncidences().size() > 0) {
-                            rvVisits.setVisibility(View.VISIBLE);
-                            tvNoCalls.setVisibility(View.GONE);
-                        } else {
-                            rvVisits.setVisibility(View.GONE);
-                            tvNoCalls.setVisibility(View.VISIBLE);
-                        }
+//                        databaseHandler.deleteAssignedIncidencesTable();
+//                        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
+//                        tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
+//                        rvVisits.setLayoutManager(manager);
+//                        rvVisits.setAdapter(adapter);
+//                        if (databaseHandler.getAllIncidences().size() > 0) {
+//                            rvVisits.setVisibility(View.VISIBLE);
+//                            tvNoCalls.setVisibility(View.GONE);
+//                        } else {
+//                            rvVisits.setVisibility(View.GONE);
+//                            tvNoCalls.setVisibility(View.VISIBLE);
+//                        }
 
                     } else if (response.code() == 401) {
                         if (getActivity() != null)
@@ -353,6 +385,38 @@ public class DashbordFragment extends BaseFragment {
         });
     }
 
+    private void sortList() {
+
+        AssignedIncidencesModel model = assignedIncidencesModels.get(0);
+        assignedIncidencesModels2.add(model);
+
+        for (int i = 1; i < assignedIncidencesModels.size() - 1; i++) {
+            if (assignedIncidencesModels.get(i).getObjDate().compareTo(model.getObjDate()) == 0)
+                assignedIncidencesModels2.add(assignedIncidencesModels.get(i));
+            else
+                dateList.add(assignedIncidencesModels.get(i).getObjDate());
+        }
+
+        SortingModel sortingModel = new SortingModel();
+        sortingModel.setDate(model.getObjDate());
+        sortingModel.setAssignedIncidencesModels(assignedIncidencesModels2);
+        sortingModelList.add(sortingModel);
+
+        for (Date date : dateList) {
+
+            SortingModel sortingModel1 = new SortingModel();
+            List<AssignedIncidencesModel> assignedIncidencesModels3 = new ArrayList<>();
+
+            for (AssignedIncidencesModel assignedIncidencesModel : assignedIncidencesModels) {
+                if (date.compareTo(assignedIncidencesModel.getObjDate()) == 0)
+                    assignedIncidencesModels3.add(assignedIncidencesModel);
+            }
+            sortingModel1.setDate(date);
+            sortingModel1.setAssignedIncidencesModels(assignedIncidencesModels3);
+            sortingModelList.add(sortingModel1);
+        }
+
+    }
     //    private class ConvertUrlToBitmap extends AsyncTask<String, Long, Bitmap> {
 //        @Override
 //        protected Bitmap doInBackground(String... params) {
@@ -381,9 +445,9 @@ public class DashbordFragment extends BaseFragment {
 //    }
 
     public void hitPullToRefreshTasksList(final SwipeRefreshLayout pullToRefresh) {
-        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
+//        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
         tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
-        rvVisits.setLayoutManager(manager);
+//        rvVisits.setLayoutManager(manager);
         rvVisits.setAdapter(adapter);
         if (databaseHandler.getAllIncidences().size() > 0) {
             rvVisits.setVisibility(View.VISIBLE);
@@ -416,9 +480,9 @@ public class DashbordFragment extends BaseFragment {
                                 databaseHandler.addIncidences(model);
                         }
 
-                        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
+//                        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
                         tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
-                        rvVisits.setLayoutManager(manager);
+//                        rvVisits.setLayoutManager(manager);
                         rvVisits.setAdapter(adapter);
                         if (databaseHandler.getAllIncidences().size() > 0) {
                             rvVisits.setVisibility(View.VISIBLE);
@@ -431,9 +495,9 @@ public class DashbordFragment extends BaseFragment {
 
                     } else if (response.body().getStatus() == 404) {
                         databaseHandler.deleteAssignedIncidencesTable();
-                        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
-                        tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
-                        rvVisits.setLayoutManager(manager);
+//                        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
+//                        tvCallsCount.setText(databaseHandler.getAllIncidences().size() + "");
+//                        rvVisits.setLayoutManager(manager);
                         rvVisits.setAdapter(adapter);
                         if (databaseHandler.getAllIncidences().size() > 0) {
                             rvVisits.setVisibility(View.VISIBLE);
@@ -483,8 +547,8 @@ public class DashbordFragment extends BaseFragment {
 
                         }
 
-                        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
-                        rvVisits.setLayoutManager(manager);
+//                        adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
+//                        rvVisits.setLayoutManager(manager);
                         rvVisits.setAdapter(adapter);
                     } else if (response.code() == 401) {
                         if (getActivity() != null)
@@ -520,32 +584,61 @@ public class DashbordFragment extends BaseFragment {
                 if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
                     return;
                 }
-                mLastClickTime = SystemClock.elapsedRealtime();
-
-                tinyDB.putBoolean(Constants.LoggedIn, false);
-                tinyDB.remove(Constants.user_id);
-                tinyDB.remove(Constants.email);
-                tinyDB.remove(Constants.first_name);
-                tinyDB.remove(Constants.last_name);
-                tinyDB.remove(Constants.username);
-
-                Intent i = new Intent(getActivity(), Login.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-                dialog.hide();
-                getActivity().finishAffinity();
+                deleteFCM_Token(dialog);
             }
         });
         dialog.show();
+    }
+
+    private void cancelDialog(Dialog dialog) {
+
+        dialog.cancel();
+        Toast.makeText(DashbordFragment.this.getActivity(), "Please try again after some time", Toast.LENGTH_SHORT).show();
+    }
+
+    private void deleteFCM_Token(Dialog dialog) {
+        Call<ResponseBody> call = RetrofitClass.getInstance().getWebRequestsInstance().sendFCMTokenToServer(tinyDB.getString(Constants.token), "\"\"", "ANDROID");
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful())
+                    removeLocalUserData(dialog);
+                else
+                    cancelDialog(dialog);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                cancelDialog(dialog);
+            }
+        });
+    }
+
+    private void removeLocalUserData(Dialog dialog) {
+
+        mLastClickTime = SystemClock.elapsedRealtime();
+
+        tinyDB.putBoolean(Constants.LoggedIn, false);
+        tinyDB.remove(Constants.user_id);
+        tinyDB.remove(Constants.email);
+        tinyDB.remove(Constants.first_name);
+        tinyDB.remove(Constants.last_name);
+        tinyDB.remove(Constants.username);
+//        tinyDB.remove(Constants.tokenFCM);
+
+        Intent i = new Intent(getActivity(), Login.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        dialog.hide();
+        getActivity().finishAffinity();
     }
 
     public void fetchVehicleData() {
 
         retrofit2.Call<VehicleResponse> call;
         call = RetrofitClass.getInstance().getWebRequestsInstance().getVehicleDetail(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id));
-
         call.enqueue(new Callback<VehicleResponse>() {
-
             @Override
             public void onResponse(Call<VehicleResponse> call, final Response<VehicleResponse> response) {
                 if (response.isSuccessful()) {
@@ -583,7 +676,7 @@ public class DashbordFragment extends BaseFragment {
                     } else {
 //                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).getDialog();
                         llNoVehicleData.setVisibility(View.VISIBLE);
-                        llVehicleDetails.setVisibility(View.VISIBLE);
+                        llVehicleDetails.setVisibility(View.GONE);
                         tvVehicleErrorMessage.setText("Vehicle is not assigned, Please contact Admin to assign Vehicle!");
                     }
                 }

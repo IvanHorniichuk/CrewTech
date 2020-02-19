@@ -9,9 +9,9 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.aap.medicore.Models.AssignedIncidencesModel;
+import com.aap.medicore.Models.DBAdminFormModel;
 import com.aap.medicore.Models.DBImagesModel;
 import com.aap.medicore.Models.QueueModel;
-import com.aap.medicore.Models.SaveForm;
 import com.aap.medicore.Models.SelectImagesModel;
 import com.aap.medicore.Models.TabsModel;
 
@@ -38,6 +38,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //columns
     private static final String KEY_ASSIGNED_INCIDENCES_ID = "assigned_incidence_id";
     private static final String KEY_ASSIGNED_INCIDENCES_JSON = "assigned_incidence_json";
+    private static final String KEY_ASSIGNED_INCIDENCE_DATE = "assigned_incidence_date";
 
     // table name
     private static final String TABLE_QUEUED_INCIDENCES = "queued_incidences";
@@ -96,8 +97,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_ADMIN_FORM_ID = "admin_form_id";
     public static final String KEY_ADMIN_FORM_FIELDS_JSON = "admin_form_fields_json";
     public static final String KEY_ADMIN_FORM_TITLE = "admin_form_title";
-    public static final String KET_ADMIN_FORM_SUB_TITLE = "admin_form_sub_title";
-
+    public static final String KEY_ADMIN_FORM_SUB_TITLE = "admin_form_sub_title";
+    public static final String KEY_ADMIN_FORM_IMAGES = "admin_form_image";
+    public static final String KEY_ADMIN_FORM_TIMEOUT = "admin_form_timeout";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -110,7 +112,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_TABLE_ASSIGNED_INCIDENCES = "CREATE TABLE IF NOT EXISTS "
                 + TABLE_ASSIGNED_INCIDENCES
                 + "(" + KEY_ASSIGNED_INCIDENCES_ID + " INTEGER PRIMARY KEY,"
-                + KEY_ASSIGNED_INCIDENCES_JSON + " TEXT"
+                + KEY_ASSIGNED_INCIDENCES_JSON + " TEXT,"
+                + KEY_ASSIGNED_INCIDENCE_DATE + " TEXT"
                 + ")";
 //
         String CREATE_TABLE_QUEUED_INCIDENCES = "CREATE TABLE IF NOT EXISTS "
@@ -162,8 +165,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + TABLE_ADMIN_FORMS
                 + "(" + KEY_ADMIN_FORM_ID + " INTEGER PRIMARY KEY, "
                 + KEY_ADMIN_FORM_FIELDS_JSON + " TEXT,"
-                + KEY_ADMIN_FORM_TITLE +"TEXT,"
-                + KET_ADMIN_FORM_SUB_TITLE +"TEXT"
+                + KEY_ADMIN_FORM_TITLE + " TEXT,"
+                + KEY_ADMIN_FORM_SUB_TITLE + " TEXT,"
+                + KEY_ADMIN_FORM_IMAGES + " TEXT,"
+                + KEY_ADMIN_FORM_TIMEOUT + " TEXT"
                 + ")";
 
         Log.e("Tag IncidencesTable", CREATE_TABLE_ASSIGNED_INCIDENCES);
@@ -197,8 +202,61 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public void addAdminForm (SaveForm form){
+    public void addAdminForm(DBAdminFormModel form) {
 
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_ADMIN_FORM_ID, form.getForm_id());
+        contentValues.put(KEY_ADMIN_FORM_FIELDS_JSON, form.getFieldsJson());
+        contentValues.put(KEY_ADMIN_FORM_TITLE, form.getTitle());
+        contentValues.put(KEY_ADMIN_FORM_SUB_TITLE, form.getSub_title());
+        contentValues.put(KEY_ADMIN_FORM_IMAGES, form.getImages());
+        contentValues.put(KEY_ADMIN_FORM_TIMEOUT, form.getTimeout());
+        try {
+            database.insertOrThrow(TABLE_ADMIN_FORMS, null, contentValues);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        database.close();
+    }
+
+    public void updateAdminForm(int formId, String json, String images) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_ADMIN_FORM_FIELDS_JSON, json);
+        contentValues.put(KEY_ADMIN_FORM_IMAGES, images);
+        int i = database.update(TABLE_ADMIN_FORMS, contentValues, "admin_form_id = ?", new String[]{Integer.toString(formId)});
+        database.close();
+    }
+
+    public DBAdminFormModel getAdminForm(int id) {
+        DBAdminFormModel formModel = new DBAdminFormModel();
+        SQLiteDatabase database = this.getWritableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_ADMIN_FORMS + " WHERE "
+                + KEY_ADMIN_FORM_ID + " = " + id;
+
+        Cursor cursor = database.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                formModel.setForm_id(cursor.getInt(0));
+                formModel.setFieldsJson(cursor.getString(1));
+                formModel.setTitle(cursor.getString(2));
+                formModel.setSub_title(cursor.getString(3));
+                formModel.setImages(cursor.getString(4));
+                formModel.setTimeout(cursor.getString(5));
+                // Adding contact to list
+            } while (cursor.moveToNext());
+        }
+        return formModel;
+    }
+
+    public void removeAdminForm(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + TABLE_ADMIN_FORMS + " WHERE "
+                + KEY_ADMIN_FORM_ID + " = " + id);
+        db.close();
     }
 
     public void addIncidences(AssignedIncidencesModel model) {
@@ -209,6 +267,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             ContentValues contentValues = new ContentValues();
             contentValues.put(KEY_ASSIGNED_INCIDENCES_ID, model.getId());
             contentValues.put(KEY_ASSIGNED_INCIDENCES_JSON, model.getJson());
+            contentValues.put(KEY_ASSIGNED_INCIDENCE_DATE,model.getDate());
 
             database.insert(TABLE_ASSIGNED_INCIDENCES, null, contentValues);
             database.close();
@@ -311,6 +370,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
                 model.setId(cursor.getInt(0));
                 model.setJson(cursor.getString(1));
+                model.setDate(cursor.getString(2));
 
                 // Adding contact to list
                 list.add(model);
@@ -336,7 +396,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do {
                 model.setId(cursor.getInt(0));
                 model.setJson(cursor.getString(1));
-
+                model.setDate(cursor.getString(2));
                 // Adding contact to list
             } while (cursor.moveToNext());
         }
@@ -520,7 +580,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             contentValues.put(KEY_QUEUED_INCIDENCES_STATE, model.getState());
             contentValues.put(KEY_QUEUED_INCIDENCES_TITLE, model.getTitle());
             contentValues.put(KEY_QUEUED_INCIDENCES_MESSAGE, model.getMessage());
-            contentValues.put(KEY_NUM_FORMS_SUBMITTED,model.getNumSubmitted());
+            contentValues.put(KEY_NUM_FORMS_SUBMITTED, model.getNumSubmitted());
 
             database.insert(TABLE_QUEUED_INCIDENCES, null, contentValues);
             database.close();
@@ -670,7 +730,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         contentValues.put(KEY_QUEUED_INCIDENCES_STATE, model.getState());
         contentValues.put(KEY_QUEUED_INCIDENCES_TITLE, model.getTitle());
         contentValues.put(KEY_QUEUED_INCIDENCES_MESSAGE, model.getMessage());
-        contentValues.put(KEY_NUM_FORMS_SUBMITTED,model.getNumSubmitted());
+        contentValues.put(KEY_NUM_FORMS_SUBMITTED, model.getNumSubmitted());
 
 
         database.update(TABLE_QUEUED_INCIDENCES, contentValues, KEY_QUEUED_INCIDENCES_ID + " = ? ", new String[]{model.getId() + ""});
@@ -842,4 +902,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    public void deleteAdminFormsTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + TABLE_ADMIN_FORMS);
+        db.close();
+    }
 }

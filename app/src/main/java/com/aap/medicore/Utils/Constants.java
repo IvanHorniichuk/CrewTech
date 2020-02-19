@@ -20,7 +20,7 @@ public class Constants {
 
 
     //rootlocal
-  public final static String IMAGE_IP =" http://10.5.6.119:8000/";
+ public final static String IMAGE_IP =" http://10.5.6.119:8000/";
   public final static String SERVER_ADDRESS = "http://10.5.6.119:8000/api/";
 
     //rootStag
@@ -46,7 +46,7 @@ public class Constants {
     public static final String tokenFCM = "FCM_token";
     public final static String task_id = "task_id";
     public final static String task_location = "task_location";
-
+    public static final String UPDATE_REMINDER = "update reminder";
     public final static String task_witness = "task_witness";
     public static final String pendingStatus = "Pending Status";
     public final static String Status = "Status";

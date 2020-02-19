@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="30dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/app_logo" />
+
+    <com.aap.medicore.Utils.CustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp" />
+
+
+    <com.aap.medicore.Utils.CustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="8dp"
+        android:text="A new version of the app is available for download from playstore"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="14sp"
+        android:gravity="center"/>
+
+
+    <CheckBox
+        android:id="@+id/cbReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Do not remind again"
+        android:layout_marginTop="60dp"
+        android:layout_marginRight="@dimen/h8"
+        android:buttonTint="@color/colorPrimary"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <com.aap.medicore.Utils.CustomButton
+            android:id="@+id/btnUpdate"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="0.5"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/btn_background_primary_color"
+            android:text="Update"
+            android:textColor="@color/colorPrimary" />
+        <com.aap.medicore.Utils.CustomButton
+            android:id="@+id/btnNo"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="0.5"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/btn_background_primary_color"
+            android:text="Cancel"
+            android:textColor="@color/colorPrimary" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

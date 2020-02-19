@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -82,18 +83,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone"/>
 
-    <ProgressBar
-
-        android:id="@+id/buffering_icon"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:layout_marginTop="-5dp"
-        android:indeterminate="true"
-        android:indeterminateTint="#79C730"
-        android:indeterminateTintMode="src_atop"
-        android:visibility="visible" />
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -130,11 +119,10 @@
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
                     android:text="Registration No."
+                    app:layout_constraintEnd_toStartOf="@+id/textView6"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                    app:layout_constraintTop_toTopOf="@+id/textView6" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline"
@@ -147,28 +135,30 @@
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="32dp"
                     android:text="-"
-                    app:layout_constraintStart_toEndOf="@+id/textView5"
-                    app:layout_constraintTop_toTopOf="@+id/textView5" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
                 <TextView
                     android:id="@+id/tvRegistrationNo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:text="112"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView5" />
+                    app:layout_constraintStart_toEndOf="@+id/textView6"
+                    app:layout_constraintTop_toTopOf="@+id/textView6" />
 
                 <TextView
                     android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:text="-"
                     app:layout_constraintEnd_toEndOf="@+id/textView6"
                     app:layout_constraintStart_toStartOf="@+id/textView6"
-                    app:layout_constraintTop_toTopOf="@+id/textView9" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
                 <TextView
                     android:id="@+id/textView9"
@@ -178,6 +168,7 @@
                     android:layout_marginBottom="24dp"
                     android:text="Vehicle Name"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/textView5"
                     app:layout_constraintStart_toStartOf="@+id/textView5"
                     app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -188,6 +179,7 @@
                     android:layout_height="wrap_content"
                     android:text="Lexus"
                     app:layout_constraintEnd_toEndOf="@+id/tvRegistrationNo"
+                    app:layout_constraintStart_toStartOf="@+id/tvRegistrationNo"
                     app:layout_constraintTop_toTopOf="@+id/textView9" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

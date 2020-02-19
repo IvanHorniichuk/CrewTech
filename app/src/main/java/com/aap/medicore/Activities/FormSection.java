@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.MediaRouteButton;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,10 +20,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.ExifInterface;
 import android.net.ConnectivityManager;
@@ -80,7 +77,6 @@ import com.aap.medicore.BaseClasses.BaseActivity;
 import com.aap.medicore.DatabaseHandler.DatabaseHandler;
 import com.aap.medicore.Models.AssignedIncidencesModel;
 import com.aap.medicore.Models.ChecklistForm;
-import com.aap.medicore.Models.ChecklistFormOption;
 import com.aap.medicore.Models.Field;
 import com.aap.medicore.Models.Form;
 import com.aap.medicore.Models.Option;
@@ -134,7 +130,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.BlockingQueue;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -205,16 +200,17 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
     private ArrayList<Option> list;
     private HashMap<Integer, List<Option>> field2checkList;
     private TextView selectedTV;
-    private int numSelected =0;
+    private int numSelected = 0;
     private ImageView leftArrow;
     private ImageView rightArrow;
     private RecyclerView rvCarousel;
-    private HashMap<Integer, EquipmentCheckList.Arrows>hashmap4;
+    private HashMap<Integer, EquipmentCheckList.Arrows> hashmap4;
     private HashMap<Integer, Integer> hashmap3;
     private int currentImageViewId;
     private HashMap<Integer, List<Option>> toggleHash;
     private View ltNoNetwork;
     private BroadcastReceiver broadcastReceiver;
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -242,7 +238,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
         init();
         clickListeners();
         broadcastReceiver = new NetworkReciever(ltNoNetwork);
-        registerReceiver(broadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         if (formTitle.contains("vital sign form")) {
 //            hitEquipmentCheckList();
             getFormDetail();
@@ -351,7 +347,6 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
             }
         });
     }
-
 
 
     private void init() {
@@ -655,7 +650,8 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                         jsonArray.put(fieldsObj);
 
                         Log.e("text", "ID: " + field_id + " Text: " + textView.getText().toString() + "");
-                    }                        disableLoader();
+                    }
+                    disableLoader();
 
                 }
                 if (response.getFields().get(noOfViews).getType().equals("number")) {
@@ -1018,7 +1014,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
 
             TaskDetails td = new TaskDetails();
-            td.resetView(position, parentObj.toString(), FormSection.this, isMandatoryFilled,isSubmitted);
+            td.resetView(position, parentObj.toString(), FormSection.this, isMandatoryFilled, isSubmitted);
 
 
         } catch (Exception e) {
@@ -1981,7 +1977,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                            @Override
 //                            public void run() {
                         // update UI here
-//                        drawingView.setBackgroundImage(bitmap);
+                        drawingView.setBackgroundImage(bitmap);
 //                            }
 //                        });
 
@@ -1989,7 +1985,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
 
 //                    drawingView.setBackgroundImage(img_bm);
-                }else{
+                } else {
                     String s = taskList.getDrawOverImage();
                     if (s.toCharArray()[0] == '/')
                         s = s.replaceFirst("/", "");
@@ -2123,7 +2119,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                 textView.setVisibility(View.GONE);
                 params2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params2.setMargins(convertToDp(16,this),0,convertToDp(16,this),convertToDp(32,this));
+                params2.setMargins(convertToDp(16, this), 0, convertToDp(16, this), convertToDp(32, this));
                 textView.setLayoutParams(params2);
                 params2.addRule(RelativeLayout.CENTER_IN_PARENT);
                 relativeLayout.addView(textView);
@@ -2146,7 +2142,8 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     imageView.setVisibility(View.VISIBLE);
                 }
 
-                allViewInstance.add(hsvLayout);                Log.d("SIZE", "Image size is: " + myImages.size());
+                allViewInstance.add(hsvLayout);
+                Log.d("SIZE", "Image size is: " + myImages.size());
 //                if (myImages.size() > 0) {
 //                    if (adapterSelectImages != null) {
 //                        adapterSelectImages.setItems(myImages);
@@ -2257,17 +2254,17 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 relativeLayout.setLayoutParams(params);
 
                 CustomEditText textView = new CustomEditText(this);
-                if (obj.getFields().get(position).getLabel().contains("PIN")) {
-                    textView.setInputType(InputType.TYPE_NULL);
-                    textView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
-                            intent.putExtra("ViewId", textView.getId());
-                            startActivityForResult(intent, PIN_REQUEST);
-                        }
-                    });
+//                if (obj.getFields().get(position).getLabel().contains("PIN")) {
+//                    textView.setInputType(InputType.TYPE_NULL);
+//                    textView.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//
+//                            Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
+//                            intent.putExtra("ViewId", textView.getId());
+//                            startActivityForResult(intent, PIN_REQUEST);
+//                        }
+//                    });
 //                    textView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //                        @Override
 //                        public void onFocusChange(View v, boolean hasFocus) {
@@ -2279,7 +2276,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                            }
 //                        }
 //                    });
-                }
+//                }
                 textView.setBackground(null);
                 textView.setId(View.generateViewId());
                 textView.setTextSize(COMPLEX_UNIT_SP, 14);
@@ -2293,7 +2290,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 ImageView imageView = new ImageView(this);
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
                 imageView.setVisibility(View.GONE);
-                tvParams = new RelativeLayout.LayoutParams(convertToDp(10,this),convertToDp(10,this));
+                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
 
                 tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 tvParams.setMargins(0, 0, 0, convertToDp(24, this));
@@ -2405,7 +2402,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 relativeLayout.setLayoutParams(params);
 
                 CustomEditText editText = new CustomEditText(this);
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER);
                 editText.setId(View.generateViewId());
                 editText.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
                 editText.setBackground(null);
@@ -2422,7 +2419,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                             }
                         }
                 }
-                if (obj.getFields().get(position).getLabel().contains("PIN")||obj.getFields().get(position).getLabel().contains("Pin")) {
+                if (obj.getFields().get(position).getLabel().contains("PIN") || obj.getFields().get(position).getLabel().contains("Pin")) {
                     editText.setInputType(InputType.TYPE_NULL);
                     editText.setFocusable(false);
                     editText.setOnClickListener(new View.OnClickListener() {
@@ -2434,24 +2431,24 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                             startActivityForResult(intent, PIN_REQUEST);
                         }
                     });
-//                    editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//                        @Override
-//                        public void onFocusChange(View v, boolean hasFocus) {
-//                            if (hasFocus) {
-//
-//                                Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
-//                                intent.putExtra("ViewId", editText.getId());
-//                                startActivityForResult(intent, PIN_REQUEST);
-//                            }
-//                        }
-//                    });
+                    editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (hasFocus) {
+
+                                Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
+                                intent.putExtra("ViewId", editText.getId());
+                                startActivityForResult(intent, PIN_REQUEST);
+                            }
+                        }
+                    });
                 }
 
                 ImageView ivStar = new ImageView(this);
                 ivStar.setId(View.generateViewId());
                 ivStar.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
                 ivStar.setVisibility(View.GONE);
-                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(convertToDp(10,this),convertToDp(10,this));
+                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
                 tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 tvParams.setMargins(0, 0, 0, convertToDp(16, this));
 //                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());
@@ -2551,18 +2548,26 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                view.setLayoutParams(p);
 //
 //                llViews.addView(view);
-
                 list = obj.getFields().get(position).getOptions();
-                if (taskList1!=null){
-                    for (Option option:list){
-                        for (SaveField f:taskList1.getFields()){
-                            for (Option savedOption:f.getOptions()){
-                                if (option.getOptionId().equals(savedOption.getOptionId())){
-                                    option.setSelected(true);
-                                }
+                if (taskList1 != null) {
+                    List<Option> savedOptions = taskList1.getFields().get(position).getOptions();
+                    for (Option option : list) {
+                        for (Option savedOption : savedOptions) {
+                            if (option.getOptionId().equals(savedOption.getOptionId())) {
+                                option.setSelected(true);
+                                numSelected++;
                             }
                         }
                     }
+//                    for (Option option:list){
+//                        for (SaveField f:taskList1.getFields()){
+//                            for (Option savedOption:f.getOptions()){
+//                                if (option.getOptionId().equals(savedOption.getOptionId())){
+//                                    option.setSelected(true);
+//                                }
+//                            }
+//                        }
+//                    }
                 }
 
                 field2checkList.put(obj.getFields().get(position).getFieldId(), list);
@@ -2583,13 +2588,13 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                    }
 //
 //                } else {
-                    tvCheckBoxTitle.setTextColor(Color.parseColor("#616060"));
-                    tvCheckBoxTitle.setTextSize(COMPLEX_UNIT_SP, 14);
+                tvCheckBoxTitle.setTextColor(Color.parseColor("#616060"));
+                tvCheckBoxTitle.setTextSize(COMPLEX_UNIT_SP, 14);
 
-                    tvCheckBoxTitle.setText(obj.getFields().get(position).getLabel());
+                tvCheckBoxTitle.setText(obj.getFields().get(position).getLabel());
 //                }
 //                llViews.addView(tvCheckBoxTitle);
-                RelativeLayout.LayoutParams startparams = new RelativeLayout.LayoutParams(convertToDp(10,this), convertToDp(10,this)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+                RelativeLayout.LayoutParams startparams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
 //                    perams.setMargins(4, 10, 4, 4);
                 startparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 ImageView star = new ImageView(this);
@@ -2713,7 +2718,6 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 removeView(relativeLayout1);
                 llViews.addView(relativeLayout1);
 
-
                 allViewInstance.add(ll);
 
                 View view = new View(context);
@@ -2721,7 +2725,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
                 p.setMargins(convertToDp(16, this), 16, convertToDp(16, this), 16);
                 view.setLayoutParams(p);
-                    llViews.addView(view);
+                llViews.addView(view);
 
             } else if (obj.getFields().get(position).getType().equals("radio-group")) {
 //                RelativeLayout relativeLayout = new RelativeLayout(this);
@@ -2835,7 +2839,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 tvRadioButtonTitle.setText(obj.getFields().get(position).getLabel());
 //                llViews.addView(tvRadioButtonTitle);
 
-                LinearLayout.LayoutParams startparams = new LinearLayout.LayoutParams(convertToDp(10,this), convertToDp(10,this)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+                LinearLayout.LayoutParams startparams = new LinearLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
 //                perams.setMargins(4, 10, 4, 4);
 
                 ImageView star = new ImageView(this);
@@ -2925,6 +2929,11 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                 int finalPosition = position;
                 toggle.setChecked(true);
+                if (taskList1 != null) {
+                    Option savedOption = taskList1.getFields().get(position).getOptions().get(0);
+                    if (savedOption.getValue().equalsIgnoreCase("no"))
+                        toggle.setChecked(false);
+                }
                 hashmap5.put(toggle.getId(), obj.getFields().get(finalPosition).getFieldId());
                 toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -3045,7 +3054,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 ImageView imageView = new ImageView(this);
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
                 imageView.setVisibility(View.GONE);
-                tvParams = new RelativeLayout.LayoutParams(convertToDp(10,this), convertToDp(10,this));
+                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
                 tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 tvParams.setMargins(0, 0, 0, convertToDp(16, this));
 //                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
@@ -3066,7 +3075,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                 RelativeLayout relativeLayout = new RelativeLayout(this);
                 LinearLayout.LayoutParams perams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                perams.setMargins(convertToDp(16,this), 4, convertToDp(16,this), 4);
+                perams.setMargins(convertToDp(16, this), 4, convertToDp(16, this), 4);
                 relativeLayout.setLayoutParams(perams);
 
                 CustomTextView tvRadioButtonTitle = new CustomTextView(context);
@@ -3094,19 +3103,19 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     star.setVisibility(View.VISIBLE);
 //                    tvRadioButtonTitle.setTextColor(Color.parseColor("#ff0000"));
                 }
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(convertToDp(10,this), convertToDp(10,this)); //or MATCH_PARENT
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this)); //or MATCH_PARENT
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 relativeLayout.addView(star, layoutParams);
 
                 layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                layoutParams.setMargins(0,8,0,8);
-                relativeLayout.addView(tvRadioButtonTitle,layoutParams);
+                layoutParams.setMargins(0, 8, 0, 8);
+                relativeLayout.addView(tvRadioButtonTitle, layoutParams);
                 llViews.addView(relativeLayout);
 
                 perams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                perams.setMargins(convertToDp(16,this), 4, convertToDp(16,this), 4);
+                perams.setMargins(convertToDp(16, this), 4, convertToDp(16, this), 4);
 
                 AppCompatSpinner spinner = new AppCompatSpinner(context);
                 spinner.setLayoutParams(perams);
@@ -3148,7 +3157,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 View view = new View(context);
                 view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                p.setMargins(convertToDp(16,this), 16, convertToDp(16,this), 16);
+                p.setMargins(convertToDp(16, this), 16, convertToDp(16, this), 16);
                 view.setLayoutParams(p);
 
                 llViews.addView(view);
@@ -3262,7 +3271,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 ImageView imageView = new ImageView(this);
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
                 imageView.setVisibility(View.GONE);
-                tvParams = new RelativeLayout.LayoutParams(convertToDp(10,this), convertToDp(10,this));
+                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
                 tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 tvParams.setMargins(0, 0, 0, convertToDp(16, this));
 //                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
@@ -3419,7 +3428,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 ImageView imageView = new ImageView(this);
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
                 imageView.setVisibility(View.GONE);
-                tvParams = new RelativeLayout.LayoutParams(convertToDp(10,this), convertToDp(10,this));
+                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
                 tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 tvParams.setMargins(0, 0, 0, convertToDp(16, this));
 //                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
@@ -3521,7 +3530,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 ll.setOrientation(LinearLayout.VERTICAL);
                 final CustomTextView etText = new CustomTextView(context);
                 LinearLayout.LayoutParams perams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                perams.setMargins(convertToDp(16,this), 0, convertToDp(16,this), convertToDp(16,this));
+                perams.setMargins(convertToDp(16, this), 0, convertToDp(16, this), convertToDp(16, this));
 
                 etText.setText(obj.getFields().get(position).getLabel());
                 etText.setTextSize(14);
@@ -3529,7 +3538,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 etText.setLayoutParams(perams);
                 etText.setTypeface(etText.getTypeface(), Typeface.NORMAL);
 
-                LinearLayout.LayoutParams startparams = new LinearLayout.LayoutParams(convertToDp(10,this), convertToDp(10,this));    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+                LinearLayout.LayoutParams startparams = new LinearLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
                 perams.setMargins(4, 0, 4, 10);
                 startparams.gravity = Gravity.RIGHT;
                 ImageView star = new ImageView(this);
@@ -3543,7 +3552,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                 final ImageView iv = new ImageView(context);
                 LinearLayout.LayoutParams ivPerams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 200);
-                ivPerams.setMargins(convertToDp(16,this),convertToDp(4,this),convertToDp(16,this),convertToDp(4,this));
+                ivPerams.setMargins(convertToDp(16, this), convertToDp(4, this), convertToDp(16, this), convertToDp(4, this));
                 iv.setLayoutParams(ivPerams);
                 iv.setBackground(getDrawable(R.drawable.dotted));
                 iv.setVisibility(View.VISIBLE);
@@ -3629,7 +3638,6 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
 
         }
-
 
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -3860,10 +3868,11 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
 
     }
+
     private void setUpCarousel() {
 
 
-        EquipmentAccessoriesAdapter adapter = new EquipmentAccessoriesAdapter(list,  this);
+        EquipmentAccessoriesAdapter adapter = new EquipmentAccessoriesAdapter(list, this);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(RecyclerView.HORIZONTAL);
         rvCarousel.setAdapter(adapter);
@@ -3951,6 +3960,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
             }
         });
     }
+
     public String addJpgSignatureToGallery(Bitmap signature) {
         boolean result = false;
         String path = "";
@@ -4153,45 +4163,45 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 ////                            return;
 //                        }
 //                    }
-                        try {
-                            Switch toggle = (Switch) allViewInstance.get(noOfViews);
-                            fieldsObj.put("field_id", "" + toggle.getId());
-                            fieldsObj.put("value", "");
+                    try {
+                        Switch toggle = (Switch) allViewInstance.get(noOfViews);
+                        fieldsObj.put("field_id", "" + response.getFields().get(noOfViews).getFieldId());
+                        fieldsObj.put("value", "");
 
 
-                            JSONArray optionsArray = new JSONArray();
+                        JSONArray optionsArray = new JSONArray();
 
-                            JSONObject optionsObj = new JSONObject();
-                            Option optionYes = new Option();
-                            Option optionNo = new Option();
-                            for (Option option : toggleHash.get(toggle.getId())) {
-                                if (option.getLabel().equalsIgnoreCase("yes")) {
-                                    optionYes = option;
-                                } else if (option.getLabel().equalsIgnoreCase("no")) {
-                                    optionNo = option;
-                                }
-
+                        JSONObject optionsObj = new JSONObject();
+                        Option optionYes = new Option();
+                        Option optionNo = new Option();
+                        for (Option option : toggleHash.get(toggle.getId())) {
+                            if (option.getLabel().equalsIgnoreCase("yes")) {
+                                optionYes = option;
+                            } else if (option.getLabel().equalsIgnoreCase("no")) {
+                                optionNo = option;
                             }
 
-                            if (toggle.isChecked()) {
-                                optionsObj.put("option_id", "" + optionYes.getFieldId());
-                                fieldsObj.put("type", "radio-group");
-                                optionsObj.put("value", "" + optionYes.getLabel());
-                            } else {
-                                optionsObj.put("option_id", "" + optionNo.getFieldId());
-                                fieldsObj.put("type", "radio-group");
-                                optionsObj.put("value", "" + optionNo.getLabel());
-                            }
-                            optionsArray.put(optionsObj);
-//                    }
-                            fieldsObj.put("option", optionsArray);
-                            jsonArray.put(fieldsObj);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_SHORT).show();
-                            btnSubmit.setEnabled(true);
-                            return;
                         }
+
+                        if (toggle.isChecked()) {
+                            optionsObj.put("option_id", "" + optionYes.getFieldId());
+                            fieldsObj.put("type", "radio-group");
+                            optionsObj.put("value", "" + optionYes.getLabel());
+                        } else {
+                            optionsObj.put("option_id", "" + optionNo.getFieldId());
+                            fieldsObj.put("type", "radio-group");
+                            optionsObj.put("value", "" + optionNo.getLabel());
+                        }
+                        optionsArray.put(optionsObj);
+//                    }
+                        fieldsObj.put("option", optionsArray);
+                        jsonArray.put(fieldsObj);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_SHORT).show();
+                        btnSubmit.setEnabled(true);
+                        return;
+                    }
                 }
                 if (response.getFields().get(noOfViews).getType().equals("checkbox-group")) {
 
@@ -4263,7 +4273,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     for (Option model : checklistFormOptionList) {
                         if (model.isSelected()) {
                             JSONObject optionsObj = new JSONObject();
-                            optionsObj.put("option_id", "" + model.getFieldId());
+                            optionsObj.put("option_id", "" + model.getOptionId());
                             optionsObj.put("value", "" + model.getLabel());
                             optionsArray.put(optionsObj);
                         }
@@ -4947,6 +4957,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     ACCESS_FINE_LOCATION_INTENT_ID);
         }
     }
+
     public void removeView(View view) {
         if (view.getParent() != null) {
             ((ViewGroup) view.getParent()).removeView(view); // <- fix
@@ -5049,7 +5060,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
         onReturn();
     }
 
-    public void onReturn(){
+    public void onReturn() {
         Log.e("Splash", "onpause");
         if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
             return;
@@ -5079,6 +5090,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
         getDataFromDynamicViews(getWindow().getDecorView().findViewById(android.R.id.content), obj);
         SettingValues.getBarcodelist().clear();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -5097,6 +5109,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //        }
 
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 

@@ -10,9 +10,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.aap.medicore.Models.ChecklistFormOption;
-import com.aap.medicore.Models.EquipmentChecklistOption;
-import com.aap.medicore.Models.VehicleChecklistOption;
+import com.aap.medicore.Models.Option2;
 import com.aap.medicore.R;
 import com.aap.medicore.Utils.CustomTextView;
 
@@ -22,17 +20,19 @@ public class EqipmentCheckListSpinnerArrayAdapter extends ArrayAdapter<String> {
 
     private final LayoutInflater mInflater;
     private final Context mContext;
-    private final List<ChecklistFormOption> list;
+    private final List<Option2> list;
     private final int mResource;
+    private String formName;
 
     public EqipmentCheckListSpinnerArrayAdapter(@NonNull Context context, @LayoutRes int resource,
-                                                @NonNull List objects) {
+                                                @NonNull List objects, String formName) {
         super(context, resource, 0, objects);
 
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mResource = resource;
         list = objects;
+        this.formName = formName;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class EqipmentCheckListSpinnerArrayAdapter extends ArrayAdapter<String> {
         final View view = mInflater.inflate(mResource, parent, false);
 
         CustomTextView tvEventName = view.findViewById(R.id.tvEventName);
-        tvEventName.setText(list.get(position).getLabel());
+        tvEventName.setText(list.get(position).getOption());
 
         return view;
     }
@@ -59,6 +59,9 @@ public class EqipmentCheckListSpinnerArrayAdapter extends ArrayAdapter<String> {
     @Override
     public int getCount() {
         int count = super.getCount();
-        return count > 0 ? count - 1 : count;
+        if (formName.equalsIgnoreCase("Equipment Checklist"))
+            return count > 0 ? count - 1 : count;
+        else
+            return count;
     }
 }

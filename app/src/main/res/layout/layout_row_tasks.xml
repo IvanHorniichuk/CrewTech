@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/rectangle_rounded_white"
     android:layout_width="match_parent"
@@ -42,15 +43,22 @@
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text=""
         android:textColor="@color/colorGray"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/tvDetails" />
+
+    <com.aap.medicore.Utils.CustomTextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/colorGray"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvDate"
+        app:layout_constraintTop_toTopOf="@+id/tvHeading" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

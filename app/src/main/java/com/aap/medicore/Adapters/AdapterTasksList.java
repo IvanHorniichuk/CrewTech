@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aap.medicore.Activities.TaskDetails;
 import com.aap.medicore.Models.AssignedIncidencesModel;
 import com.aap.medicore.Models.TaskList;
-import com.aap.medicore.Models.TasksListResponse;
 import com.aap.medicore.R;
 import com.aap.medicore.Utils.Constants;
 import com.aap.medicore.Utils.CustomTextView;
@@ -25,19 +24,17 @@ import com.aap.medicore.Utils.ItemClickListener;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-
-import retrofit2.Response;
+import java.util.List;
 
 public class AdapterTasksList extends RecyclerView.Adapter<AdapterTasksList.ViewHolder> {
-    ArrayList<AssignedIncidencesModel> list = new ArrayList<>();
+    List<AssignedIncidencesModel> list = new ArrayList<>();
     Context mContext;
     private long mLastClickTime = 0;
-    public static Bitmap img_bm;
-    ArrayList<Bitmap> bitmapArray = new ArrayList<Bitmap>();
-//    Response<TasksListResponse> response;
-    private String taskLocation, name, date;
+    List<Bitmap> bitmapArray = new ArrayList<Bitmap>();
+    //    Response<TasksListResponse> response;
+    private String taskLocation, name, date, time;
 
-    public AdapterTasksList(ArrayList<AssignedIncidencesModel> list, Context mContext, ArrayList<Bitmap> bitmapArray/*, Response<TasksListResponse> response*/) {
+    public AdapterTasksList(List<AssignedIncidencesModel> list, Context mContext, List<Bitmap> bitmapArray/*, Response<TasksListResponse> response*/) {
         this.list = list;
         this.mContext = mContext;
         this.bitmapArray = bitmapArray;
@@ -69,13 +66,18 @@ public class AdapterTasksList extends RecyclerView.Adapter<AdapterTasksList.View
         holder.tvHeading.setText(name);
 //        holder.tvHeading.setText(response.body().getTaskList().get(position).getName());
         taskLocation = obj.getFromFacitity();
-        if (obj.getToFacility() != null)
+        if (obj.getToFacility() != null && !obj.getToFacility().isEmpty())
             taskLocation = taskLocation + ":" + obj.getToFacility();
         holder.tvDetails.setText(taskLocation);
 //        holder.tvDetails.setText(response.body().getTaskList().get(position).getFromFacitity() + " : " + response.body().getTaskList().get(position).getToFacility());
-        date = obj.getJobDateTime();
-        holder.tvDate.setText(date);
-//        holder.tvDate.setText(response.body().getTaskList().get(position).getJobDateTime());
+        time = obj.getJobDateTime();
+        holder.tvTime.setText(time);
+        if (obj.getJobDate() != null) {
+            date = (String) obj.getJobDate();
+//            date = date.substring(0, 10);
+//            holder.tvDate.setText(date);
+        }
+//        holder.tvTime.setText(response.body().getTaskList().get(position).getJobDateTime());
 //        notifyDataSetChanged();
         holder.setClickListener(new ItemClickListener() {
             @Override
@@ -87,14 +89,14 @@ public class AdapterTasksList extends RecyclerView.Adapter<AdapterTasksList.View
 
                 if (bitmapArray.size() > 0) {
 
-                    img_bm = bitmapArray.get(position);
+//                    img_bm = bitmapArray.get(position);
 
                 } else {
                 }
 
 
                 Intent i = new Intent(mContext, TaskDetails.class);
-                i.putExtra(Constants.task_id, obj.getIncidencId()+"");
+                i.putExtra(Constants.task_id, obj.getIncidencId() + "");
                 i.putExtra(Constants.task_location, taskLocation);
                 i.putExtra(Constants.task_witness, obj.getOrderNo() + "");
                 mContext.startActivity(i);
@@ -112,7 +114,7 @@ public class AdapterTasksList extends RecyclerView.Adapter<AdapterTasksList.View
 
         public ItemClickListener clickListener;
         ImageView tvGo;
-        CustomTextView tvHeading, tvDetails, tvDate;
+        CustomTextView tvHeading, tvDetails, tvTime/*, tvDate*/;
 
         public ViewHolder(View view) {
             super(view);
@@ -124,7 +126,8 @@ public class AdapterTasksList extends RecyclerView.Adapter<AdapterTasksList.View
             this.tvGo = view.findViewById(R.id.tvGo);
             this.tvHeading = view.findViewById(R.id.tvHeading);
             this.tvDetails = view.findViewById(R.id.tvDetails);
-            this.tvDate = view.findViewById(R.id.tvDate);
+            this.tvTime = view.findViewById(R.id.tvTime);
+//            this.tvDate = view.findViewById(R.id.tvDate);
         }
 
         public void setClickListener(ItemClickListener itemClickListener) {

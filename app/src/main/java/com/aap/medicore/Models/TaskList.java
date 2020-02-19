@@ -5,7 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TaskList {
 
@@ -18,6 +21,11 @@ public class TaskList {
     @SerializedName("job_time")
     @Expose
     private String jobDateTime;
+
+    @SerializedName("job_date_time")
+    @Expose
+    private String jobDate;
+
     @SerializedName("mrn")
     @Expose
     private String mrn;
@@ -71,6 +79,15 @@ public class TaskList {
     @SerializedName("form")
     @Expose
     private ArrayList<Form> form = null;
+
+    public String getJobDate() {
+        return jobDate;
+    }
+
+    public void setJobDate(String jobDate) {
+        this.jobDate = jobDate;
+
+    }
 
     public Integer getIncidencId() {
         return incidencId;
@@ -215,6 +232,7 @@ public class TaskList {
     public void setForm(ArrayList<Form> form) {
         this.form = form;
     }
+
 
     @Override
     public String toString() {

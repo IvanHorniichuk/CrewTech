@@ -13,13 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aap.medicore.Models.ChecklistFormOption;
 import com.aap.medicore.Models.Option;
+import com.aap.medicore.Models.Option2;
 import com.aap.medicore.R;
 
 import java.util.List;
 
 public class EquipmentAccessoriesAdapter extends RecyclerView.Adapter<EquipmentAccessoriesAdapter.MyViewHolder> {
 
-    private List<ChecklistFormOption> accessoriesModelList;
+    private List<Option2> accessoriesModelList;
     private List<Drawable> images;
     private RecyclerView recyclerView;
     private OnAdminItemClickedListener listener;
@@ -27,7 +28,7 @@ public class EquipmentAccessoriesAdapter extends RecyclerView.Adapter<EquipmentA
     private List<Option> clinicalModelList;
     boolean flag;
 
-    public EquipmentAccessoriesAdapter(List<ChecklistFormOption> accessoriesModelList, List<Drawable> images, OnAdminItemClickedListener listener) {
+    public EquipmentAccessoriesAdapter(List<Option2> accessoriesModelList, List<Drawable> images, OnAdminItemClickedListener listener) {
         this.accessoriesModelList = accessoriesModelList;
         this.listener = listener;
         this.images = images;
@@ -53,7 +54,7 @@ public class EquipmentAccessoriesAdapter extends RecyclerView.Adapter<EquipmentA
     public EquipmentAccessoriesAdapter(List<Option> clinicalModelList, OnClinicalItemClickedListener listener) {
         this.clinicalModelList = clinicalModelList;
         this.listener1 = listener;
-
+        flag = false;
 
 //        for (int i=4; i< accessoriesModelList.size()+4;i++){
 //            switch (i%4){
@@ -84,7 +85,7 @@ public class EquipmentAccessoriesAdapter extends RecyclerView.Adapter<EquipmentA
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 //        holder.ivAccessory.setImageDrawable(accessoriesModelList.get(position).getImageResource());
         if (flag) {
-            holder.tvAccessoryName.setText(accessoriesModelList.get(position).getLabel());
+            holder.tvAccessoryName.setText(accessoriesModelList.get(position).getOption());
             if (accessoriesModelList.get(position).isSelected()) {
                 holder.ivCheck.setVisibility(View.VISIBLE);
             } else {
@@ -165,7 +166,7 @@ public class EquipmentAccessoriesAdapter extends RecyclerView.Adapter<EquipmentA
     }
 
     public interface OnAdminItemClickedListener {
-        void onAdminItemClicked(int recyclerViewId, List<ChecklistFormOption> list);
+        void onAdminItemClicked(int recyclerViewId, List<Option2> list);
     }
 
     public interface OnClinicalItemClickedListener {

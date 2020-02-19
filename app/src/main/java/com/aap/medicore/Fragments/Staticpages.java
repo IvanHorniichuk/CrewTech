@@ -108,7 +108,6 @@ public class Staticpages extends BaseFragment {
 
                                 rv_admin.setLayoutManager(new LinearLayoutManager(getActivity()));
                                 adapter = new StaticPagesAdapter(getActivity(), animalNames, response);
-
                                 rv_admin.setAdapter(adapter);
                             }
                         }

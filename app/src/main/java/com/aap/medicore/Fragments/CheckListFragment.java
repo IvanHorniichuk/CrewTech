@@ -8,14 +8,10 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,18 +19,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.aap.medicore.Activities.AppConstants;
-import com.aap.medicore.Activities.EquipmentCheckList;
 import com.aap.medicore.Activities.GpsUtils;
-import com.aap.medicore.Activities.VehicleCheckList;
-import com.aap.medicore.Adapters.AdapterAdmin;
+import com.aap.medicore.Adapters.NewAdapterAdmin;
 import com.aap.medicore.BaseClasses.BaseActivity;
 import com.aap.medicore.BaseClasses.BaseFragment;
 import com.aap.medicore.DatabaseHandler.DatabaseHandler;
-import com.aap.medicore.Models.AdminForms;
+import com.aap.medicore.Models.AdminFormModel;
+import com.aap.medicore.Models.DBAdminFormModel;
+import com.aap.medicore.Models.NewAdminChecklist;
+import com.aap.medicore.Models.SaveField2;
 import com.aap.medicore.NetworkCalls.RetrofitClass;
 import com.aap.medicore.R;
 import com.aap.medicore.Utils.Constants;
-import com.aap.medicore.Utils.CustomTextView;
 import com.aap.medicore.Utils.SessionTimeoutDialog;
 import com.aap.medicore.Utils.TinyDB;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -42,18 +38,22 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CheckListFragment extends BaseFragment {
-//    CustomTextView tvVehicleCheckList, tvEquipmentCheckList;
+    //    CustomTextView tvVehicleCheckList, tvEquipmentCheckList;
     private SwipeRefreshLayout pullToRefresh;
     View v;
     RecyclerView rv_admin;
-    AdapterAdmin adapter;
+    NewAdapterAdmin adapter;
     private TinyDB tinyDB;
     ArrayList<String> animalNames = new ArrayList<>();
     private DatabaseHandler databaseHandler;
@@ -67,7 +67,7 @@ public class CheckListFragment extends BaseFragment {
     private android.widget.Button btnLocation;
     private android.widget.Button btnContinueLocation;
     private StringBuilder stringBuilder;
-private ProgressBar progressBar;
+    //    private ProgressBar progressBar;
     private boolean isContinue = false;
     private boolean isGPS = false;
     private View ltNoNetwork;
@@ -76,7 +76,7 @@ private ProgressBar progressBar;
     BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            networkAvailable = intent.getBooleanExtra("networkAvailable",false);
+            networkAvailable = intent.getBooleanExtra("networkAvailable", false);
         }
     };
 
@@ -93,7 +93,7 @@ private ProgressBar progressBar;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        databaseHandler = new DatabaseHandler(getActivity());
 
     }
 
@@ -186,7 +186,6 @@ private ProgressBar progressBar;
     }
 
 
-
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -217,7 +216,7 @@ private ProgressBar progressBar;
         rv_admin = view.findViewById(R.id.rv_admin);
         tinyDB = new TinyDB(getActivity());
         pullToRefresh = v.findViewById(R.id.pullToRefresh);
-        progressBar = v.findViewById(R.id.buffering_icon);
+//        progressBar = v.findViewById(R.id.buffering_icon);
         ltNoNetwork = v.findViewById(R.id.ltNoNetwork);
 //        animalNames.add("Amin Form 1");
 //        animalNames.add("Amin Form 2");
@@ -261,50 +260,119 @@ private ProgressBar progressBar;
     }
 
 
-    public void hitTasksList() {
-        retrofit2.Call<AdminForms> call;
+//    public void hitTasksList() {
+//        retrofit2.Call<AdminForms> call;
+//
+//        call = RetrofitClass.getInstance().getWebRequestsInstance().hitAdminFormsList(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id));
+////        call = RetrofitClass.getInstance().getWebRequestsInstance().hitTasksList(tinyDB.getString(Constants.user_id));
+//
+//        call.enqueue(new Callback<AdminForms>() {
+//            @Override
+//            public void onResponse(retrofit2.Call<AdminForms> call, final Response<AdminForms> response) {
+//                if (response.isSuccessful()) {
+//                    if (response.body().getStatus() == 200) {
+//                        animalNames.clear();
+//                        for (int i = 0; i < response.body().getVehicleChecklistForm().getForms().size(); i++) {
+//                            progressBar.setVisibility(View.GONE);
+//                            animalNames.add(response.body().getVehicleChecklistForm().getForms().get(i).getTitle());
+//
+//                            rv_admin.setLayoutManager(new LinearLayoutManager(getActivity()));
+//                            if (getActivity()!=null)
+//                            adapter = new AdapterAdmin(getActivity(), animalNames, response);
+//                            rv_admin.setAdapter(adapter);
+//                        }
+//                        Log.e("size", "sizeeee" + animalNames.size());
+//                    } else if (response.body().getStatus() == 404) {
+//
+//                        animalNames.clear();
+//                        rv_admin.setLayoutManager(new LinearLayoutManager(getActivity()));
+//                        if (getActivity() != null)
+//                            adapter = new AdapterAdmin(getActivity(), animalNames, response);
+//                        rv_admin.setAdapter(adapter);
+//                    }
+//                }else if (response.code()==401){
+//
+//                    if (getActivity()!= null)
+//                        new SessionTimeoutDialog((BaseActivity) getActivity()).getDialog().show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(retrofit2.Call<AdminForms> call, Throwable t) {
+//                t.printStackTrace();
+//            }
+//        });
+//    }
 
-        call = RetrofitClass.getInstance().getWebRequestsInstance().hitAdminFormsList(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id));
-//        call = RetrofitClass.getInstance().getWebRequestsInstance().hitTasksList(tinyDB.getString(Constants.user_id));
+    private void hitTasksList() {
+        retrofit2.Call<NewAdminChecklist> call = RetrofitClass.getInstance().getWebRequestsInstance().getAdminForms(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id));
+        try {
+            call.enqueue(new Callback<NewAdminChecklist>() {
+                @Override
+                public void onResponse(Call<NewAdminChecklist> call, Response<NewAdminChecklist> response) {
+                    if (response.isSuccessful()) {
+//                        databaseHandler.deleteAdminFormsTable();
+                        if (response.body().getStatus() == 400){
+                            rv_admin.setVisibility(View.GONE);
+                            v.findViewById(R.id.tvNoVehicle).setVisibility(View.VISIBLE);
+                            return;}
+                        else {
+                            rv_admin.setVisibility(View.VISIBLE);
+                            v.findViewById(R.id.tvNoVehicle).setVisibility(View.GONE);
+                            List<AdminFormModel> list = response.body().getForms();
+                            for (int i = 0; i < list.size(); i++) {
+                                DBAdminFormModel model1 = new DBAdminFormModel();
+                                model1.setForm_id(list.get(i).getId());
+                                model1.setTitle(list.get(i).getTitle());
+                                model1.setSub_title(list.get(i).getSubtitle());
+                                model1.setTimeout(list.get(i).getTimeout());
+                                Gson gson = new Gson();
+                                model1.setFieldsJson(gson.toJson(list.get(i).getFieldsJson()));
+                                model1.setImages("");
+                                //if new form is added
+                                if (databaseHandler.getAdminForm(model1.getForm_id()).getForm_id() == 0)
+                                    databaseHandler.addAdminForm(model1);
+                                else {
+                                    //if form is updated
+                                    if (list.get(i).getFieldsJson().size() > 0) {
+                                        SaveField2 saveField1 = list.get(i).getFieldsJson().get(0);
+                                        Gson gson1 = new Gson();
+                                        List<SaveField2> fields = new ArrayList<>();
+                                        try {
+                                            fields = gson1.fromJson(databaseHandler.getAdminForm(list.get(i).getId()).getFieldsJson(), new TypeToken<List<SaveField2>>() {
+                                            }.getType());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        SaveField2 saveField2 = fields.get(0);
+                                        if (!saveField1.getFieldId().equals(saveField2.getFieldId())) {
+                                            databaseHandler.removeAdminForm(list.get(i).getId());
+                                            databaseHandler.addAdminForm(model1);
+                                        }
+                                    }
+                                }
 
-        call.enqueue(new Callback<AdminForms>() {
-            @Override
-            public void onResponse(retrofit2.Call<AdminForms> call, final Response<AdminForms> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getStatus() == 200) {
-                        animalNames.clear();
-                        for (int i = 0; i < response.body().getVehicleChecklistForm().getForms().size(); i++) {
-                            progressBar.setVisibility(View.GONE);
-                            animalNames.add(response.body().getVehicleChecklistForm().getForms().get(i).getTitle());
-
+                            }
                             rv_admin.setLayoutManager(new LinearLayoutManager(getActivity()));
-                            if (getActivity()!=null)
-                            adapter = new AdapterAdmin(getActivity(), animalNames, response);
+                            if (getActivity() != null)
+                                adapter = new NewAdapterAdmin(getContext(), list);
                             rv_admin.setAdapter(adapter);
                         }
-                        Log.e("size", "sizeeee" + animalNames.size());
-                    } else if (response.body().getStatus() == 404) {
-
-                        animalNames.clear();
-                        rv_admin.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    } else if (response.code() == 401) {
                         if (getActivity() != null)
-                            adapter = new AdapterAdmin(getActivity(), animalNames, response);
-                        rv_admin.setAdapter(adapter);
+                            new SessionTimeoutDialog((BaseActivity) getActivity()).getDialog().show();
                     }
-                }else if (response.code()==401){
-
-                    if (getActivity()!= null)
-                        new SessionTimeoutDialog((BaseActivity) getActivity()).getDialog().show();
                 }
-            }
 
-            @Override
-            public void onFailure(retrofit2.Call<AdminForms> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<NewAdminChecklist> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

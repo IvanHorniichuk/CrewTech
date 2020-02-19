@@ -25,6 +25,16 @@ public class SaveForm {
     @Expose
     private ArrayList<String> images = null;
 
+    private String sub_title;
+
+    public String getSub_title() {
+        return sub_title;
+    }
+
+    public void setSub_title(String sub_title) {
+        this.sub_title = sub_title;
+    }
+
     public String getFormId() {
         return formId;
     }

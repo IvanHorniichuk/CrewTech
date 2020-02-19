@@ -2,9 +2,12 @@ package com.aap.medicore.Activities;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -12,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +24,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.aap.medicore.Models.Version;
+import com.aap.medicore.Models.VersionCheck;
 import com.aap.medicore.NetworkCalls.RetrofitClass;
 import com.aap.medicore.R;
 import com.aap.medicore.Utils.Constants;
@@ -32,6 +37,10 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import org.jsoup.Jsoup;
+
+import java.io.IOException;
+
 import retrofit2.Callback;
 import retrofit2.Response;
 
@@ -40,7 +49,7 @@ public class Splash extends AppCompatActivity {
     int SPLASH_TIME_OUT = 2000;
     Handler handler = new Handler();
     TinyDB tinyDB;
-    public static String version = "0.3";
+    public static String localVersion, latestVersion;
     public static final int PERMISSION_REQUEST_CODE = 1;
     //    String p1 = android.Manifest.permission.CAMERA, p2 = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
     String[] requiredPermissions = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -54,10 +63,19 @@ public class Splash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        Fabric.with(this, new Crashlytics());
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
         getSupportActionBar().hide();
+        PackageInfo pInfo = null;
+        try {
+            pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            localVersion = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            localVersion = "";
+        }
         tinyDB = new TinyDB(Splash.this);
         try {
             FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -87,8 +105,9 @@ public class Splash extends AppCompatActivity {
                 ContextCompat.checkSelfPermission(this, requiredPermissions[1]) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, requiredPermissions[2]) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, requiredPermissions[3]) == PackageManager.PERMISSION_GRANTED) {
-
-            versioncheck();
+            findViewById(R.id.progress).setVisibility(View.VISIBLE);
+            new ForceUpdateAsync(localVersion, this).execute();
+//            versioncheck();
             flag = true;
 
         } else
@@ -109,13 +128,11 @@ public class Splash extends AppCompatActivity {
 
     public void versioncheck() {
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
-        retrofit2.Call<Version> call;
-
-        call = RetrofitClass.getInstance().getWebRequestsInstance().versioncheck(version + "");
-
-        call.enqueue(new Callback<Version>() {
+        retrofit2.Call<VersionCheck> call;
+        call = RetrofitClass.getInstance().getWebRequestsInstance().versioncheck();
+        call.enqueue(new Callback<VersionCheck>() {
             @Override
-            public void onResponse(retrofit2.Call<Version> call, Response<Version> response) {
+            public void onResponse(retrofit2.Call<VersionCheck> call, Response<VersionCheck> response) {
                 if (response.isSuccessful()) {
 //                    if (response.body().getStatus() == 200) {
 //                        permissionAccess();
@@ -126,30 +143,40 @@ public class Splash extends AppCompatActivity {
 //                    permissionAccess();
                     findViewById(R.id.progress).setVisibility(View.GONE);
 
-                    if (tinyDB.getBoolean(Constants.LoggedIn)) {
-                        Intent intent = new Intent(Splash.this, Home.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Intent intent = new Intent(Splash.this, Login.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    }
+
                 } else {
                     findViewById(R.id.progress).setVisibility(View.GONE);
-                    Toast.makeText(Splash.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    showToast();
                 }
             }
 
             @Override
-            public void onFailure(retrofit2.Call<Version> call, Throwable t) {
+            public void onFailure(retrofit2.Call<VersionCheck> call, Throwable t) {
                 findViewById(R.id.progress).setVisibility(View.GONE);
-                Toast.makeText(Splash.this, "Please try again after some time", Toast.LENGTH_SHORT).show();
+                showToast();
                 t.printStackTrace();
             }
         });
+    }
+
+    private void showToast() {
+        Toast.makeText(Splash.this, "Please try again after some time", Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    private void proceed() {
+        if (tinyDB.getBoolean(Constants.LoggedIn)) {
+            Intent intent = new Intent(Splash.this, Home.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        } else {
+            Intent intent = new Intent(Splash.this, Login.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
     }
 
 
@@ -234,7 +261,8 @@ public class Splash extends AppCompatActivity {
 //                    Toast.makeText(Splash.this, "The app was not allowed permission. Hence, it cannot function properly. Please consider granting it this permission.", Toast.LENGTH_LONG).show();
 //                }
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) {
-                    versioncheck();
+                    findViewById(R.id.progress).setVisibility(View.VISIBLE);
+                    new ForceUpdateAsync(localVersion, this).execute();
                 } else {
                     if (grantResults[0] != PackageManager.PERMISSION_GRANTED) i = 0;
                     if (grantResults[1] != PackageManager.PERMISSION_GRANTED) i = 1;
@@ -267,6 +295,166 @@ public class Splash extends AppCompatActivity {
                 break;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void showForceUpdateDialog() {
+        final Dialog dialog = new Dialog(Splash.this);
+        final CustomButton btnUpdate, btnYes;
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.version);
+        btnUpdate = (CustomButton) dialog.findViewById(R.id.btnNo);
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tinyDB.putBoolean(Constants.UPDATE_REMINDER, false);
+                goToPlaystore();
+                dialog.dismiss();
+                finish();
+            }
+        });
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    private void goToPlaystore() {
+        Splash.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Splash.this.getPackageName())));
+
+    }
+
+    private void showUpdateDialog() {
+        final Dialog dialog = new Dialog(Splash.this);
+        final CustomButton btnUpdate, btnCancel;
+        CheckBox checkBox;
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_update_dialog);
+        checkBox = dialog.findViewById(R.id.cbReminder);
+        btnUpdate = (CustomButton) dialog.findViewById(R.id.btnUpdate);
+        btnCancel = dialog.findViewById(R.id.btnNo);
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tinyDB.putBoolean(Constants.UPDATE_REMINDER, false);
+                goToPlaystore();
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tinyDB.putBoolean(Constants.UPDATE_REMINDER, checkBox.isChecked());
+                proceed();
+            }
+        });
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    public class ForceUpdateAsync extends AsyncTask<String, String, String> {
+
+        private String latestVersion;
+        private String currentVersion;
+        private Context context;
+
+        public ForceUpdateAsync(String currentVersion, Context context) {
+            this.currentVersion = currentVersion;
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            try {
+                latestVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + context.getPackageName() + "&hl=en")
+                        .timeout(30000)
+                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                        .referrer("http://www.google.com")
+                        .get()
+                        .select("div.hAyfc:nth-child(4) > span:nth-child(2) > div:nth-child(1) > span:nth-child(1)")
+                        .first()
+                        .ownText();
+                Log.e(TAG, "doInBackground: " + "ver " + latestVersion);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return latestVersion;
+        }
+
+        @Override
+        protected void onPostExecute(String latestVersion) {
+            if (latestVersion != null) {
+                if (!currentVersion.equalsIgnoreCase(latestVersion)) {
+                    // Toast.makeText(context,"update is available.",Toast.LENGTH_LONG).show();
+                    retrofit2.Call<VersionCheck> call;
+                    call = RetrofitClass.getInstance().getWebRequestsInstance().versioncheck();
+                    call.enqueue(new Callback<VersionCheck>() {
+                        @Override
+                        public void onResponse(retrofit2.Call<VersionCheck> call, Response<VersionCheck> response) {
+                            if (response.isSuccessful()) {
+//                    if (response.body().getStatus() == 200) {
+//                        permissionAccess();
+//                    }
+//                    else{
+//                        logoutConfirmDialogBox();
+//                    }
+//                    permissionAccess();
+                                findViewById(R.id.progress).setVisibility(View.GONE);
+                                boolean flag = false;
+
+                                for (Version version : response.body().getVersionList()) {
+                                    if (version.getAppVersion().equalsIgnoreCase(latestVersion)) {
+                                        flag = true;
+                                        switch (version.getAction()) {
+
+                                            case "Minor change":
+                                                if (tinyDB.getBoolean(Constants.UPDATE_REMINDER))
+                                                    proceed();
+                                                else
+                                                    showUpdateDialog();
+                                                break;
+
+                                            case "Major change":
+                                                showForceUpdateDialog();
+                                                break;
+
+                                            case "No change":
+                                                proceed();
+                                                break;
+                                        }
+                                    }
+                                }
+                                if (!flag)
+                                    Toast.makeText(Splash.this,"Please contact admin to add latest version to the admin panel",Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                findViewById(R.id.progress).setVisibility(View.GONE);
+                                showToast();
+                                Log.e(TAG, "onResponse: ");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(retrofit2.Call<VersionCheck> call, Throwable t) {
+                            findViewById(R.id.progress).setVisibility(View.GONE);
+                            showToast();
+                            Log.e(TAG, "onFailure: ");
+                            t.printStackTrace();
+                        }
+                    });
+
+                } else {
+                    proceed();
+                    finish();
+                }
+            } else {
+                findViewById(R.id.progress).setVisibility(View.GONE);
+                showToast();
+            }
+            super.onPostExecute(latestVersion);
+        }
     }
 }
 

@@ -30,6 +30,7 @@ public class SaveField {
     @SerializedName("option")
     @Expose
     private ArrayList<Option> options = null;
+    private boolean barcode;
 
     public String getValue() {
         return value;
@@ -104,4 +105,11 @@ public class SaveField {
         return new ToStringBuilder(this).append("fieldId", fieldId).append("type", type).append("label", label).append("placeholder", placeholder).append("name", name).append("required", required).append("options", options).toString();
     }
 
+    public boolean isBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(boolean barcode) {
+        this.barcode = barcode;
+    }
 }

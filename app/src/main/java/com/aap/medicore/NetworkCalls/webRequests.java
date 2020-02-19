@@ -6,6 +6,8 @@ import com.aap.medicore.Models.AdminForms;
 import com.aap.medicore.Models.CheckListForms;
 import com.aap.medicore.Models.EquipmentChecklistResponse;
 import com.aap.medicore.Models.LoginData;
+import com.aap.medicore.Models.NewAdminChecklist;
+import com.aap.medicore.Models.NewAdminForm;
 import com.aap.medicore.Models.StaticPages;
 import com.aap.medicore.Models.StatusResponse;
 import com.aap.medicore.Models.SubmitFormResponse;
@@ -14,6 +16,7 @@ import com.aap.medicore.Models.TasksListResponse;
 import com.aap.medicore.Models.VehicleChecklistResponse;
 import com.aap.medicore.Models.VehicleResponse;
 import com.aap.medicore.Models.Version;
+import com.aap.medicore.Models.VersionCheck;
 
 import org.json.JSONObject;
 
@@ -46,6 +49,9 @@ public interface webRequests {
     @POST("dynamic-form/checklist_forms")
     Call<AdminForms> hitAdminFormsList(@Header("Authorization") String token, @Field("user_id") String user_id);
 
+    @FormUrlEncoded
+    @POST("dynamic-form/admin-form-details")
+    Call<NewAdminChecklist> getAdminForms(@Header("Authorization") String token, @Field("user_id") String user_id);
 
     @FormUrlEncoded
     @POST("user/get_staticfile")
@@ -101,9 +107,8 @@ public interface webRequests {
 
 
 
-    @FormUrlEncoded
-    @POST("dynamic-form/version")
-    Call<Version> versioncheck(@Field("version") String version_no);
+    @GET("user/api-version")
+    Call<VersionCheck> versioncheck();
 
     @Multipart
     @POST("dynamic-form/checklist-data-submit")
