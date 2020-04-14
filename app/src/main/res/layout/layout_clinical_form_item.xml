@@ -4,28 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:layout_margin="4dp"
-    android:background="@drawable/rectangle_rounded_white">
+    android:layout_height="80dp"
+    android:layout_margin="8dp"
+    android:background="#FFFFFF"
+    android:elevation="5dp">
 
     <TextView
         android:id="@+id/tvFormName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="8dp"
+        android:fontFamily="@font/open_sans_regular"
         android:text="TextView"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:textSize="16sp"
+        android:textColor="@color/itemText"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.aap.medicore.Utils.CircularTextView
+    <!--<com.aap.medicore.Utils.CircularTextView
         android:id="@+id/tvNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,14 +37,14 @@
         android:textSize="10sp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />-->
 
     <ImageView
         android:id="@+id/ivCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -57,8 +56,42 @@
         android:layout_height="10dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/red_astrik"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/red_astrik" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+<!--    <View-->
+<!--        android:id="@+id/view1"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="4dp"-->
+<!--        android:background="@drawable/shadow_gradient_light_to_dark_horizontal"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/rootLayout"-->
+<!--        tools:layout_editor_absoluteX="0dp" />-->
+
+<!--    <View-->
+<!--        android:id="@+id/view2"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="4dp"-->
+<!--        android:background="@drawable/shadow_gradient_dark_to_light_horizontal"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/rootLayout"-->
+<!--        tools:layout_editor_absoluteX="0dp" />-->
+
+<!--    <View-->
+<!--        android:id="@+id/view3"-->
+<!--        android:layout_width="4dp"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@drawable/shadow_gradient_dark_to_light_vertical"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        tools:layout_editor_absoluteX="0dp" />-->
+
+<!--    <View-->
+<!--        android:id="@+id/view4"-->
+<!--        android:layout_width="4dp"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@drawable/shadow_gradient_light_to_dark_vertical"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        tools:layout_editor_absoluteX="0dp" />-->
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

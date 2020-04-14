@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.View;
 
+import com.aap.medicore.BaseClasses.BaseActivity;
+
 public class NetworkReciever extends BroadcastReceiver {
 
     View view;
@@ -20,14 +22,14 @@ public class NetworkReciever extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!isOnline(context))
-            view.setVisibility(View.VISIBLE);
-        else
-            view.setVisibility(View.GONE);
+        if (context instanceof BaseActivity)
+            if (!isOnline(context))
+                view.setVisibility(View.VISIBLE);
+            else
+                view.setVisibility(View.GONE);
     }
 
     public boolean isOnline(Context context) {
-
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         //should check null because in airplane mode it will be null

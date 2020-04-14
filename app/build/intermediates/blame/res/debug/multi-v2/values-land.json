@@ -1,10 +1,20 @@
 {
     "logs": [
         {
-            "outputFile": "/home/root-admin/AndroidStudioProjects/CrewTech-Android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-land/values-land.xml",
+            "outputFile": "C:\\Users\\AJ\\AndroidStudioProjects\\CrewTech-Android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-land\\values-land.xml",
             "map": [
                 {
-                    "source": "/home/root-admin/.gradle/caches/transforms-2/files-2.1/bf9a41d5448dbce2111842c0f1f9f36d/res/values-land/values-land.xml",
+                    "source": "C:\\Users\\AJ\\.gradle\\caches\\transforms-2\\files-2.1\\aa2f04ce40fc6d393a87b79333eaa145\\appcompat-1.1.0\\res\\values-land\\values-land.xml",
+                    "from": {
+                        "startLines": "2,3,4",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,125,196",
+                        "endColumns": "69,70,67",
+                        "endOffsets": "120,191,259"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\AJ\\.gradle\\caches\\transforms-2\\files-2.1\\c32f97e833bf5661738ec2b85fa14ca7\\material-1.0.0\\res\\values-land\\values-land.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -20,16 +30,6 @@
                         "endLines": "8",
                         "endColumns": "10",
                         "endOffsets": "431"
-                    }
-                },
-                {
-                    "source": "/home/root-admin/.gradle/caches/transforms-2/files-2.1/1307d30dafd7018773a61d7c1fa8ab54/res/values-land/values-land.xml",
-                    "from": {
-                        "startLines": "2,3,4",
-                        "startColumns": "4,4,4",
-                        "startOffsets": "55,125,196",
-                        "endColumns": "69,70,67",
-                        "endOffsets": "120,191,259"
                     }
                 }
             ]

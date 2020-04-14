@@ -4,14 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/headerBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#FFF">
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
@@ -22,91 +22,92 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="188dp"
-            android:layout_height="190dp"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="132dp"
             app:layout_constraintBottom_toTopOf="@+id/etUsername"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/white_logo_" />
+            app:srcCompat="@drawable/logo_new" />
 
-        <com.aap.medicore.Utils.CustomEditText
+        <EditText
             android:id="@+id/etUsername"
-            android:layout_width="0dp"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="@color/colorWhite"
+            android:drawableStart="@drawable/ic_user"
+            android:drawablePadding="12dp"
             android:ellipsize="end"
             android:ems="10"
+            android:fontFamily="@font/open_sans_regular"
             android:hint="Username"
             android:inputType="textPersonName"
             android:maxLines="1"
-            android:paddingLeft="35dp"
-            android:textColorHint="@color/colorPrimary"
-            android:textSize="18sp"
+            android:paddingTop="8dp"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.aap.medicore.Utils.CustomEditText
+        <EditText
             android:id="@+id/etPass"
-            android:layout_width="0dp"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="@color/colorWhite"
+
+            android:drawableStart="@drawable/ic_padlock"
+            android:drawablePadding="12dp"
             android:ellipsize="end"
             android:ems="10"
+            android:fontFamily="@font/open_sans_regular"
             android:hint="Password"
             android:inputType="textPassword"
             android:maxLines="1"
-            android:paddingLeft="35dp"
-            android:textColorHint="@color/colorPrimary"
-            android:textSize="18sp"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/guideline2" />
 
-        <ImageView
-            android:id="@+id/imageView2"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintStart_toStartOf="@+id/etUsername"
-            app:layout_constraintTop_toTopOf="@+id/etUsername"
-            app:srcCompat="@drawable/ic_user" />
+            android:fontFamily="@font/open_sans_regular"
+            android:text="Login to your account"
+            android:textColor="@color/headerText"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintStart_toStartOf="@+id/etPass"
-            app:layout_constraintTop_toTopOf="@+id/etPass"
-            app:srcCompat="@drawable/ic_padlock" />
 
-        <com.aap.medicore.Utils.CustomButton
+        <Button
             android:id="@+id/btnLogin"
-            android:layout_width="200dp"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="64dp"
             android:layout_marginEnd="32dp"
-            android:background="@drawable/btn_background_selected"
+            android:background="@color/headerText"
+            android:fontFamily="@font/open_sans_semibold"
             android:paddingStart="50dp"
             android:paddingLeft="50dp"
             android:paddingEnd="50dp"
             android:paddingRight="50dp"
             android:text="LogIn"
-            android:textColor="#FFF"
-            android:textSize="18sp"
+            android:textColor="@color/itemText"
+            android:textSize="16sp"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="24dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/headerText"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -131,7 +132,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="64dp"
             android:layout_marginEnd="32dp"
-            android:indeterminateTint="@color/colorPrimary"
+            android:indeterminateTint="@color/colorWhite"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

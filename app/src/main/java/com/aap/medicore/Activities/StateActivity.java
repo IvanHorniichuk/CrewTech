@@ -4,30 +4,40 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aap.medicore.Adapters.SpinnerAdapter;
 import com.aap.medicore.Adapters.SpinnerArrayAdapter;
 import com.aap.medicore.BaseClasses.BaseActivity;
 import com.aap.medicore.Models.StateModel;
+import com.aap.medicore.Models.StatusResponse;
+import com.aap.medicore.NetworkCalls.RetrofitClass;
 import com.aap.medicore.R;
 import com.aap.medicore.Utils.Constants;
 import com.aap.medicore.Utils.CustomButton;
 import com.aap.medicore.Utils.CustomTextView;
+import com.aap.medicore.Utils.SessionTimeoutDialog;
 import com.aap.medicore.Utils.TinyDB;
 
 import java.util.ArrayList;
 
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class StateActivity extends BaseActivity {
     ImageView ivBack;
     TinyDB tinyDB;
-    CustomTextView tvTitle, tvDescription;
-    CustomButton btnUpdateState;
+   TextView tvTitle, tvDescription;
+    Button btnUpdateState;
     ImageView ivImage;
     AppCompatSpinner spinner;
     ArrayList<StateModel> list;
@@ -164,8 +174,51 @@ public class StateActivity extends BaseActivity {
                 tinyDB.putString(Constants.StateTitle, title);
                 tinyDB.putString(Constants.StateDescription, desc);
                 tinyDB.putInt(Constants.StatePosition, position);
-                Toast.makeText(StateActivity.this, "State Updated Successfully !", Toast.LENGTH_SHORT).show();
-                finish();
+                hitUserStatus();
+
+            }
+        });
+    }
+
+    private void hitUserStatus(){
+
+        retrofit2.Call<StatusResponse> call;
+
+        call = RetrofitClass.getInstance().getWebRequestsInstance().hitUserStatus(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id), tinyDB.getString(Constants.StateTitle));
+
+        call.enqueue(new Callback<StatusResponse>() {
+            private Intent newintent;
+            private boolean status;
+
+            @Override
+            public void onResponse(retrofit2.Call<StatusResponse> call, Response<StatusResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.e("code", response.body().getStstus() + "");
+                    if (response.body().getStstus() == 200) {
+                        status = true;
+                        Toast.makeText(StateActivity.this, "State Updated Successfully!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }else
+                        Toast.makeText(StateActivity.this, "Please try again later", Toast.LENGTH_SHORT).show();
+
+                } else if (response.code() == 401) {
+                    if (getApplicationContext() != null)
+                        new SessionTimeoutDialog(StateActivity.this).getDialog().show();
+                }else{
+                    Toast.makeText(StateActivity.this, "Please try again later", Toast.LENGTH_SHORT).show();
+
+                }
+                newintent = new Intent(Constants.BROADCAST_ACTION);
+                newintent.putExtra(Constants.Status, status);
+                sendBroadcast(newintent);
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<StatusResponse> call, Throwable t) {
+                Toast.makeText(StateActivity.this, "Please try again later", Toast.LENGTH_SHORT).show();
+                newintent = new Intent(Constants.BROADCAST_ACTION);
+                newintent.putExtra(Constants.Status, status);
+                sendBroadcast(newintent);
             }
         });
     }

@@ -10,6 +10,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.aap.medicore.R;;
@@ -20,7 +21,7 @@ import com.aap.medicore.Utils.TinyDB;
 public class GameView extends AppCompatActivity {
 WebView webView;
 TinyDB tinyDB;
-CustomTextView heading;
+TextView heading;
 ImageView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ ImageView back;
         tinyDB = new TinyDB(GameView.this);
         webView = (WebView)findViewById(R.id.game_wv);
         getSupportActionBar().hide();
-        heading = (CustomTextView)findViewById(R.id.heading);
+        heading = (TextView)findViewById(R.id.heading);
         back = (ImageView) findViewById(R.id.ivBack);
         webView.setWebViewClient(new CustomWebViewClient());
         WebSettings webSetting = webView.getSettings();

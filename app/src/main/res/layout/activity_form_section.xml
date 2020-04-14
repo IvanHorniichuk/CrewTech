@@ -5,15 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/screenBackground"
     android:orientation="vertical"
     tools:context=".Activities.TaskDetails">
-
 
 
     <LinearLayout
         android:id="@+id/rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/headerBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -23,70 +24,70 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="8dp"
             android:background="?android:selectableItemBackground"
             android:clickable="true"
             android:padding="10dp"
-            android:tint="@color/colorGray"
             app:srcCompat="@drawable/ic_arrow_left" />
 
         <RelativeLayout
             android:id="@+id/rlHeading"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:gravity="left"
                 android:orientation="vertical">
 
 
-                <com.aap.medicore.Utils.CustomTextView
+                <TextView
                     android:id="@+id/heading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:layout_margin="4dp"
-                    android:text="Title"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
 
-                <com.aap.medicore.Utils.CustomTextView
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:text="Title"
+                    android:textColor="@color/headerText"
+                    android:textSize="18sp" />
+
+                <TextView
                     android:id="@+id/tvTaskLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/heading"
                     android:layout_gravity="left"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginBottom="16dp"
-                    android:text="Your task details are here fill your form\n carefully."
-                    android:textColor="@color/colorGray"
-                    android:textSize="15sp" />
+
+                    android:fontFamily="@font/open_sans_regular"
+                    android:text="Your task details are here fill your form carefully."
+                    android:textColor="@color/colorOrange"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </RelativeLayout>
 
     </LinearLayout>
 
-    <include layout="@layout/layout_no_internet"
+    <include
         android:id="@+id/ltNoNetwork"
+        layout="@layout/layout_no_internet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <!--<include android:id="@+id/draw_layout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--layout="@layout/draw_over_image"/>-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--layout="@layout/draw_over_image"/>-->
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/drawing_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/drawing_layout"
+        android:orientation="vertical"
         android:visibility="gone">
 
         <LinearLayout
@@ -100,24 +101,24 @@
             android:orientation="vertical">
 
         </LinearLayout>
+
         <com.raed.drawingview.DrawingView
             android:id="@+id/drawing_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:background="@color/colorWhite"
             app:brush="pen"
-            app:brush_size="1"
             app:brush_color="#bb0a1e"
-            app:drawing_background_color="#dddddd"
-            android:layout_marginTop="15dp"
-            />
+            app:brush_size="1"
+            app:drawing_background_color="#dddddd" />
+
         <com.aap.medicore.Utils.CustomButton
+            android:id="@+id/clear"
             android:layout_width="100dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:text="Clear"
-            android:id="@+id/clear"
-            />
+            android:text="Clear" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -129,8 +130,6 @@
             android:layout_weight="1"
             android:orientation="horizontal"
             android:visibility="gone">
-
-
 
 
             <RelativeLayout
@@ -181,11 +180,10 @@
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nonDrawView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"
-        android:background="@color/colorWhite"
-        android:id="@+id/nonDrawView"
         android:visibility="visible">
 
 
@@ -199,11 +197,10 @@
                 android:id="@+id/llViews"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp"
-                android:background="@color/colorWhite"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:focusableInTouchMode="true"
+                android:clickable="true"
+                android:focusable="true">
 
 
             </LinearLayout>
@@ -213,56 +210,54 @@
                 android:id="@+id/barcodelayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal"
-                >
+                android:visibility="gone">
+
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/barcode"/>
+                    android:src="@drawable/barcode" />
+
                 <HorizontalScrollView
+                    android:id="@+id/horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:fillViewport="true"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:scrollbars="horizontal"
-                    android:id="@+id/horizontal"
                     android:layout_marginLeft="15dp"
-                    >
+                    android:fillViewport="true"
+                    android:scrollbars="horizontal">
 
                     <LinearLayout
                         android:id="@+id/barcodeviews"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        >
+                        android:orientation="horizontal">
                         <!-- Your content goes here -->
 
                     </LinearLayout>
                 </HorizontalScrollView>
+
                 <com.aap.medicore.Utils.CustomTextView
                     android:id="@+id/barcode_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Scan Barcode"
-                    android:visibility="gone"
-                    android:textSize="16dp"
-                    android:textColor="@color/colorGray"
                     android:layout_gravity="center_vertical"
-                    />
+                    android:text="Scan Barcode"
+                    android:textColor="@color/colorGray"
+                    android:textSize="16dp"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
             <HorizontalScrollView
+                android:id="@+id/hsv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fillViewport="true"
-                android:id="@+id/hsv"
-                android:scrollbars="none"
-                >
+                android:scrollbars="none">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -302,9 +297,6 @@
             </HorizontalScrollView>
 
 
-
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -315,8 +307,6 @@
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:visibility="visible">
-
-
 
 
                 <RelativeLayout
@@ -334,8 +324,7 @@
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
                         android:text="Save Form"
-                        android:textColor="@color/colorPrimary"
-                        />
+                        android:textColor="@color/colorPrimary" />
 
                 </RelativeLayout>
 

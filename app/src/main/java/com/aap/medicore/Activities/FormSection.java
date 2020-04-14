@@ -21,6 +21,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.media.ExifInterface;
@@ -38,10 +39,12 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -65,12 +68,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aap.medicore.Adapters.AdapterSelectImages;
+import com.aap.medicore.Adapters.EqipmentCheckListSpinnerArrayAdapter;
 import com.aap.medicore.Adapters.EquipmentAccessoriesAdapter;
 import com.aap.medicore.Adapters.SpinnerArrayAdapter;
 import com.aap.medicore.BaseClasses.BaseActivity;
@@ -80,8 +85,10 @@ import com.aap.medicore.Models.ChecklistForm;
 import com.aap.medicore.Models.Field;
 import com.aap.medicore.Models.Form;
 import com.aap.medicore.Models.Option;
+import com.aap.medicore.Models.Option2;
 import com.aap.medicore.Models.QueueModel;
 import com.aap.medicore.Models.SaveField;
+import com.aap.medicore.Models.SaveField2;
 import com.aap.medicore.Models.SaveForm;
 import com.aap.medicore.Models.SelectImagesModel;
 import com.aap.medicore.Models.SubmitFormResponse;
@@ -158,7 +165,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
     TaskDetails td;
     List<View> allViewInstance = new ArrayList<View>();
     LinearLayoutManager imagesManager;
-    CustomTextView subtitle;
+    TextView subtitle;
     ArrayList<SelectImagesModel> myImages;
     ImageView ivSelectImages;
     RecyclerView rvSelectImages;
@@ -188,7 +195,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
     Boolean isDrawOverImageForm = false;
     String formId = "", formTitle = "";
     //    CustomTextView notes;
-    CustomTextView heading;
+    TextView heading;
     public static String barcode_value = null;
     Bitmap signBitmap;
     boolean isMandatoryFilled = true;
@@ -358,7 +365,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
         hsvLayout = findViewById(R.id.hsv);
         barcodelayout = (LinearLayout) findViewById(R.id.barcodelayout);
         heading = findViewById(R.id.heading);
-        subtitle = (CustomTextView) findViewById(R.id.tvTaskLocation);
+        subtitle = findViewById(R.id.tvTaskLocation);
         barcode_text = (CustomTextView) findViewById(R.id.barcode_text);
 //        subtitle.setText(obj.getSub_title());
         clear = (CustomButton) findViewById(R.id.clear);
@@ -464,91 +471,112 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                 if (response.getFields().get(noOfViews).getType().equals("radio-group")) {
 
-                    if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
-                        try {
-                            RadioGroup radioGroup = (RadioGroup) allViewInstance.get(noOfViews);
-                            RadioButton selectedRadioBtn = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
-
-                            Log.e("selected_radio_button", selectedRadioBtn.getTag().toString() + "");
-
-                            String a[] = selectedRadioBtn.getTag().toString().split(",");
-                            fieldsObj.put("field_id",
-                                    "" + a[0]);
-                            fieldsObj.put("value", "");
-                            Log.e("f", a[0]);
-                            Log.e("s", a[1]);
-                            Log.e("s", a[2]);
-
-                            JSONArray optionsArray = new JSONArray();
-//                    for (int k = 0; k < response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getOptions().size(); k++) {
-                            JSONObject optionsObj = new JSONObject();
-                            optionsObj.put("option_id", "" + a[1]);
-                            fieldsObj.put("type", "radio-group");
-                            optionsObj.put("value", "" + a[2]);
-                            optionsArray.put(optionsObj);
-//                    }
-                            fieldsObj.put("option", optionsArray);
-                            jsonArray.put(fieldsObj);
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                            Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    } else {
-                        try {
-
-                            RadioGroup radioGroup = (RadioGroup) allViewInstance.get(noOfViews);
-                            RadioButton selectedRadioBtn = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
-
-                            Log.e("selected_radio_button", selectedRadioBtn.getTag().toString() + "");
-
-                            String a[] = selectedRadioBtn.getTag().toString().split(",");
-                            fieldsObj.put("field_id",
-                                    "" + a[0]);
-                            fieldsObj.put("type", "radio-group");
-                            fieldsObj.put("value", "");
-                            Log.e("f", a[0]);
-                            Log.e("s", a[1]);
-                            Log.e("s", a[2]);
-
-                            JSONArray optionsArray = new JSONArray();
-//                    for (int k = 0; k < response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getOptions().size(); k++) {
-                            JSONObject optionsObj = new JSONObject();
-                            optionsObj.put("option_id", "" + a[1]);
-                            optionsObj.put("value", "" + a[2]);
-                            optionsArray.put(optionsObj);
-//                    }
-                            fieldsObj.put("option", optionsArray);
-                            jsonArray.put(fieldsObj);
-
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                            RadioGroup radioGroup = (RadioGroup) allViewInstance.get(noOfViews);
-//                            RadioButton selectedRadioBtn = (RadioButton) findViewById(radioGroup.getId());
-
-                            Log.e("rg_id", radioGroup.getTag().toString() + "");
-
-                            fieldsObj.put("field_id",
-                                    radioGroup.getTag().toString());
-                            fieldsObj.put("type", "radio-group");
-                            fieldsObj.put("value", "");
+//                    if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
+//                        try {
+//                            RadioGroup radioGroup = (RadioGroup) allViewInstance.get(noOfViews);
+//                            RadioButton selectedRadioBtn = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+//
+//                            Log.e("selected_radio_button", selectedRadioBtn.getTag().toString() + "");
+//
+//                            String a[] = selectedRadioBtn.getTag().toString().split(",");
+//                            fieldsObj.put("field_id",
+//                                    "" + a[0]);
+//                            fieldsObj.put("value", "");
 //                            Log.e("f", a[0]);
 //                            Log.e("s", a[1]);
 //                            Log.e("s", a[2]);
-
-                            JSONArray optionsArray = new JSONArray();
-//                    for (int k = 0; k < response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getOptions().size(); k++) {
-                            JSONObject optionsObj = new JSONObject();
-                            optionsObj.put("option_id", "");
-                            optionsObj.put("value", "");
-                            optionsArray.put(optionsObj);
-//                        }
-                            fieldsObj.put("option", optionsArray);
-                            jsonArray.put(fieldsObj);
 //
+//                            JSONArray optionsArray = new JSONArray();
+////                    for (int k = 0; k < response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getOptions().size(); k++) {
+//                            JSONObject optionsObj = new JSONObject();
+//                            optionsObj.put("option_id", "" + a[1]);
+//                            fieldsObj.put("type", "radio-group");
+//                            optionsObj.put("value", "" + a[2]);
+//                            optionsArray.put(optionsObj);
+////                    }
+//                            fieldsObj.put("option", optionsArray);
+//                            jsonArray.put(fieldsObj);
+//                        } catch (NullPointerException e) {
+//                            e.printStackTrace();
+//                            Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_SHORT).show();
 //                            return;
-                        }
-                    }
+//                        }
+//                    } else {
+//                        try {
+//
+//                            RadioGroup radioGroup = (RadioGroup) allViewInstance.get(noOfViews);
+//                            RadioButton selectedRadioBtn = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+//
+//                            Log.e("selected_radio_button", selectedRadioBtn.getTag().toString() + "");
+//
+//                            String a[] = selectedRadioBtn.getTag().toString().split(",");
+//                            fieldsObj.put("field_id",
+//                                    "" + a[0]);
+//                            fieldsObj.put("type", "radio-group");
+//                            fieldsObj.put("value", "");
+//                            Log.e("f", a[0]);
+//                            Log.e("s", a[1]);
+//                            Log.e("s", a[2]);
+//
+//                            JSONArray optionsArray = new JSONArray();
+////                    for (int k = 0; k < response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getOptions().size(); k++) {
+//                            JSONObject optionsObj = new JSONObject();
+//                            optionsObj.put("option_id", "" + a[1]);
+//                            optionsObj.put("value", "" + a[2]);
+//                            optionsArray.put(optionsObj);
+////                    }
+//                            fieldsObj.put("option", optionsArray);
+//                            jsonArray.put(fieldsObj);
+//
+//                        } catch (NullPointerException e) {
+//                            e.printStackTrace();
+//                            RadioGroup radioGroup = (RadioGroup) allViewInstance.get(noOfViews);
+////                            RadioButton selectedRadioBtn = (RadioButton) findViewById(radioGroup.getId());
+//
+//                            Log.e("rg_id", radioGroup.getTag().toString() + "");
+//
+//                            fieldsObj.put("field_id",
+//                                    radioGroup.getTag().toString());
+//                            fieldsObj.put("type", "radio-group");
+//                            fieldsObj.put("value", "");
+////                            Log.e("f", a[0]);
+////                            Log.e("s", a[1]);
+////                            Log.e("s", a[2]);
+//
+//                            JSONArray optionsArray = new JSONArray();
+////                    for (int k = 0; k < response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getOptions().size(); k++) {
+//                            JSONObject optionsObj = new JSONObject();
+//                            optionsObj.put("option_id", "");
+//                            optionsObj.put("value", "");
+//                            optionsArray.put(optionsObj);
+////                        }
+//                            fieldsObj.put("option", optionsArray);
+//                            jsonArray.put(fieldsObj);
+////
+////                            return;
+//                        }
+//                    }
+
+                    Spinner spinner = (Spinner) allViewInstance.get(noOfViews);
+
+                    String selected_name = response.getFields().get(noOfViews).getOptions().get(spinner.getSelectedItemPosition()).getLabel();
+                    String selected_id = response.getFields().get(noOfViews).getOptions().get(spinner.getSelectedItemPosition()).getId() + "";
+                    //Log.e("Selected_field_ID", response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getFieldId() + "");
+                    Log.e("value", selected_name + "");
+                    Log.e("field_id", selected_id + "");
+                    fieldsObj.put("field_id", "" + response.getFields().get(noOfViews).getFieldId());
+                    fieldsObj.put("type", "radio-group");
+                    fieldsObj.put("value", "");
+
+                    JSONArray optionsArray = new JSONArray();
+//                    for (int k = 0; k < response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getOptions().size(); k++) {
+                    JSONObject optionsObj = new JSONObject();
+                    optionsObj.put("option_id", "" + selected_id);
+                    optionsObj.put("value", "" + selected_name);
+                    optionsArray.put(optionsObj);
+//                    }
+                    fieldsObj.put("option", optionsArray);
+                    jsonArray.put(fieldsObj);
                 }
                 if (response.getFields().get(noOfViews).getType().equals("checkbox-group")) {
 
@@ -616,7 +644,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -637,7 +665,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     } else {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -659,7 +687,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -680,7 +708,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     } else {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -700,7 +728,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                     if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
 
                         text = textView.getText().toString();
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
@@ -723,7 +751,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                         Log.e("textarea", "ID: " + field_id + " Text: " + textView.getText().toString() + "");
                     } else {
                         String field_id, text;
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
 
                         text = textView.getText().toString();
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
@@ -749,7 +777,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -770,7 +798,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     } else {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -793,7 +821,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                         //Date
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -815,7 +843,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                         //Date
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -836,7 +864,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getTag().toString();
 
@@ -857,7 +885,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     } else {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getTag().toString();
 
@@ -1938,7 +1966,9 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
         Log.d("DATA", "result data is: " + json1);
 
         SaveForm taskList1 = gson1.fromJson(json1, SaveForm.class);
-
+        Typeface bold = ResourcesCompat.getFont(context, R.font.open_sans_bold);
+        Typeface semiBold = ResourcesCompat.getFont(context, R.font.open_sans_semibold);
+        Typeface regular = ResourcesCompat.getFont(context, R.font.open_sans_regular);
         if (obj.getImage() != null && obj.getImage().equalsIgnoreCase("yes")) {
             isDrawOverImageForm = true;
             findViewById(R.id.nonDrawView).setVisibility(View.GONE);
@@ -2019,7 +2049,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
         Log.e("size", obj.toString());
 
         for (int position = 0; position < obj.getFields().size(); position++) {
-
+            String form_name = obj.getTitle();
             Log.d("BARCOADEEEEEE", "bar coeeeeeeeeeeeee: " + obj.getFields().get(position).getPlaceholder());
             Log.d("TYPE", "FIELD TYPE IS: " + obj.getFields().get(position).getType());
 //            if (obj.getFields().get(position).getType().equals("text") && obj.getFields().get(position).getPlaceholder().equalsIgnoreCase("barcode")){
@@ -2144,16 +2174,16 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                 allViewInstance.add(hsvLayout);
                 Log.d("SIZE", "Image size is: " + myImages.size());
-//                if (myImages.size() > 0) {
-//                    if (adapterSelectImages != null) {
-//                        adapterSelectImages.setItems(myImages);
-//                        adapterSelectImages.notifyDataSetChanged();
-//                    } else {
-//                        adapterSelectImages = new AdapterSelectImages(myImages, FormSection.this, ivSelectImages);
-//                        rvSelectImages.setLayoutManager(imagesManager);
-//                        rvSelectImages.setAdapter(adapterSelectImages);
-//                    }
-//                }
+                if (myImages.size() > 0) {
+                    if (adapterSelectImages != null) {
+                        adapterSelectImages.setItems(myImages);
+                        adapterSelectImages.notifyDataSetChanged();
+                    } else {
+                        adapterSelectImages = new AdapterSelectImages(myImages, FormSection.this, ivSelectImages);
+                        rvSelectImages.setLayoutManager(imagesManager);
+                        rvSelectImages.setAdapter(adapterSelectImages);
+                    }
+                }
             }
 //            else if (obj.getFields().get(position).getType().equalsIgnoreCase("text") && obj.getFields().get(position).getPlaceholder().equalsIgnoreCase("barcode")){
 //                Toast.makeText(context, "mil gyaaaaa", Toast.LENGTH_SHORT).getDialog();
@@ -2245,78 +2275,163 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                            }
 //                        }
 //                }
+                Field field = obj.getFields().get(position);
+                LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
 
                 RelativeLayout relativeLayout = new RelativeLayout(this);
                 relativeLayout.setId(View.generateViewId());
+                relativeLayout.setLayoutParams(linearParams);
 
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
-                relativeLayout.setLayoutParams(params);
 
-                CustomEditText textView = new CustomEditText(this);
-//                if (obj.getFields().get(position).getLabel().contains("PIN")) {
-//                    textView.setInputType(InputType.TYPE_NULL);
-//                    textView.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//
-//                            Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
-//                            intent.putExtra("ViewId", textView.getId());
-//                            startActivityForResult(intent, PIN_REQUEST);
-//                        }
-//                    });
-//                    textView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//                        @Override
-//                        public void onFocusChange(View v, boolean hasFocus) {
-//                            if (hasFocus) {
-//
-//                                Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
-//                                intent.putExtra("ViewId", textView.getId());
-//                                startActivityForResult(intent, PIN_REQUEST);
-//                            }
-//                        }
-//                    });
-//                }
-                textView.setBackground(null);
-                textView.setId(View.generateViewId());
-                textView.setTextSize(COMPLEX_UNIT_SP, 14);
-                textView.setHint(obj.getFields().get(position).getLabel());
-                textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
-                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                EditText editText = new EditText(this);
+                editText.setId(View.generateViewId());
+                editText.setBackground(null);
+                editText.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+                editText.setTextColor(getColor(R.color.itemText));
+                editText.setTypeface(semiBold);
+                editText.setTextSize(COMPLEX_UNIT_SP, 14);
+//                    editText.setHintTextColor(R.color.colorBlack);
+                editText.setHint(field.getLabel());
 
-                relativeLayout.addView(textView, tvParams);
+                ImageView ivMandatory = new ImageView(this);
+                ivMandatory.setId(View.generateViewId());
+                ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                if (field.getRequired().equalsIgnoreCase("true"))
+                    ivMandatory.setVisibility(View.VISIBLE);
+                else
+                    ivMandatory.setVisibility(View.GONE);
 
-                ImageView imageView = new ImageView(this);
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                imageView.setVisibility(View.GONE);
-                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
 
-                tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                tvParams.setMargins(0, 0, 0, convertToDp(24, this));
-                relativeLayout.addView(imageView, tvParams);
-                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
-                    imageView.setVisibility(View.VISIBLE);
+                View view = new View(this);
+                view.setBackgroundColor(getColor(R.color.divider));
+
+                RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                editText.setLayoutParams(relativeParams);
+
+                relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                ivMandatory.setLayoutParams(relativeParams);
+
+                relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                view.setLayoutParams(relativeParams);
+
+                relativeLayout.addView(editText);
+                relativeLayout.addView(ivMandatory);
+                relativeLayout.addView(view);
+
+                allViewInstance.add(editText);
+                llViews.addView(relativeLayout);
+
+                if (field.getLabel() != null && (field.getLabel().contains("PIN") || field.getLabel().contains("Pin"))) {
+                    editText.setInputType(InputType.TYPE_NULL);
+                    editText.setFocusable(false);
+                    editText.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
+                            intent.putExtra("ViewId", editText.getId());
+                            startActivityForResult(intent, PIN_REQUEST);
+                        }
+                    });
+                    editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (hasFocus) {
+
+                                Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
+                                intent.putExtra("ViewId", editText.getId());
+                                startActivityForResult(intent, PIN_REQUEST);
+                            }
+                        }
+                    });
                 }
 
-                View view = new View(context);
-                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                p.addRule(RelativeLayout.BELOW, textView.getId());
-                relativeLayout.addView(view, p);
-
-                allViewInstance.add(textView);
-                llViews.addView(relativeLayout);
-//                hashmap5.put(obj.getFields().get(position).getFieldId(), relativeLayout.getId());
                 if (taskList1 != null) {
                     if (taskList1.getFields().size() > 0)
                         for (SaveField f : taskList1.getFields()) {
 
                             if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
-                                textView.setText(f.getValue());
+                                editText.setText(f.getValue());
                             }
                         }
                 }
+
+
+//                RelativeLayout relativeLayout = new RelativeLayout(this);
+//                relativeLayout.setId(View.generateViewId());
+//
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//                relativeLayout.setLayoutParams(params);
+//
+//                CustomEditText textView = new CustomEditText(this);
+////                if (obj.getFields().get(position).getLabel().contains("PIN")) {
+////                    textView.setInputType(InputType.TYPE_NULL);
+////                    textView.setOnClickListener(new View.OnClickListener() {
+////                        @Override
+////                        public void onClick(View v) {
+////
+////                            Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
+////                            intent.putExtra("ViewId", textView.getId());
+////                            startActivityForResult(intent, PIN_REQUEST);
+////                        }
+////                    });
+////                    textView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+////                        @Override
+////                        public void onFocusChange(View v, boolean hasFocus) {
+////                            if (hasFocus) {
+////
+////                                Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
+////                                intent.putExtra("ViewId", textView.getId());
+////                                startActivityForResult(intent, PIN_REQUEST);
+////                            }
+////                        }
+////                    });
+////                }
+//                textView.setBackground(null);
+//                textView.setId(View.generateViewId());
+//                textView.setTextSize(COMPLEX_UNIT_SP, 14);
+//                textView.setHint(obj.getFields().get(position).getLabel());
+//                textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
+//                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//
+//                relativeLayout.addView(textView, tvParams);
+//
+//                ImageView imageView = new ImageView(this);
+//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                imageView.setVisibility(View.GONE);
+//                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+//
+//                tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                tvParams.setMargins(0, 0, 0, convertToDp(24, this));
+//                relativeLayout.addView(imageView, tvParams);
+//                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
+//                    imageView.setVisibility(View.VISIBLE);
+//                }
+//
+//                View view = new View(context);
+//                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                p.addRule(RelativeLayout.BELOW, textView.getId());
+//                relativeLayout.addView(view, p);
+//
+//                allViewInstance.add(textView);
+//                llViews.addView(relativeLayout);
+////                hashmap5.put(obj.getFields().get(position).getFieldId(), relativeLayout.getId());
+//                if (taskList1 != null) {
+//                    if (taskList1.getFields().size() > 0)
+//                        for (SaveField f : taskList1.getFields()) {
+//
+//                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
+//                                textView.setText(f.getValue());
+//                            }
+//                        }
+//                }
 
 
             } else if (obj.getFields().get(position).getType().equalsIgnoreCase("number")) {
@@ -2393,33 +2508,136 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //
 //                llViews.addView(view);
 
+//                Field field = obj.getFields().get(position);
+//
+//                RelativeLayout relativeLayout = new RelativeLayout(this);
+//                relativeLayout.setId(View.generateViewId());
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//                relativeLayout.setLayoutParams(params);
+//
+//                CustomEditText editText = new CustomEditText(this);
+//                editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER);
+//                editText.setId(View.generateViewId());
+//                editText.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
+//                editText.setBackground(null);
+//                editText.setHint(field.getLabel());
+//                editText.setTextSize(COMPLEX_UNIT_SP, 14);
+//                RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                params1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//                if (taskList1 != null) {
+//                    if (taskList1.getFields().size() > 0)
+//                        for (SaveField f : taskList1.getFields()) {
+//
+//                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
+//                                editText.setText(f.getValue());
+//                            }
+//                        }
+//                }
+//                if (obj.getFields().get(position).getLabel().contains("PIN") || obj.getFields().get(position).getLabel().contains("Pin")) {
+//                    editText.setInputType(InputType.TYPE_NULL);
+//                    editText.setFocusable(false);
+//                    editText.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//
+//                            Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
+//                            intent.putExtra("ViewId", editText.getId());
+//                            startActivityForResult(intent, PIN_REQUEST);
+//                        }
+//                    });
+//                    editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                        @Override
+//                        public void onFocusChange(View v, boolean hasFocus) {
+//                            if (hasFocus) {
+//
+//                                Intent intent = new Intent(FormSection.this, PINVerificationActivity.class);
+//                                intent.putExtra("ViewId", editText.getId());
+//                                startActivityForResult(intent, PIN_REQUEST);
+//                            }
+//                        }
+//                    });
+//                }
+//
+//                ImageView ivStar = new ImageView(this);
+//                ivStar.setId(View.generateViewId());
+//                ivStar.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                ivStar.setVisibility(View.GONE);
+//                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+//                tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                tvParams.setMargins(0, 0, 0, convertToDp(16, this));
+////                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());
+//                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
+//                    ivStar.setVisibility(View.VISIBLE);
+//                }
+//
+//                View view = new View(context);
+//                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                p.addRule(RelativeLayout.BELOW, editText.getId());
+//
+//
+//                relativeLayout.addView(editText, params1);
+//                relativeLayout.addView(ivStar, tvParams);
+//                relativeLayout.addView(view, p);
+//                llViews.addView(relativeLayout);
+//
+//                allViewInstance.add(editText);
+//                hashmap5.put(obj.getFields().get(position).getFieldId(), relativeLayout.getId());
                 Field field = obj.getFields().get(position);
+
+                LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
 
                 RelativeLayout relativeLayout = new RelativeLayout(this);
                 relativeLayout.setId(View.generateViewId());
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
-                relativeLayout.setLayoutParams(params);
+                relativeLayout.setLayoutParams(linearParams);
 
-                CustomEditText editText = new CustomEditText(this);
-                editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER);
+                EditText editText = new EditText(this);
                 editText.setId(View.generateViewId());
-                editText.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
                 editText.setBackground(null);
-                editText.setHint(field.getLabel());
+                editText.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+                editText.setTextColor(getColor(R.color.itemText));
+                editText.setTypeface(semiBold);
                 editText.setTextSize(COMPLEX_UNIT_SP, 14);
-                RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                if (taskList1 != null) {
-                    if (taskList1.getFields().size() > 0)
-                        for (SaveField f : taskList1.getFields()) {
+//                    editText.setHintTextColor(R.color.hintText);
+                editText.setHint(field.getLabel());
+                editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
 
-                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
-                                editText.setText(f.getValue());
-                            }
-                        }
-                }
-                if (obj.getFields().get(position).getLabel().contains("PIN") || obj.getFields().get(position).getLabel().contains("Pin")) {
+                ImageView ivMandatory = new ImageView(this);
+                ivMandatory.setId(View.generateViewId());
+                ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                if (field.getRequired().equalsIgnoreCase("true"))
+                    ivMandatory.setVisibility(View.VISIBLE);
+                else
+                    ivMandatory.setVisibility(View.GONE);
+
+                View view = new View(this);
+                view.setBackgroundColor(getColor(R.color.divider));
+
+                RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                editText.setLayoutParams(relativeParams);
+
+                relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                ivMandatory.setLayoutParams(relativeParams);
+
+                relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                view.setLayoutParams(relativeParams);
+
+                relativeLayout.addView(editText);
+                relativeLayout.addView(ivMandatory);
+                relativeLayout.addView(view);
+
+                llViews.addView(relativeLayout);
+                allViewInstance.add(editText);
+
+                if (field.getValue() != null)
+                    editText.setText(field.getValue());
+
+                if (field.getLabel() != null && (field.getLabel().contains("PIN") || field.getLabel().contains("Pin"))) {
                     editText.setInputType(InputType.TYPE_NULL);
                     editText.setFocusable(false);
                     editText.setOnClickListener(new View.OnClickListener() {
@@ -2444,32 +2662,14 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     });
                 }
 
-                ImageView ivStar = new ImageView(this);
-                ivStar.setId(View.generateViewId());
-                ivStar.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                ivStar.setVisibility(View.GONE);
-                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
-                tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                tvParams.setMargins(0, 0, 0, convertToDp(16, this));
-//                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());
-                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
-                    ivStar.setVisibility(View.VISIBLE);
+                if (taskList1 != null) {
+                    if (taskList1.getFields().size() > 0)
+                        for (SaveField f : taskList1.getFields()) {
+                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
+                                editText.setText(f.getValue());
+                            }
+                        }
                 }
-
-                View view = new View(context);
-                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                p.addRule(RelativeLayout.BELOW, editText.getId());
-
-
-                relativeLayout.addView(editText, params1);
-                relativeLayout.addView(ivStar, tvParams);
-                relativeLayout.addView(view, p);
-                llViews.addView(relativeLayout);
-
-                allViewInstance.add(editText);
-//                hashmap5.put(obj.getFields().get(position).getFieldId(), relativeLayout.getId());
-
 
             } else if (obj.getFields().get(position).getType().equals("checkbox-group")) {
 
@@ -2573,12 +2773,13 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 field2checkList.put(obj.getFields().get(position).getFieldId(), list);
                 RelativeLayout relativeLayout = new RelativeLayout(this);
                 TextView tvCheckBoxTitle = new CustomTextView(context);
-                tvCheckBoxTitle.setText(obj.getFields().get(position).getLabel());
+//                tvCheckBoxTitle.setText(obj.getFields().get(position).getLabel());
                 LinearLayout.LayoutParams perams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+                perams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(4, this));
                 relativeLayout.setLayoutParams(perams);
                 RelativeLayout.LayoutParams perams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
 //                perams.setMargins(20, 20, 20, 20);
-                perams1.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+//                perams1.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
                 tvCheckBoxTitle.setId(View.generateViewId());
 //                if ((obj.getFields().get(position - 1).getType().equalsIgnoreCase("header") && obj.getFields().get(position + 1).getType().equalsIgnoreCase("header")) || (obj.getFields().get(position - 1).getType().equalsIgnoreCase("header") && obj.getFields().get(position + 1).getType().equalsIgnoreCase("textarea"))) {
 //                    if (obj.getTitle().equalsIgnoreCase("Equipment checkList")) {
@@ -2588,10 +2789,14 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                    }
 //
 //                } else {
-                tvCheckBoxTitle.setTextColor(Color.parseColor("#616060"));
-                tvCheckBoxTitle.setTextSize(COMPLEX_UNIT_SP, 14);
+//                tvCheckBoxTitle.setTextColor(Color.parseColor("#616060"));
+//                tvCheckBoxTitle.setTextSize(COMPLEX_UNIT_SP, 14);
 
+                tvCheckBoxTitle.setId(View.generateViewId());
                 tvCheckBoxTitle.setText(obj.getFields().get(position).getLabel());
+                tvCheckBoxTitle.setTextColor(getColor(R.color.itemText));
+                tvCheckBoxTitle.setTypeface(semiBold);
+                tvCheckBoxTitle.setTextSize(COMPLEX_UNIT_SP, 16);
 //                }
 //                llViews.addView(tvCheckBoxTitle);
                 RelativeLayout.LayoutParams startparams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
@@ -2625,10 +2830,10 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 tvParams.addRule(RelativeLayout.RIGHT_OF, tvCheckBoxTitle.getId());
 //                tvParams.setMargins(16, 0, 0, 0);
 //                tvParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                tvParams.setMargins(0, convertToDp(8, this), 0, convertToDp(8, this));
+                tvParams.setMargins(convertToDp(8, this), convertToDp(2, this), 0, 0);
 
                 selectedTV.setLayoutParams(tvParams);
-                selectedTV.setTextColor(Color.parseColor("#79C730"));
+                selectedTV.setTextColor(getColor(R.color.colorOrange));
                 selectedTV.setText(numSelected + "/" + list.size()); /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 relativeLayout.addView(selectedTV);
 //                relativeLayout.addView(star, layoutParams);
@@ -2672,7 +2877,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 rightArrow.setPadding(0, 0, convertToDp(16, this), 0);
 
                 LinearLayout linearLayout = new LinearLayout(this);
-                linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+//                linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
                 params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 params.addRule(RelativeLayout.RIGHT_OF, leftArrow.getId());
                 params.addRule(RelativeLayout.LEFT_OF, rightArrow.getId());
@@ -2818,100 +3023,191 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                view.setLayoutParams(p);
 //
 //                llViews.addView(view);
-                RelativeLayout relativeLayout = new RelativeLayout(this);
-                TextView tvRadioButtonTitle = new CustomTextView(context);
-                tvRadioButtonTitle.setText(obj.getFields().get(position).getLabel());
-
-                LinearLayout.LayoutParams perams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                perams1.setMargins(convertToDp(16, this), convertToDp(16, this), convertToDp(16, this), convertToDp(16, this));
-
-                RelativeLayout.LayoutParams perams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);// Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                perams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-//                tvRadioButtonTitle.setTextSize(12);
-
-//                perams.setMargins(convertToDp(16),convertToDp(4), convertToDp(16), convertToDp(4));
-                tvRadioButtonTitle.setLayoutParams(perams);
-                relativeLayout.setLayoutParams(perams1);
-                tvRadioButtonTitle.setLayoutParams(perams);
-//                tvRadioButtonTitle.setTextSize(14);
-//                tvRadioButtonTitle.setTypeface(tvRadioButtonTitle.getTypeface(), Typeface.NORMAL);
-                tvRadioButtonTitle.setTextColor(Color.parseColor("#616060"));
-                tvRadioButtonTitle.setText(obj.getFields().get(position).getLabel());
-//                llViews.addView(tvRadioButtonTitle);
-
-                LinearLayout.LayoutParams startparams = new LinearLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-//                perams.setMargins(4, 10, 4, 4);
-
-                ImageView star = new ImageView(this);
-                star.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                star.setLayoutParams(startparams);
-//                star.setVisibility(View.VISIBLE);
-                star.setVisibility(View.GONE);
-                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
-                    star.setVisibility(View.VISIBLE);
-//                    tvRadioButtonTitle.setTextColor(Color.RED);
-
-                }
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(30, 30); //or MATCH_PARENT
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-
-                Switch toggle = new Switch(this);
-                toggle.setId(View.generateViewId());
-                int[][] states = new int[][]{
-                        new int[]{-android.R.attr.state_checked},
-                        new int[]{android.R.attr.state_checked},
-                };
-
-                int[] thumbColors = new int[]{
-                        Color.GRAY,
-                        Color.parseColor("#79C730"),
-                };
-
-                int[] trackColors = new int[]{
-                        Color.GRAY,
-                        Color.parseColor("#79C730"),
-                };
-
-
-                DrawableCompat.setTintList(DrawableCompat.wrap(toggle.getThumbDrawable()), new ColorStateList(states, thumbColors));
-                DrawableCompat.setTintList(DrawableCompat.wrap(toggle.getTrackDrawable()), new ColorStateList(states, trackColors));
-                RelativeLayout.LayoutParams layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT); //or MATCH_PARENT
-                layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                layoutParams1.addRule(RelativeLayout.CENTER_IN_PARENT);
-//                layoutParams1.setMarginEnd(convertToDp(4));
-                relativeLayout.addView(tvRadioButtonTitle);
-                relativeLayout.addView(toggle, layoutParams1);
-//                relativeLayout.addView(star, layoutParams);
-                llViews.addView(relativeLayout);
-
-
-//                RadioGroup rg = new RadioGroup(context);
-//                rg.setTag(obj.getFields().get(position).getFieldId() + "");
+//                RelativeLayout relativeLayout = new RelativeLayout(this);
+//                TextView tvRadioButtonTitle = new CustomTextView(context);
+//                tvRadioButtonTitle.setText(obj.getFields().get(position).getLabel());
 //
-//                for (int i = 0; i < obj.getFields().get(position).getOptions().size(); i++) {
-//                    RadioButton rb = new RadioButton(context);
-//                    rb.setText(obj.getFields().get(position).getOptions().get(i).getLabel());
-//                    Typeface font = Typeface.createFromAsset(getAssets(), "ProductSans-Medium.ttf");
-//                    rb.setTypeface(font);
-//                    rb.setTextSize(14);
-//                    rb.setTextColor(Color.parseColor("#616060"));
-//                    rg.addView(rb);
+//                LinearLayout.LayoutParams perams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                perams1.setMargins(convertToDp(16, this), convertToDp(16, this), convertToDp(16, this), convertToDp(16, this));
 //
-//                    rb.setTag(obj.getFields().get(position).getFieldId() + "," + obj.getFields().get(position).getOptions().get(i).getId() + "," + obj.getFields().get(position).getOptions().get(i).getLabel());
+//                RelativeLayout.LayoutParams perams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);// Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                perams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+////                tvRadioButtonTitle.setTextSize(12);
+//
+////                perams.setMargins(convertToDp(16),convertToDp(4), convertToDp(16), convertToDp(4));
+//                tvRadioButtonTitle.setLayoutParams(perams);
+//                relativeLayout.setLayoutParams(perams1);
+//                tvRadioButtonTitle.setLayoutParams(perams);
+////                tvRadioButtonTitle.setTextSize(14);
+////                tvRadioButtonTitle.setTypeface(tvRadioButtonTitle.getTypeface(), Typeface.NORMAL);
+//                tvRadioButtonTitle.setTextColor(Color.parseColor("#616060"));
+//                tvRadioButtonTitle.setText(obj.getFields().get(position).getLabel());
+////                llViews.addView(tvRadioButtonTitle);
+//
+//                LinearLayout.LayoutParams startparams = new LinearLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+////                perams.setMargins(4, 10, 4, 4);
+//
+//                ImageView star = new ImageView(this);
+//                star.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                star.setLayoutParams(startparams);
+////                star.setVisibility(View.VISIBLE);
+//                star.setVisibility(View.GONE);
+//                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
+//                    star.setVisibility(View.VISIBLE);
+////                    tvRadioButtonTitle.setTextColor(Color.RED);
+//
+//                }
+//                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(30, 30); //or MATCH_PARENT
+//                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+//                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//
+//                Switch toggle = new Switch(this);
+//                toggle.setId(View.generateViewId());
+//                int[][] states = new int[][]{
+//                        new int[]{-android.R.attr.state_checked},
+//                        new int[]{android.R.attr.state_checked},
+//                };
+//
+//                int[] thumbColors = new int[]{
+//                        Color.GRAY,
+//                        Color.parseColor("#79C730"),
+//                };
+//
+//                int[] trackColors = new int[]{
+//                        Color.GRAY,
+//                        Color.parseColor("#79C730"),
+//                };
+//
+//
+//                DrawableCompat.setTintList(DrawableCompat.wrap(toggle.getThumbDrawable()), new ColorStateList(states, thumbColors));
+//                DrawableCompat.setTintList(DrawableCompat.wrap(toggle.getTrackDrawable()), new ColorStateList(states, trackColors));
+//                RelativeLayout.LayoutParams layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT); //or MATCH_PARENT
+//                layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                layoutParams1.addRule(RelativeLayout.CENTER_IN_PARENT);
+////                layoutParams1.setMarginEnd(convertToDp(4));
+//                relativeLayout.addView(tvRadioButtonTitle);
+//                relativeLayout.addView(toggle, layoutParams1);
+////                relativeLayout.addView(star, layoutParams);
+//                llViews.addView(relativeLayout);
+//
+//
+////                RadioGroup rg = new RadioGroup(context);
+////                rg.setTag(obj.getFields().get(position).getFieldId() + "");
+////
+////                for (int i = 0; i < obj.getFields().get(position).getOptions().size(); i++) {
+////                    RadioButton rb = new RadioButton(context);
+////                    rb.setText(obj.getFields().get(position).getOptions().get(i).getLabel());
+////                    Typeface font = Typeface.createFromAsset(getAssets(), "ProductSans-Medium.ttf");
+////                    rb.setTypeface(font);
+////                    rb.setTextSize(14);
+////                    rb.setTextColor(Color.parseColor("#616060"));
+////                    rg.addView(rb);
+////
+////                    rb.setTag(obj.getFields().get(position).getFieldId() + "," + obj.getFields().get(position).getOptions().get(i).getId() + "," + obj.getFields().get(position).getOptions().get(i).getLabel());
+////                }
+////
+////                rg.setLayoutParams(perams);
+////
+////                llViews.addView(rg);
+////                allViewInstance.add(rg);
+//                List<Option> options = obj.getFields().get(position).getOptions();
+//                toggleHash.put(toggle.getId(), options);
+//                View view = new View(context);
+//                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                p.setMargins(0, 16, 0, 16);
+//                view.setLayoutParams(p);
+//                List<Integer> list = new ArrayList<>();
+//                for (int i = position; i < obj.getFields().size() - 1; i++) {
+//                    if (obj.getFields().get(i + 1).getType().equalsIgnoreCase("number")) {
+//                        list.add(obj.getFields().get(i + 1).getFieldId());
+//                    } else if (obj.getTitle().equalsIgnoreCase("Adverse Incident / Near Miss Form") && obj.getFields().get(i + 1).getType().equalsIgnoreCase("text")) {
+//                        list.add(obj.getFields().get(i + 1).getFieldId());
+//                        break;
+//                    } else
+//                        break;
+//
 //                }
 //
-//                rg.setLayoutParams(perams);
+//                toggleHash2.put(toggle.getId(), list);
+////                llViews.addView(view);
 //
-//                llViews.addView(rg);
-//                allViewInstance.add(rg);
-                List<Option> options = obj.getFields().get(position).getOptions();
-                toggleHash.put(toggle.getId(), options);
-                View view = new View(context);
-                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                p.setMargins(0, 16, 0, 16);
-                view.setLayoutParams(p);
+//                int finalPosition = position;
+//                toggle.setChecked(true);
+//                if (taskList1 != null) {
+//                    Option savedOption = taskList1.getFields().get(position).getOptions().get(0);
+//                    if (savedOption.getValue().equalsIgnoreCase("no"))
+//                        toggle.setChecked(false);
+//                }
+//                hashmap5.put(toggle.getId(), obj.getFields().get(finalPosition).getFieldId());
+//                toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                    @Override
+//                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                        if (isChecked) {
+//                            for (int i : toggleHash2.get(buttonView.getId())) {
+//                                findViewById(hashmap5.get(i)).setVisibility(View.VISIBLE);
+//                            }
+//
+//                        } else {
+//                            for (int i : toggleHash2.get(buttonView.getId())) {
+//                                findViewById(hashmap5.get(i)).setVisibility(View.GONE);
+//                            }
+//                        }
+//                    }
+//
+//                });
+//                allViewInstance.add(toggle);
+
+                Field field = obj.getFields().get(position);
+
+                RelativeLayout relativeLayout = new RelativeLayout(this);
+                relativeLayout.setId(View.generateViewId());
+
+                LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+
+                TextView textView = new TextView(this);
+                textView.setId(View.generateViewId());
+                textView.setTypeface(semiBold);
+                textView.setTextSize(COMPLEX_UNIT_SP, 16);
+                textView.setTextColor(getColor(R.color.itemText));
+                textView.setText(field.getLabel());
+
+                ImageView ivMandatory = new ImageView(this);
+                ivMandatory.setId(View.generateViewId());
+                ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                if (field.getRequired().equalsIgnoreCase("true"))
+                    ivMandatory.setVisibility(View.VISIBLE);
+                else
+                    ivMandatory.setVisibility(View.GONE);
+
+                List<Option> options = field.getOptions();
+                AppCompatSpinner spinner = new AppCompatSpinner(this);
+                spinner.setId(View.generateViewId());
+                spinner.setPadding(convertToDp(8, this), 0, convertToDp(8, this), 0);
+                SpinnerArrayAdapter adapter = new SpinnerArrayAdapter(context, R.layout.custom_spinner_item, options);
+                spinner.setAdapter(adapter);
+
+                RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                textView.setLayoutParams(relativeParams);
+
+                relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                ivMandatory.setLayoutParams(relativeParams);
+
+                relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                relativeParams.topMargin = convertToDp(8, this);
+                relativeParams.addRule(RelativeLayout.BELOW, textView.getId());
+                spinner.setLayoutParams(relativeParams);
+
+                relativeLayout.setLayoutParams(linearParams);
+                relativeLayout.addView(textView);
+                relativeLayout.addView(ivMandatory);
+                relativeLayout.addView(spinner);
+                llViews.addView(relativeLayout);
+                allViewInstance.add(spinner);
+
                 List<Integer> list = new ArrayList<>();
                 for (int i = position; i < obj.getFields().size() - 1; i++) {
                     if (obj.getFields().get(i + 1).getType().equalsIgnoreCase("number")) {
@@ -2924,34 +3220,53 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                 }
 
-                toggleHash2.put(toggle.getId(), list);
-//                llViews.addView(view);
+                toggleHash2.put(spinner.getId(), list);
+                hashmap5.put(spinner.getId(), field.getFieldId());
 
-                int finalPosition = position;
-                toggle.setChecked(true);
-                if (taskList1 != null) {
-                    Option savedOption = taskList1.getFields().get(position).getOptions().get(0);
-                    if (savedOption.getValue().equalsIgnoreCase("no"))
-                        toggle.setChecked(false);
-                }
-                hashmap5.put(toggle.getId(), obj.getFields().get(finalPosition).getFieldId());
-                toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked) {
-                            for (int i : toggleHash2.get(buttonView.getId())) {
-                                findViewById(hashmap5.get(i)).setVisibility(View.VISIBLE);
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        TextView textView = view.findViewById(R.id.tvEventName);
+                        String text = textView.getText().toString();
+                        for (int j : toggleHash2.get(adapterView.getId()))
+                            if (text.equalsIgnoreCase("yes")) {
+                                RelativeLayout relativeLayout1 = findViewById(hashmap5.get(j));
+                                relativeLayout1.setVisibility(View.VISIBLE);
+                                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) relativeLayout1.getLayoutParams();
+                                layoutParams.setMargins(convertToDp(36, context), convertToDp(0, context), convertToDp(36, context), convertToDp(8, context));
+                                RelativeLayout relativeLayout2 = (RelativeLayout) adapterView.getParent();
+                                LinearLayout.LayoutParams layoutParams2 = (LinearLayout.LayoutParams) relativeLayout1.getLayoutParams();
+                                layoutParams.bottomMargin = convertToDp(0, FormSection.this);
+                            } else {
+                                findViewById(hashmap5.get(j)).setVisibility(View.GONE);
+                                RelativeLayout relativeLayout1 = (RelativeLayout) adapterView.getParent();
+                                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) relativeLayout1.getLayoutParams();
+                                layoutParams.bottomMargin = convertToDp(8, FormSection.this);
+                                relativeLayout.setLayoutParams(layoutParams);
                             }
-
-                        } else {
-                            for (int i : toggleHash2.get(buttonView.getId())) {
-                                findViewById(hashmap5.get(i)).setVisibility(View.GONE);
-                            }
-                        }
                     }
 
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
                 });
-                allViewInstance.add(toggle);
+                for (int i = 0; i < obj.getFields().get(position).getOptions().size(); i++) {
+
+                    if (taskList1 != null) {
+                        if (taskList1.getFields().size() > 0)
+                            for (SaveField f : taskList1.getFields()) {
+                                if (f.getOptions() != null && f.getOptions().size() > 0)
+                                    for (Option o : f.getOptions()) {
+                                        if (obj.getFields().get(position).getOptions().get(i).getOptionId().equals(o.getOptionId())) {
+                                            Log.d("WOW", "Value matcheeeeeeeeeeeeeed");
+                                            spinner.setSelection(i);
+                                        }
+                                    }
+                            }
+                    }
+
+                }
             } else if (obj.getFields().get(position).getType().equals("textarea")) {
 
 //                RelativeLayout relativeLayout = new RelativeLayout(this);
@@ -3021,61 +3336,121 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                allViewInstance.add(etTextArea);
 //
 //                llViews.addView(view);
+//                RelativeLayout relativeLayout = new RelativeLayout(this);
+//                relativeLayout.setId(View.generateViewId());
+//
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//                relativeLayout.setLayoutParams(params);
+//
+//                EditText textView = new CustomEditText(this);
+//                if (taskList1 != null) {
+//                    if (taskList1.getFields().size() > 0)
+//                        for (SaveField f : taskList1.getFields()) {
+//
+//                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
+//                                textView.setText(f.getValue());
+//                            }
+//                        }
+//                }
+//                textView.setBackground(null);
+//                textView.setId(View.generateViewId());
+//                textView.setTextSize(COMPLEX_UNIT_SP, 14);
+//                textView.setHint(obj.getFields().get(position).getLabel());
+//                textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
+//                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//                relativeLayout.addView(textView, tvParams);
+//
+//
+//                removeView(textView);
+//                relativeLayout.addView(textView, tvParams);
+//
+//                ImageView imageView = new ImageView(this);
+//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                imageView.setVisibility(View.GONE);
+//                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+//                tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                tvParams.setMargins(0, 0, 0, convertToDp(16, this));
+////                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
+//                relativeLayout.addView(imageView, tvParams);
+//                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
+//                    imageView.setVisibility(View.VISIBLE);
+//                }
+//
+//                View view = new View(context);
+//                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                p.addRule(RelativeLayout.BELOW, textView.getId());
+//                relativeLayout.addView(view, p);
+//
+//                allViewInstance.add(textView);
+//                llViews.addView(relativeLayout);
+
+                Field field = obj.getFields().get(position);
+
+                LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+
                 RelativeLayout relativeLayout = new RelativeLayout(this);
                 relativeLayout.setId(View.generateViewId());
+                relativeLayout.setLayoutParams(linearParams);
 
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
-                relativeLayout.setLayoutParams(params);
+                EditText editText = new EditText(this);
+                editText.setId(View.generateViewId());
+                editText.setBackground(null);
+                editText.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+                editText.setTextColor(getColor(R.color.itemText));
+                editText.setTypeface(semiBold);
+                editText.setTextSize(COMPLEX_UNIT_SP, 14);
+//                    editText.setHintTextColor(R.color.hintText);
+                editText.setHint(field.getLabel());
 
-                EditText textView = new CustomEditText(this);
+                ImageView ivMandatory = new ImageView(this);
+                ivMandatory.setId(View.generateViewId());
+                ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                if (field.getRequired().equalsIgnoreCase("true"))
+                    ivMandatory.setVisibility(View.VISIBLE);
+                else
+                    ivMandatory.setVisibility(View.GONE);
+
+                View view = new View(this);
+                view.setBackgroundColor(getColor(R.color.divider));
+
+                RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                editText.setLayoutParams(relativeParams);
+
+                relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                ivMandatory.setLayoutParams(relativeParams);
+
+                relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                view.setLayoutParams(relativeParams);
+
+                relativeLayout.addView(editText);
+                relativeLayout.addView(ivMandatory);
+                relativeLayout.addView(view);
+
+                allViewInstance.add(editText);
+                llViews.addView(relativeLayout);
+
                 if (taskList1 != null) {
                     if (taskList1.getFields().size() > 0)
                         for (SaveField f : taskList1.getFields()) {
 
                             if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
-                                textView.setText(f.getValue());
+                                editText.setText(f.getValue());
                             }
                         }
                 }
-                textView.setBackground(null);
-                textView.setId(View.generateViewId());
-                textView.setTextSize(COMPLEX_UNIT_SP, 14);
-                textView.setHint(obj.getFields().get(position).getLabel());
-                textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
-                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                relativeLayout.addView(textView, tvParams);
 
-
-                removeView(textView);
-                relativeLayout.addView(textView, tvParams);
-
-                ImageView imageView = new ImageView(this);
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                imageView.setVisibility(View.GONE);
-                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
-                tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                tvParams.setMargins(0, 0, 0, convertToDp(16, this));
-//                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
-                relativeLayout.addView(imageView, tvParams);
-                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
-                    imageView.setVisibility(View.VISIBLE);
-                }
-
-                View view = new View(context);
-                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                p.addRule(RelativeLayout.BELOW, textView.getId());
-                relativeLayout.addView(view, p);
-
-                allViewInstance.add(textView);
-                llViews.addView(relativeLayout);
             } else if (obj.getFields().get(position).getType().equals("select")) {
 
                 RelativeLayout relativeLayout = new RelativeLayout(this);
                 LinearLayout.LayoutParams perams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                perams.setMargins(convertToDp(16, this), 4, convertToDp(16, this), 4);
+                perams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(4, this));
                 relativeLayout.setLayoutParams(perams);
 
                 CustomTextView tvRadioButtonTitle = new CustomTextView(context);
@@ -3087,12 +3462,14 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                tvRadioButtonTitle.setTextColor(Color.parseColor("#616060"));
 
 
-                tvRadioButtonTitle.setLayoutParams(perams);
-                tvRadioButtonTitle.setTextSize(14);
-                tvRadioButtonTitle.setTypeface(tvRadioButtonTitle.getTypeface(), Typeface.NORMAL);
+//                tvRadioButtonTitle.setLayoutParams(perams);
+//                tvRadioButtonTitle.setTextSize(14);
+//                tvRadioButtonTitle.setTypeface(tvRadioButtonTitle.getTypeface(), Typeface.NORMAL);
                 tvRadioButtonTitle.setText(obj.getFields().get(position).getLabel());
-                tvRadioButtonTitle.setTextColor(Color.parseColor("#616060"));
-
+//                tvRadioButtonTitle.setTextColor(Color.parseColor("#616060"));
+                tvRadioButtonTitle.setTextColor(getColor(R.color.itemText));
+                tvRadioButtonTitle.setTypeface(semiBold);
+                tvRadioButtonTitle.setTextSize(COMPLEX_UNIT_SP, 16);
 //                LinearLayout.LayoutParams startparams = new LinearLayout.LayoutParams(30, 30);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
 //                perams.setMargins(4, 10, 4, 4);
                 ImageView star = new ImageView(this);
@@ -3110,15 +3487,16 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                 layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                layoutParams.setMargins(0, 8, 0, 8);
+//                layoutParams.setMargins(0, 8, 0, 8);
                 relativeLayout.addView(tvRadioButtonTitle, layoutParams);
                 llViews.addView(relativeLayout);
 
                 perams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                perams.setMargins(convertToDp(16, this), 4, convertToDp(16, this), 4);
+                perams.setMargins(convertToDp(18, this), convertToDp(2, this), convertToDp(18, this), convertToDp(0, this));
 
                 AppCompatSpinner spinner = new AppCompatSpinner(context);
                 spinner.setLayoutParams(perams);
+                spinner.setPadding(convertToDp(8, this), 0, convertToDp(8, this), 0);
                 SpinnerArrayAdapter adapter = new SpinnerArrayAdapter(context,
                         R.layout.custom_spinner_item, obj.getFields().get(position).getOptions());
                 spinner.setAdapter(adapter);
@@ -3128,13 +3506,13 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     if (taskList1 != null) {
                         if (taskList1.getFields().size() > 0)
                             for (SaveField f : taskList1.getFields()) {
-
-                                for (Option o : f.getOptions()) {
-                                    if (obj.getFields().get(position).getOptions().get(i).getOptionId().equals(o.getOptionId())) {
-                                        Log.d("WOW", "Value matcheeeeeeeeeeeeeed");
-                                        spinner.setSelection(i);
+                                if (f.getOptions() != null && f.getOptions().size() > 0)
+                                    for (Option o : f.getOptions()) {
+                                        if (obj.getFields().get(position).getOptions().get(i).getOptionId().equals(o.getOptionId())) {
+                                            Log.d("WOW", "Value matcheeeeeeeeeeeeeed");
+                                            spinner.setSelection(i);
+                                        }
                                     }
-                                }
                             }
                     }
 
@@ -3155,9 +3533,9 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 allViewInstance.add(spinner);
 
                 View view = new View(context);
-                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+                view.setBackgroundColor(getResources().getColor(R.color.divider));
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                p.setMargins(convertToDp(16, this), 16, convertToDp(16, this), 16);
+                p.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
                 view.setLayoutParams(p);
 
                 llViews.addView(view);
@@ -3238,56 +3616,143 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                view.setLayoutParams(p);
 //
 //                llViews.addView(view);
+//                RelativeLayout relativeLayout = new RelativeLayout(this);
+//                relativeLayout.setId(View.generateViewId());
+//
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//                relativeLayout.setLayoutParams(params);
+//
+//                CustomTextView textView = new CustomTextView(this);
+//                if (taskList1 != null) {
+//                    if (taskList1.getFields().size() > 0)
+//                        for (SaveField f : taskList1.getFields()) {
+//
+//                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
+//                                textView.setText(f.getValue());
+//                            }
+//                        }
+//                }
+//                textView.setBackground(null);
+//                textView.setId(View.generateViewId());
+//                textView.setTextSize(COMPLEX_UNIT_SP, 14);
+//                textView.setHint(obj.getFields().get(position).getLabel());
+//                textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
+//                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//                relativeLayout.addView(textView, tvParams);
+//
+//
+//                removeView(textView);
+//                relativeLayout.addView(textView, tvParams);
+//
+//                ImageView imageView = new ImageView(this);
+//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                imageView.setVisibility(View.GONE);
+//                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+//                tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                tvParams.setMargins(0, 0, 0, convertToDp(16, this));
+////                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
+//                relativeLayout.addView(imageView, tvParams);
+//                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
+//                    imageView.setVisibility(View.VISIBLE);
+//                }
+//
+//                View view = new View(context);
+//                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                p.addRule(RelativeLayout.BELOW, textView.getId());
+//                relativeLayout.addView(view, p);
+//
+//                allViewInstance.add(textView);
+//                llViews.addView(relativeLayout);
+//                textView.setOnClickListener(new View.OnClickListener() {
+//
+//                    @Override
+//                    public void onClick(View v) {
+//                        // TODO Auto-generated method stub
+//                        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+//                            return;
+//                        }
+//                        mLastClickTime = SystemClock.elapsedRealtime();
+//                        Calendar mcurrentTime = Calendar.getInstance();
+//                        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+//                        int minute = mcurrentTime.get(Calendar.MINUTE);
+//                        TimePickerDialog mTimePicker;
+//                        mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+//                            @Override
+//                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+////                                etText.setText("  " + selectedHour + " : " + selectedMinute);
+//
+//                                if (selectedHour < 10 && selectedMinute < 10) {
+//                                    textView.setText("  " + "0" + selectedHour + " : " + "0" + selectedMinute);
+//                                } else if (selectedHour < 10) {
+//                                    textView.setText("  " + "0" + selectedHour + " : " + selectedMinute);
+//                                } else if (selectedMinute < 10) {
+//                                    textView.setText("  " + selectedHour + " : " + "0" + selectedMinute);
+//                                } else {
+//                                    textView.setText("  " + selectedHour + " : " + selectedMinute);
+//                                }
+//
+//
+//                            }
+//                        }, hour, minute, true);//Yes 24 hour time
+//                        mTimePicker.setTitle("Select Time");
+//                        mTimePicker.show();
+//
+//                    }
+//                });
+
+
+                Field field = obj.getFields().get(position);
+
+                LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+
                 RelativeLayout relativeLayout = new RelativeLayout(this);
                 relativeLayout.setId(View.generateViewId());
+                relativeLayout.setLayoutParams(linearParams);
 
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
-                relativeLayout.setLayoutParams(params);
-
-                CustomTextView textView = new CustomTextView(this);
-                if (taskList1 != null) {
-                    if (taskList1.getFields().size() > 0)
-                        for (SaveField f : taskList1.getFields()) {
-
-                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
-                                textView.setText(f.getValue());
-                            }
-                        }
-                }
-                textView.setBackground(null);
+                TextView textView = new TextView(this);
                 textView.setId(View.generateViewId());
+                textView.setBackground(null);
+                textView.setPadding(convertToDp(0, this), convertToDp(8, this), convertToDp(0, this), convertToDp(8, this));
+                textView.setTextColor(getColor(R.color.itemText));
+                textView.setTypeface(semiBold);
                 textView.setTextSize(COMPLEX_UNIT_SP, 14);
-                textView.setHint(obj.getFields().get(position).getLabel());
-                textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
-                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                relativeLayout.addView(textView, tvParams);
+//                    editText.setHintTextColor(R.color.hintText);
+                textView.setHint(field.getLabel());
 
+                ImageView ivMandatory = new ImageView(this);
+                ivMandatory.setId(View.generateViewId());
+                ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                if (field.getRequired().equalsIgnoreCase("true"))
+                    ivMandatory.setVisibility(View.VISIBLE);
+                else
+                    ivMandatory.setVisibility(View.GONE);
 
-                removeView(textView);
-                relativeLayout.addView(textView, tvParams);
+                View view = new View(this);
+                view.setBackgroundColor(getColor(R.color.divider));
 
-                ImageView imageView = new ImageView(this);
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                imageView.setVisibility(View.GONE);
-                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
-                tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                tvParams.setMargins(0, 0, 0, convertToDp(16, this));
-//                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
-                relativeLayout.addView(imageView, tvParams);
-                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
-                    imageView.setVisibility(View.VISIBLE);
-                }
+                RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                textView.setLayoutParams(relativeParams);
 
-                View view = new View(context);
-                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                p.addRule(RelativeLayout.BELOW, textView.getId());
-                relativeLayout.addView(view, p);
+                relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                ivMandatory.setLayoutParams(relativeParams);
+
+                relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                view.setLayoutParams(relativeParams);
+
+                relativeLayout.addView(textView);
+                relativeLayout.addView(ivMandatory);
+                relativeLayout.addView(view);
 
                 allViewInstance.add(textView);
                 llViews.addView(relativeLayout);
+
                 textView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -3307,13 +3772,13 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                                etText.setText("  " + selectedHour + " : " + selectedMinute);
 
                                 if (selectedHour < 10 && selectedMinute < 10) {
-                                    textView.setText("  " + "0" + selectedHour + " : " + "0" + selectedMinute);
+                                    textView.setText( "0" + selectedHour + " : " + "0" + selectedMinute);
                                 } else if (selectedHour < 10) {
-                                    textView.setText("  " + "0" + selectedHour + " : " + selectedMinute);
+                                    textView.setText( "0" + selectedHour + " : " + selectedMinute);
                                 } else if (selectedMinute < 10) {
-                                    textView.setText("  " + selectedHour + " : " + "0" + selectedMinute);
+                                    textView.setText( selectedHour + " : " + "0" + selectedMinute);
                                 } else {
-                                    textView.setText("  " + selectedHour + " : " + selectedMinute);
+                                    textView.setText( selectedHour + " : " + selectedMinute);
                                 }
 
 
@@ -3324,6 +3789,15 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                     }
                 });
+                if (taskList1 != null) {
+                    if (taskList1.getFields().size() > 0)
+                        for (SaveField f : taskList1.getFields()) {
+
+                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
+                                textView.setText(f.getValue());
+                            }
+                        }
+                }
             } else if (obj.getFields().get(position).getType().equals("date")) {
 
 //                RelativeLayout relativeLayout = new RelativeLayout(this);
@@ -3395,53 +3869,137 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                view.setLayoutParams(p);
 //
 //                llViews.addView(view);
+//                RelativeLayout relativeLayout = new RelativeLayout(this);
+//                relativeLayout.setId(View.generateViewId());
+//
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//                relativeLayout.setLayoutParams(params);
+//
+//                CustomTextView textView = new CustomTextView(this);
+//                if (taskList1 != null) {
+//                    if (taskList1.getFields().size() > 0)
+//                        for (SaveField f : taskList1.getFields()) {
+//
+//                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
+//                                textView.setText(f.getValue());
+//                            }
+//                        }
+//                }
+//                textView.setBackground(null);
+//                textView.setId(View.generateViewId());
+//                textView.setTextSize(COMPLEX_UNIT_SP, 14);
+//                textView.setHint(obj.getFields().get(position).getLabel());
+//                textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
+//                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//                relativeLayout.addView(textView, tvParams);
+//
+//
+//                removeView(textView);
+//                relativeLayout.addView(textView, tvParams);
+//
+//                ImageView imageView = new ImageView(this);
+//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                imageView.setVisibility(View.GONE);
+//                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+//                tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                tvParams.setMargins(0, 0, 0, convertToDp(16, this));
+////                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
+//                relativeLayout.addView(imageView, tvParams);
+//                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
+//                    imageView.setVisibility(View.VISIBLE);
+//                }
+//
+//                View view = new View(context);
+//                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                p.addRule(RelativeLayout.BELOW, textView.getId());
+//                relativeLayout.addView(view, p);
+//
+//                allViewInstance.add(textView);
+//                llViews.addView(relativeLayout);
+//
+//                final Calendar myCalendar = Calendar.getInstance();
+//
+//                final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+//
+//                    @Override
+//                    public void onDateSet(DatePicker view, int year, int monthOfYear,
+//                                          int dayOfMonth) {
+//                        // TODO Auto-generated method stub
+//                        myCalendar.set(Calendar.YEAR, year);
+//                        myCalendar.set(Calendar.MONTH, monthOfYear);
+//                        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//
+//                        String myFormat = " MM - dd - yyyy"; //In which you need put here
+//                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+//
+//                        textView.setText(" " + sdf.format(myCalendar.getTime()));
+//                    }
+//
+//                };
+//
+//                textView.setOnClickListener(new View.OnClickListener() {
+//
+//                    @Override
+//                    public void onClick(View v) {
+//                        // TODO Auto-generated method stub
+//                        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+//                            return;
+//                        }
+//                        mLastClickTime = SystemClock.elapsedRealtime();
+//                        new DatePickerDialog(context, date, myCalendar
+//                                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+//                                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+//                    }
+//                });
+
+                Field field = obj.getFields().get(position);
+
+                LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+
                 RelativeLayout relativeLayout = new RelativeLayout(this);
                 relativeLayout.setId(View.generateViewId());
+                relativeLayout.setLayoutParams(linearParams);
 
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
-                relativeLayout.setLayoutParams(params);
-
-                CustomTextView textView = new CustomTextView(this);
-                if (taskList1 != null) {
-                    if (taskList1.getFields().size() > 0)
-                        for (SaveField f : taskList1.getFields()) {
-
-                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
-                                textView.setText(f.getValue());
-                            }
-                        }
-                }
-                textView.setBackground(null);
+                TextView textView = new TextView(this);
                 textView.setId(View.generateViewId());
+                textView.setBackground(null);
+                textView.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+                textView.setTextColor(getColor(R.color.itemText));
+                textView.setTypeface(semiBold);
                 textView.setTextSize(COMPLEX_UNIT_SP, 14);
-                textView.setHint(obj.getFields().get(position).getLabel());
-                textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
-                RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                relativeLayout.addView(textView, tvParams);
+//                    editText.setHintTextColor(R.color.hintText);
+                textView.setHint(field.getLabel());
 
+                ImageView ivMandatory = new ImageView(this);
+                ivMandatory.setId(View.generateViewId());
+                ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                if (field.getRequired().equalsIgnoreCase("true"))
+                    ivMandatory.setVisibility(View.VISIBLE);
+                else
+                    ivMandatory.setVisibility(View.GONE);
 
-                removeView(textView);
-                relativeLayout.addView(textView, tvParams);
+                View view = new View(this);
+                view.setBackgroundColor(getColor(R.color.divider));
 
-                ImageView imageView = new ImageView(this);
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                imageView.setVisibility(View.GONE);
-                tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
-                tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                tvParams.setMargins(0, 0, 0, convertToDp(16, this));
-//                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
-                relativeLayout.addView(imageView, tvParams);
-                if (obj.getFields().get(position).getRequired().equalsIgnoreCase("true")) {
-                    imageView.setVisibility(View.VISIBLE);
-                }
+                RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                textView.setLayoutParams(relativeParams);
 
-                View view = new View(context);
-                view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                p.addRule(RelativeLayout.BELOW, textView.getId());
-                relativeLayout.addView(view, p);
+                relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                ivMandatory.setLayoutParams(relativeParams);
+
+                relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
+                relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                view.setLayoutParams(relativeParams);
+
+                relativeLayout.addView(textView);
+                relativeLayout.addView(ivMandatory);
+                relativeLayout.addView(view);
 
                 allViewInstance.add(textView);
                 llViews.addView(relativeLayout);
@@ -3461,7 +4019,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                         String myFormat = " MM - dd - yyyy"; //In which you need put here
                         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-                        textView.setText(" " + sdf.format(myCalendar.getTime()));
+                        textView.setText("" + sdf.format(myCalendar.getTime()));
                     }
 
                 };
@@ -3480,12 +4038,31 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                                 myCalendar.get(Calendar.DAY_OF_MONTH)).show();
                     }
                 });
-            } else if (obj.getFields().get(position).getType().equals("header")) {
-                final CustomTextView etText = new CustomTextView(context);
-                LinearLayout.LayoutParams perams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                perams.setMargins(8, 8, 8, 8);
 
-                etText.setLayoutParams(perams);
+                if (taskList1 != null) {
+                    if (taskList1.getFields().size() > 0)
+                        for (SaveField f : taskList1.getFields()) {
+
+                            if (obj.getFields().get(position).getFieldId().equals(f.getFieldId())) {
+                                textView.setText(f.getValue());
+                            }
+                        }
+                }
+            } else if (obj.getFields().get(position).getType().equals("header")) {
+                LinearLayout.LayoutParams perams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                perams.setMargins(0, convertToDp(12, this), 0, convertToDp(12, this));
+
+                RelativeLayout relativeLayout = new RelativeLayout(this);
+                relativeLayout.setLayoutParams(perams);
+                relativeLayout.setElevation(convertToDp(2, this));
+                relativeLayout.setBackgroundColor(getColor(R.color.colorWhite));
+
+                final TextView etText = new TextView(context);
+//                perams.setMargins(8, 8, 8, 8);
+//                perams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+                etText.setLayoutParams(layoutParams);
                 if (obj.getFields().get(position).getPlaceholder().equalsIgnoreCase("h1")) {
                     etText.setTextSize(20);
                 } else if (obj.getFields().get(position).getPlaceholder().equalsIgnoreCase("h2")) {
@@ -3495,25 +4072,24 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 } else if (obj.getFields().get(position).getPlaceholder().equalsIgnoreCase("h4")) {
                     etText.setTextSize(14);
                 }
-                etText.setTextColor(getResources().getColor(R.color.colorPrimary));
+                etText.setTextColor(getColor(R.color.headerBackground));
                 etText.setText(obj.getFields().get(position).getLabel());
-
-                etText.setPadding(28, 28, 28, 28);
-                etText.setMinHeight(60);
-                etText.setMinimumHeight(60);
-                etText.setGravity(Gravity.CENTER);
+//                etText.setMinHeight(60);
+//                etText.setMinimumHeight(60);
+                etText.setGravity(Gravity.START);
                 etText.setSingleLine();
                 etText.setSingleLine();
-                etText.setTypeface(null, Typeface.BOLD);
+                etText.setTypeface(semiBold);
                 etText.setTag(obj.getFields().get(position).getPlaceholder());
+                relativeLayout.addView(etText);
                 Log.e("Tag", obj.getFields().get(position).getPlaceholder());
                 if (isDrawOverImageForm) {
-                    if (etText.getParent() != null) {
-                        ((ViewGroup) etText.getParent()).removeView(etText); // <- fix
+                    if (relativeLayout.getParent() != null) {
+                        ((ViewGroup) relativeLayout.getParent()).removeView(relativeLayout); // <- fix
                     }
-                    llViews1.addView(etText);
+                    llViews1.addView(relativeLayout);
                 } else {
-                    llViews.addView(etText);
+                    llViews.addView(relativeLayout);
                 }
                 // TEXTVIEW
 
@@ -3525,18 +4101,18 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 LinearLayout ll = new LinearLayout(context);
                 ll.setOrientation(LinearLayout.HORIZONTAL);
                 LinearLayout.LayoutParams llPerams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                llPerams.setMargins(8, 8, 8, 8);
+                llPerams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
                 ll.setLayoutParams(llPerams);
                 ll.setOrientation(LinearLayout.VERTICAL);
                 final CustomTextView etText = new CustomTextView(context);
                 LinearLayout.LayoutParams perams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                perams.setMargins(convertToDp(16, this), 0, convertToDp(16, this), convertToDp(16, this));
+                perams.setMargins(0, 0, 0, convertToDp(4, this));
 
                 etText.setText(obj.getFields().get(position).getLabel());
-                etText.setTextSize(14);
-                etText.setTextColor(Color.parseColor("#616060"));
+                etText.setTextSize(COMPLEX_UNIT_SP, 14);
+                etText.setTextColor(getColor(R.color.itemText));
                 etText.setLayoutParams(perams);
-                etText.setTypeface(etText.getTypeface(), Typeface.NORMAL);
+                etText.setTypeface(semiBold);
 
                 LinearLayout.LayoutParams startparams = new LinearLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
                 perams.setMargins(4, 0, 4, 10);
@@ -3552,10 +4128,9 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                 final ImageView iv = new ImageView(context);
                 LinearLayout.LayoutParams ivPerams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 200);
-                ivPerams.setMargins(convertToDp(16, this), convertToDp(4, this), convertToDp(16, this), convertToDp(4, this));
+                ivPerams.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(4, this));
                 iv.setLayoutParams(ivPerams);
                 iv.setBackground(getDrawable(R.drawable.dotted));
-                iv.setVisibility(View.VISIBLE);
 
                 ll.addView(iv);
 
@@ -3629,7 +4204,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 View view = new View(context);
                 view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                p.setMargins(0, 30, 0, 30);
+                p.setMargins(convertToDp(18, context), convertToDp(4, this), convertToDp(18, context), convertToDp(8, context));
                 view.setLayoutParams(p);
 
                 llViews.addView(view);
@@ -4163,45 +4738,66 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 ////                            return;
 //                        }
 //                    }
-                    try {
-                        Switch toggle = (Switch) allViewInstance.get(noOfViews);
-                        fieldsObj.put("field_id", "" + response.getFields().get(noOfViews).getFieldId());
-                        fieldsObj.put("value", "");
-
-
-                        JSONArray optionsArray = new JSONArray();
-
-                        JSONObject optionsObj = new JSONObject();
-                        Option optionYes = new Option();
-                        Option optionNo = new Option();
-                        for (Option option : toggleHash.get(toggle.getId())) {
-                            if (option.getLabel().equalsIgnoreCase("yes")) {
-                                optionYes = option;
-                            } else if (option.getLabel().equalsIgnoreCase("no")) {
-                                optionNo = option;
-                            }
-
-                        }
-
-                        if (toggle.isChecked()) {
-                            optionsObj.put("option_id", "" + optionYes.getFieldId());
-                            fieldsObj.put("type", "radio-group");
-                            optionsObj.put("value", "" + optionYes.getLabel());
-                        } else {
-                            optionsObj.put("option_id", "" + optionNo.getFieldId());
-                            fieldsObj.put("type", "radio-group");
-                            optionsObj.put("value", "" + optionNo.getLabel());
-                        }
-                        optionsArray.put(optionsObj);
+//                    try {
+//                        Switch toggle = (Switch) allViewInstance.get(noOfViews);
+//                        fieldsObj.put("field_id", "" + response.getFields().get(noOfViews).getFieldId());
+//                        fieldsObj.put("value", "");
+//
+//
+//                        JSONArray optionsArray = new JSONArray();
+//
+//                        JSONObject optionsObj = new JSONObject();
+//                        Option optionYes = new Option();
+//                        Option optionNo = new Option();
+//                        for (Option option : toggleHash.get(toggle.getId())) {
+//                            if (option.getLabel().equalsIgnoreCase("yes")) {
+//                                optionYes = option;
+//                            } else if (option.getLabel().equalsIgnoreCase("no")) {
+//                                optionNo = option;
+//                            }
+//
+//                        }
+//
+//                        if (toggle.isChecked()) {
+//                            optionsObj.put("option_id", "" + optionYes.getOptionId());
+//                            fieldsObj.put("type", "radio-group");
+//                            optionsObj.put("value", "" + optionYes.getLabel());
+//                        } else {
+//                            optionsObj.put("option_id", "" + optionNo.getOptionId());
+//                            fieldsObj.put("type", "radio-group");
+//                            optionsObj.put("value", "" + optionNo.getLabel());
+//                        }
+//                        optionsArray.put(optionsObj);
+////                    }
+//                        fieldsObj.put("option", optionsArray);
+//                        jsonArray.put(fieldsObj);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_SHORT).show();
+//                        btnSubmit.setEnabled(true);
+//                        return;
 //                    }
-                        fieldsObj.put("option", optionsArray);
-                        jsonArray.put(fieldsObj);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_SHORT).show();
-                        btnSubmit.setEnabled(true);
-                        return;
-                    }
+
+                    Spinner spinner = (Spinner) allViewInstance.get(noOfViews);
+
+                    String selected_name = response.getFields().get(noOfViews).getOptions().get(spinner.getSelectedItemPosition()).getLabel();
+                    String selected_id = response.getFields().get(noOfViews).getOptions().get(spinner.getSelectedItemPosition()).getOptionId() + "";
+                    //Log.e("Selected_field_ID", response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getFieldId() + "");
+                    Log.e("value", selected_name + "");
+                    Log.e("field_id", selected_id + "");
+                    fieldsObj.put("field_id", "" + response.getFields().get(noOfViews).getFieldId());
+                    fieldsObj.put("type", "radio-group");
+                    fieldsObj.put("value", "");
+
+                    JSONArray optionsArray = new JSONArray();
+//                    for (int k = 0; k < response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getOptions().size(); k++) {
+                    JSONObject optionsObj = new JSONObject();
+                    optionsObj.put("option_id", "" + selected_id);
+                    optionsObj.put("value", "" + selected_name);
+                    optionsArray.put(optionsObj);
+//                    }
+                    fieldsObj.put("option", optionsArray);
+                    jsonArray.put(fieldsObj);
                 }
                 if (response.getFields().get(noOfViews).getType().equals("checkbox-group")) {
 
@@ -4287,7 +4883,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        TextView textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -4296,6 +4892,10 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                             fieldsObj.put("type", "text");
                             fieldsObj.put("value", text);
                         } else {
+
+                            fieldsObj.put("field_id", field_id);
+                            fieldsObj.put("type", "text");
+                            fieldsObj.put("value", text);
 //                            Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_LONG).getDialog();
                             isMandatoryFilled = false;
 //                            return;
@@ -4309,7 +4909,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     } else {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        TextView textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -4331,7 +4931,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -4340,6 +4940,9 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                             fieldsObj.put("type", "number");
                             fieldsObj.put("value", text);
                         } else {
+                            fieldsObj.put("field_id", field_id);
+                            fieldsObj.put("type", "number");
+                            fieldsObj.put("value", text);
 //                            Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_LONG).getDialog();
                             isMandatoryFilled = false;
 //                            return;
@@ -4352,8 +4955,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                         Log.e("text", "ID: " + field_id + " Text: " + textView.getText().toString() + "");
                     } else {
                         String field_id, text;
-
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -4373,7 +4975,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                     if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
 
                         text = textView.getText().toString();
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
@@ -4383,6 +4985,9 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                             fieldsObj.put("type", "textarea");
                             fieldsObj.put("value", text);
                         } else {
+                            fieldsObj.put("field_id", field_id);
+                            fieldsObj.put("type", "textarea");
+                            fieldsObj.put("value", text);
 //                            Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_LONG).getDialog();
                             isMandatoryFilled = false;
 //                            return;
@@ -4397,7 +5002,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                         Log.e("textarea", "ID: " + field_id + " Text: " + textView.getText().toString() + "");
                     } else {
                         String field_id, text;
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
 
                         text = textView.getText().toString();
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
@@ -4423,7 +5028,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -4432,6 +5037,9 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                             fieldsObj.put("type", "time");
                             fieldsObj.put("value", text);
                         } else {
+                            fieldsObj.put("field_id", field_id);
+                            fieldsObj.put("type", "time");
+                            fieldsObj.put("value", text);
 //                            Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_LONG).getDialog();
                             isMandatoryFilled = false;
 //                            return;
@@ -4445,7 +5053,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     } else {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -4468,7 +5076,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                         //Date
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -4477,6 +5085,9 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                             fieldsObj.put("type", "date");
                             fieldsObj.put("value", text);
                         } else {
+                            fieldsObj.put("field_id", field_id);
+                            fieldsObj.put("type", "date");
+                            fieldsObj.put("value", text);
 //                            Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_LONG).getDialog();
                             isMandatoryFilled = false;
 //                            return;
@@ -4491,7 +5102,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                         //Date
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -4512,7 +5123,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     if (response.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getTag().toString();
 
@@ -4521,6 +5132,9 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                             fieldsObj.put("type", "header");
                             fieldsObj.put("value", text);
                         } else {
+                            fieldsObj.put("field_id", field_id);
+                            fieldsObj.put("type", "header");
+                            fieldsObj.put("value", text);
 //                            Toast.makeText(this, "Please fill mandatory fields carefully!", Toast.LENGTH_LONG).getDialog();
                             isMandatoryFilled = false;
 //                            return;
@@ -4534,7 +5148,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     } else {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = response.getFields().get(noOfViews).getFieldId() + "";
                         text = textView.getTag().toString();
 
@@ -4557,7 +5171,20 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                    Toast.makeText(context, "you enter barcode in place holder ", Toast.LENGTH_SHORT).getDialog();
 //
 //                }
+                if (obj.getFields().get(noOfViews).getType().equalsIgnoreCase("file")) {
+                    fieldsObj.put("field_id", response.getFields().get(noOfViews).getFieldId());
+                    fieldsObj.put("type", "file");
+                    if (myImages.size() > 0) {
+                        SelectImagesModel selectImagesModel = myImages.get(0);
+                        fieldsObj.put("value", selectImagesModel.getFinalImage().getAbsolutePath());
+                    } else {
+                        if (obj.getFields().get(noOfViews).getRequired().equalsIgnoreCase("true"))
+                            isMandatoryFilled = false;
+                        fieldsObj.put("value", "");
+                    }
+                    jsonArray.put(fieldsObj);
 
+                }
 
                 if (obj.getFields().get(noOfViews).getType().equalsIgnoreCase("text") && obj.getFields().get(noOfViews).getPlaceholder().equalsIgnoreCase("barcode")) {
 //                    Toast.makeText(context, "barcode json", Toast.LENGTH_SHORT).getDialog();
@@ -4586,8 +5213,11 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                                 fieldsObj.put("type", "signature");
                                 fieldsObj.put("value", encodedImage);
                             } else {
-                                Toast.makeText(this, "Signature is Mandatory. Please take signature", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(this, "Signature is Mandatory. Please take signature", Toast.LENGTH_SHORT).show();
 //                                return;
+                                fieldsObj.put("field_id", field_id);
+                                fieldsObj.put("type", "signature");
+                                fieldsObj.put("value", "");
                                 isMandatoryFilled = false;
                             }
 
@@ -4600,6 +5230,14 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                             e.printStackTrace();
                             Toast.makeText(this, "Signature is Mandatory. Please take signature", Toast.LENGTH_SHORT).show();
                             isMandatoryFilled = false;
+                            fieldsObj.put("field_id", response.getFields().get(noOfViews).getFieldId() + "");
+                            fieldsObj.put("type", "signature");
+                            fieldsObj.put("value", "");
+                            isMandatoryFilled = false;
+
+                            JSONArray optionsArray = new JSONArray();
+                            fieldsObj.put("option", optionsArray);
+                            jsonArray.put(fieldsObj);
 //                            return;
                         }
                     } else {
@@ -4656,12 +5294,16 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
             Log.d("COUNT", "images json count: " + jsonArray.length());
             Log.d("COUNT", "images json count: " + myImages.size());
 
-
-            JSONObject allFields = new JSONObject();
-            allFields.put("fields", jsonArray);
-
+            JSONArray jsonArray1 = new JSONArray();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject object = jsonArray.getJSONObject(i);
+                if (object.get("type") != null && !object.get("type").equals("file"))
+                    jsonArray1.put(object);
+            }
             JSONObject formFields = new JSONObject();
             formFields.put("fields", jsonArray);
+            JSONObject allFields = new JSONObject();
+            allFields.put("fields", jsonArray1);
 
 
             JSONArray imagesArray = new JSONArray();
@@ -4785,8 +5427,11 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
 //      max Height and width values of the compressed image is taken as 816x612
 
-        float maxHeight = 1280.0f;
-        float maxWidth = 1024.0f;
+//        float maxHeight = 1280.0f;
+//        float maxWidth = 1024.0f;
+
+        float maxHeight = 720.0f;
+        float maxWidth = 520.0f;
         float imgRatio = actualWidth / actualHeight;
         float maxRatio = maxWidth / maxHeight;
 
@@ -5164,7 +5809,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 break;
             case PIN_REQUEST:
                 if (data != null) {
-                    CustomEditText editText = findViewById(data.getIntExtra("ViewId", 0));
+                    EditText editText = findViewById(data.getIntExtra("ViewId", 0));
                     editText.setText(data.getStringExtra("PinValue"));
                 }
         }
@@ -5187,18 +5832,17 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                     Log.e("myImages", img.get(i));
                 }
 
-//                if (adapterSelectImages != null) {
-//                    adapterSelectImages.setItems(myImages);
-//                    adapterSelectImages.notifyDataSetChanged();
-//                } else {
-//                    adapterSelectImages = new AdapterSelectImages(myImages, FormSection.this, ivSelectImages);
-//                    rvSelectImages.setLayoutManager(imagesManager);
-//                    rvSelectImages.setAdapter(adapterSelectImages);
-//                }
-                adapterSelectImages = new AdapterSelectImages(myImages, this, ivSelectImages);
-                rvSelectImages = findViewById(hashmap5.get(currentImageViewId));
-//                    rvSelectImages.setLayoutManager(imagesManager);
-                rvSelectImages.setAdapter(adapterSelectImages);
+                if (adapterSelectImages != null) {
+                    adapterSelectImages.setItems(myImages);
+                    adapterSelectImages.notifyDataSetChanged();
+                } else {
+                    adapterSelectImages = new AdapterSelectImages(myImages, FormSection.this, ivSelectImages);
+                    rvSelectImages = findViewById(hashmap5.get(currentImageViewId));
+                    rvSelectImages.setAdapter(adapterSelectImages);
+                }
+//                adapterSelectImages = new AdapterSelectImages(myImages, this, ivSelectImages);
+////                    rvSelectImages.setLayoutManager(imagesManager);
+//                rvSelectImages.setAdapter(adapterSelectImages);
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
 //                Toast.makeText( getApplicationContext(), "Cancelled", Toast.LENGTH_SHORT ).getDialog();
@@ -5256,5 +5900,23 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
             view.setEnabled(true);
         }
     }
-
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View view = getCurrentFocus();
+            if (view instanceof EditText) {
+                Rect r = new Rect();
+                view.getGlobalVisibleRect(r);
+                int rawX = (int)ev.getRawX();
+                int rawY = (int)ev.getRawY();
+                if (!r.contains(rawX, rawY)) {
+                    view.clearFocus();
+//                    hideKeyboard(this);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(
+                            Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 }

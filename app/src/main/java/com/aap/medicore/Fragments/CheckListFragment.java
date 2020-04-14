@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -129,7 +130,7 @@ public class CheckListFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 hitTasksList();
-                pullToRefresh.setRefreshing(false);
+//                pullToRefresh.setRefreshing(false);
             }
         });
 
@@ -312,11 +313,11 @@ public class CheckListFragment extends BaseFragment {
                 public void onResponse(Call<NewAdminChecklist> call, Response<NewAdminChecklist> response) {
                     if (response.isSuccessful()) {
 //                        databaseHandler.deleteAdminFormsTable();
-                        if (response.body().getStatus() == 400){
+                        if (response.body().getStatus() == 400) {
                             rv_admin.setVisibility(View.GONE);
                             v.findViewById(R.id.tvNoVehicle).setVisibility(View.VISIBLE);
-                            return;}
-                        else {
+                            return;
+                        } else {
                             rv_admin.setVisibility(View.VISIBLE);
                             v.findViewById(R.id.tvNoVehicle).setVisibility(View.GONE);
                             List<AdminFormModel> list = response.body().getForms();
@@ -344,33 +345,51 @@ public class CheckListFragment extends BaseFragment {
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-                                        SaveField2 saveField2 = fields.get(0);
-                                        if (!saveField1.getFieldId().equals(saveField2.getFieldId())) {
-                                            databaseHandler.removeAdminForm(list.get(i).getId());
-                                            databaseHandler.addAdminForm(model1);
+                                        if (fields.size() > 0) {
+                                            SaveField2 saveField2 = fields.get(0);
+                                            if (!saveField1.getFieldId().equals(saveField2.getFieldId())) {
+                                                databaseHandler.removeAdminForm(list.get(i).getId());
+                                                databaseHandler.addAdminForm(model1);
+                                            }
                                         }
                                     }
                                 }
-
                             }
                             rv_admin.setLayoutManager(new LinearLayoutManager(getActivity()));
                             if (getActivity() != null)
                                 adapter = new NewAdapterAdmin(getContext(), list);
                             rv_admin.setAdapter(adapter);
+                            rv_admin.getViewTreeObserver()
+                                    .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                        @Override
+                                        public void onGlobalLayout() {
+                                            //At this point the layout is complete and the
+                                            //dimensions of recyclerView and any child views are known.
+                                            //Remove listener after changed RecyclerView's height to prevent infinite
+                                            pullToRefresh.setRefreshing(false);
+                                            rv_admin.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                        }
+                                    });
                         }
                     } else if (response.code() == 401) {
                         if (getActivity() != null)
                             new SessionTimeoutDialog((BaseActivity) getActivity()).getDialog().show();
+                        pullToRefresh.setRefreshing(false);
+
                     }
                 }
 
                 @Override
                 public void onFailure(Call<NewAdminChecklist> call, Throwable t) {
                     t.printStackTrace();
+                    pullToRefresh.setRefreshing(false);
+
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
+            pullToRefresh.setRefreshing(false);
+
         }
     }
 

@@ -54,6 +54,8 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.novoda.merlin.Connectable;
 import com.novoda.merlin.Merlin;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
@@ -95,6 +97,7 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
             }
         }
     };
+    private static final String TAG = "Home";
     BroadcastReceiver networkReceiver;
     Handler h = new Handler();
     int delay = 2 * 1000; //1 second=1000 milisecond, 15*1000=15seconds
@@ -174,6 +177,9 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
                 else{
                     ltNoNetwork.setVisibility(View.GONE);
                 }
+                newintent = new Intent(Constants.BROADCAST_ACTION);
+                newintent.putExtra(Constants.Status, isConnected(context));
+                sendBroadcast(newintent);
             }
         };
         registerReceiver(networkReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -266,26 +272,24 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
                     Log.e("code", response.body().getStstus() + "");
                     if (response.body().getStstus() == 200) {
                         status = true;
-                    } else {
-                        status = false;
                     }
-
-                    newintent = new Intent(Constants.BROADCAST_ACTION);
-                    newintent.putExtra(Constants.Status, status);
-                    sendBroadcast(newintent);
+                    sendTokenToServer(tinyDB.getString(Constants.token), tinyDB.getString(Constants.tokenFCM));
 
                 } else if (response.code() == 401) {
                     sessionTimedOut = true;
                     if (getApplicationContext() != null)
                         new SessionTimeoutDialog(Home.this).getDialog().show();
-                } else {
-                    status = false;
                 }
+                newintent = new Intent(Constants.BROADCAST_ACTION);
+                newintent.putExtra(Constants.Status, status);
+                sendBroadcast(newintent);
             }
 
             @Override
             public void onFailure(retrofit2.Call<StatusResponse> call, Throwable t) {
-                status = false;
+                newintent = new Intent(Constants.BROADCAST_ACTION);
+                newintent.putExtra(Constants.Status, status);
+                sendBroadcast(newintent);
             }
         });
     }
@@ -295,7 +299,25 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
 //        Intent i = new Intent(Home.this,Home.class);
 //        startActivity(i);
     }
+    private void sendTokenToServer(String AuthToken, String tokenFCM) {
+        try {
+            Call<ResponseBody> call = RetrofitClass.getInstance().getWebRequestsInstance().sendFCMTokenToServer(AuthToken, tokenFCM, "ANDROID");
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.code() == 200)
+                        Log.d(TAG, "onResponse: " + "Token send success");
+                }
 
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
@@ -361,41 +383,41 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
         if (!(tinyDB.getString(Constants.StateTitle).isEmpty())) {
             state = tinyDB.getString(Constants.StateTitle);
         }
-        h.postDelayed(runnable = new Runnable() {
-            public void run() {
-
-                retrofit2.Call<StatusResponse> call;
-
-                call = RetrofitClass.getInstance().getWebRequestsInstance().hitUserStatus(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id), state);
-
-                call.enqueue(new Callback<StatusResponse>() {
-                    @Override
-                    public void onResponse(retrofit2.Call<StatusResponse> call, Response<StatusResponse> response) {
-                        if (response.isSuccessful()) {
-                            if (response.body().getStstus() == 200) {
-                                status = true;
-                            } else {
-                                status = false;
-                            }
-                        } else if (response.code() == 401) {
-                            new SessionTimeoutDialog(Home.this).getDialog();
-                        } else {
-                            status = false;
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(retrofit2.Call<StatusResponse> call, Throwable t) {
-                        status = false;
-                    }
-                });
-                newintent = new Intent(Constants.BROADCAST_ACTION);
-                newintent.putExtra(Constants.Status, status);
-                sendBroadcast(newintent);
-
-                h.postDelayed(runnable, delay);
-            }
-        }, delay);
+//        h.postDelayed(runnable = new Runnable() {
+//            public void run() {
+//
+//                retrofit2.Call<StatusResponse> call;
+//
+//                call = RetrofitClass.getInstance().getWebRequestsInstance().hitUserStatus(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id), state);
+//
+//                call.enqueue(new Callback<StatusResponse>() {
+//                    @Override
+//                    public void onResponse(retrofit2.Call<StatusResponse> call, Response<StatusResponse> response) {
+//                        if (response.isSuccessful()) {
+//                            if (response.body().getStstus() == 200) {
+//                                status = true;
+//                            } else {
+//                                status = false;
+//                            }
+//                        } else if (response.code() == 401) {
+//                            new SessionTimeoutDialog(Home.this).getDialog();
+//                        } else {
+//                            status = false;
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(retrofit2.Call<StatusResponse> call, Throwable t) {
+//                        status = false;
+//                    }
+//                });
+//                newintent = new Intent(Constants.BROADCAST_ACTION);
+//                newintent.putExtra(Constants.Status, status);
+//                sendBroadcast(newintent);
+//
+//                h.postDelayed(runnable, delay);
+//            }
+//        }, delay);
 
         super.onResume();
     }

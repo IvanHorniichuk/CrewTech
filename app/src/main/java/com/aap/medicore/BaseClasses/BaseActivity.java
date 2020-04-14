@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -94,6 +95,7 @@ public class BaseActivity extends AppCompatActivity {
         if (view == null) {
             view = new View(activity);
         }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        boolean b = imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        Log.d("log", "hideKeyboard: "+b);
     }
 }

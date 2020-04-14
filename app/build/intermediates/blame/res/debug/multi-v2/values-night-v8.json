@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/root-admin/AndroidStudioProjects/CrewTech-Android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
+            "outputFile": "C:\\Users\\AJ\\AndroidStudioProjects\\CrewTech-Android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
             "map": [
                 {
-                    "source": "/home/root-admin/.gradle/caches/transforms-2/files-2.1/1307d30dafd7018773a61d7c1fa8ab54/res/values-night-v8/values-night-v8.xml",
+                    "source": "C:\\Users\\AJ\\.gradle\\caches\\transforms-2\\files-2.1\\aa2f04ce40fc6d393a87b79333eaa145\\appcompat-1.1.0\\res\\values-night-v8\\values-night-v8.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

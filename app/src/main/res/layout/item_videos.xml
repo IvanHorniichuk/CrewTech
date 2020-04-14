@@ -119,7 +119,7 @@
             android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:padding="8dp"
-            android:src="@drawable/ic_cross"
+            app:srcCompat="@drawable/ic_cross"
             android:tint="@color/colorGray"
             android:visibility="gone" />
 

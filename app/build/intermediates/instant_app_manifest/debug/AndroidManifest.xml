@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aap.medicore"
     android:targetSandboxVersion="2"
-    android:versionCode="3"
-    android:versionName="0.3" >
+    android:versionCode="12"
+    android:versionName="1.2" >
 
     <uses-sdk
         android:minSdkVersion="19"
@@ -41,18 +41,18 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:testOnly="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true" >
         <activity
             android:name="com.aap.medicore.Activities.FormSection"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden" >
         </activity>
         <activity
             android:name="com.aap.medicore.Activities.SignatureActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.aap.medicore.Activities.VehicleCheckList"
             android:screenOrientation="portrait"
@@ -132,6 +132,12 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name="com.amitshekhar.debug.DebugDBInitProvider"
+            android:authorities="com.aap.medicore.DebugDBInitProvider"
+            android:enabled="true"
+            android:exported="false" />
 
         <activity
             android:name="com.fxn.pix.Pix"

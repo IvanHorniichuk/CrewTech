@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.TaskDetails">
+    tools:context=".Activities.TaskDetails"
+    android:background="@color/screenBackground">
 
     <com.aap.medicore.Utils.CustomTextView
         android:layout_width="match_parent"
@@ -23,9 +24,10 @@
     <LinearLayout
         android:id="@+id/rl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/headerBackground">
 
 
         <ImageView
@@ -33,19 +35,18 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="8dp"
             android:background="?android:selectableItemBackground"
             android:clickable="true"
             android:padding="10dp"
-            android:tint="@color/colorGray"
             app:srcCompat="@drawable/ic_arrow_left" />
 
         <RelativeLayout
             android:id="@+id/rlHeading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,28 +55,26 @@
                 android:orientation="vertical">
 
 
-                <com.aap.medicore.Utils.CustomTextView
+                <TextView
                     android:id="@+id/heading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:layout_margin="4dp"
                     android:text="Admin Forms"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textColor="@color/headerText"
+                    android:textSize="18sp" />
 
-                <com.aap.medicore.Utils.CustomTextView
+                <!--<TextView
                     android:id="@+id/subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/heading"
                     android:layout_gravity="left"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginBottom="16dp"
                     android:text=""
-                    android:textColor="@color/colorGray"
-                    android:textSize="15sp" />
+                    android:fontFamily="@font/open_sans_regular"
+                    android:textColor="@color/colorOrange"
+                    android:textSize="12sp" />-->
             </LinearLayout>
         </RelativeLayout>
 

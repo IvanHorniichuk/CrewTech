@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2196f3</color>
+    <color name="colorPrimary">#32375B</color>
     <color name="colorPrimaryDark">#2196f3</color>
     <color name="colorAccent">#f44336</color>
 
@@ -31,7 +31,13 @@
 
     <color name="colorBookedJobs">#dff6ff</color>
 
-    l
+    <color name="headerBackground">#32375B</color>
+    <color name="headerText">#F3F6EB</color>
+    <color name="screenBackground">#F3F6EC</color>
+    <color name="itemText">#221E1F</color>
+    <color name="divider">#DBDBDB</color>
+    <color name="colorOrange">#EA723D</color>
+    <color name="hintText">#938E84</color>
     <color name="lightGray">#F5F5F5</color>
     <color name="lightWhite">#F5F5F5</color>
 

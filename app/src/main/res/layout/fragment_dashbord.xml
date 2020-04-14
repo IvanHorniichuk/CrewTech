@@ -153,7 +153,7 @@
                     android:layout_width="0dp"
                     android:layout_height="8dp"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/shadow_gradient"
+                    android:background="@drawable/shadow_gradient_dark_to_light_horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"

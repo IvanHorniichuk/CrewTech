@@ -105,9 +105,9 @@ public class Splash extends AppCompatActivity {
                 ContextCompat.checkSelfPermission(this, requiredPermissions[1]) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, requiredPermissions[2]) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, requiredPermissions[3]) == PackageManager.PERMISSION_GRANTED) {
-            findViewById(R.id.progress).setVisibility(View.VISIBLE);
-            new ForceUpdateAsync(localVersion, this).execute();
-//            versioncheck();
+//            findViewById(R.id.progress).setVisibility(View.VISIBLE);
+//            new ForceUpdateAsync(localVersion, this).execute();
+            versioncheck();
             flag = true;
 
         } else
@@ -128,11 +128,11 @@ public class Splash extends AppCompatActivity {
 
     public void versioncheck() {
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
-        retrofit2.Call<VersionCheck> call;
-        call = RetrofitClass.getInstance().getWebRequestsInstance().versioncheck();
-        call.enqueue(new Callback<VersionCheck>() {
+        retrofit2.Call<Version> call;
+        call = RetrofitClass.getInstance().getWebRequestsInstance().versioncheck(localVersion);
+        call.enqueue(new Callback<Version>() {
             @Override
-            public void onResponse(retrofit2.Call<VersionCheck> call, Response<VersionCheck> response) {
+            public void onResponse(retrofit2.Call<Version> call, Response<Version> response) {
                 if (response.isSuccessful()) {
 //                    if (response.body().getStatus() == 200) {
 //                        permissionAccess();
@@ -142,7 +142,7 @@ public class Splash extends AppCompatActivity {
 //                    }
 //                    permissionAccess();
                     findViewById(R.id.progress).setVisibility(View.GONE);
-
+                    proceed();
 
                 } else {
                     findViewById(R.id.progress).setVisibility(View.GONE);
@@ -151,7 +151,7 @@ public class Splash extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(retrofit2.Call<VersionCheck> call, Throwable t) {
+            public void onFailure(retrofit2.Call<Version> call, Throwable t) {
                 findViewById(R.id.progress).setVisibility(View.GONE);
                 showToast();
                 t.printStackTrace();
@@ -161,9 +161,7 @@ public class Splash extends AppCompatActivity {
 
     private void showToast() {
         Toast.makeText(Splash.this, "Please try again after some time", Toast.LENGTH_SHORT).show();
-
     }
-
 
     private void proceed() {
         if (tinyDB.getBoolean(Constants.LoggedIn)) {
@@ -178,7 +176,6 @@ public class Splash extends AppCompatActivity {
             finish();
         }
     }
-
 
     public void logoutConfirmDialogBox() {
         final Dialog dialog = new Dialog(Splash.this);
@@ -261,8 +258,9 @@ public class Splash extends AppCompatActivity {
 //                    Toast.makeText(Splash.this, "The app was not allowed permission. Hence, it cannot function properly. Please consider granting it this permission.", Toast.LENGTH_LONG).show();
 //                }
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) {
-                    findViewById(R.id.progress).setVisibility(View.VISIBLE);
-                    new ForceUpdateAsync(localVersion, this).execute();
+//                    findViewById(R.id.progress).setVisibility(View.VISIBLE);
+//                    new ForceUpdateAsync(localVersion, this).execute();
+                    versioncheck();
                 } else {
                     if (grantResults[0] != PackageManager.PERMISSION_GRANTED) i = 0;
                     if (grantResults[1] != PackageManager.PERMISSION_GRANTED) i = 1;

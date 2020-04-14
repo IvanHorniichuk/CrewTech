@@ -17,7 +17,8 @@
             <RelativeLayout
                 android:id="@+id/rlHeading"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="61dp"
+                android:background="@color/headerBackground"
                 android:gravity="center">
 
                 <com.aap.medicore.Utils.CustomTextView
@@ -25,11 +26,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
+                    android:fontFamily="@font/open_sans_semibold"
                     android:text="Admin Forms"
-                    android:textColor="@color/colorBlack"
+                    android:textColor="@color/headerText"
                     android:textSize="24sp" />
 
                 <!--  <com.aap.medicore.Utils.CustomTextView
@@ -43,11 +42,11 @@
                       android:textColor="@color/colorGray"
                       android:textSize="18sp" />-->
 
-                <View
+              <!--  <View
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:layout_below="@id/heading"
-                    android:background="@drawable/shadow_gradient" />
+                    android:background="@drawable/shadow_gradient_dark_to_light_horizontal" />-->
             </RelativeLayout>
 
             <include
@@ -62,14 +61,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/ltNoNetwork"
-                android:fillViewport="true">
+                android:fillViewport="true"
+                >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/colorSlightGray"
-                    android:orientation="vertical"
-                   >
+                    android:background="@color/screenBackground"
+                    android:orientation="vertical">
 
                     <!--                    <RelativeLayout-->
                     <!--                        android:layout_width="wrap_content"-->
@@ -178,20 +177,20 @@
                         android:id="@+id/rv_admin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:visibility="gone"/>
+                        android:layout_margin="18dp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tvNoVehicle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:text="Please contact admin to  add a vehicle"
-                        android:textSize="26sp"
                         android:layout_gravity="center"
                         android:layout_marginHorizontal="16dp"
-                        android:visibility="gone"
-                        />
+                        android:text="Please contact admin to  add a vehicle"
+                        android:textAlignment="center"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="26sp"
+                        android:visibility="gone" />
 
 
                 </LinearLayout>

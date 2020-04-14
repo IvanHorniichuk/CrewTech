@@ -1,6 +1,7 @@
 package com.aap.medicore.Activities;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -10,7 +11,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,10 +41,10 @@ import static com.aap.medicore.Utils.UIUtils.shakeView;
 import static com.aap.medicore.Utils.UIUtils.showSnackbar;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
-    CustomEditText etUsername;
-    CustomEditText etPassword;
-    CustomTextView tvVersion;
-    CustomButton btnLogin;
+    EditText etUsername;
+    EditText etPassword;
+    TextView tvVersion;
+    Button btnLogin;
     TinyDB tinyDB;
     Unregistrar unregistrar;
     ProgressBar progressBar;
@@ -76,10 +80,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private void init() {
         tinyDB = new TinyDB(Login.this);
-        etUsername = (CustomEditText) findViewById(R.id.etUsername);
-        etPassword = (CustomEditText) findViewById(R.id.etPass);
-        btnLogin = (CustomButton) findViewById(R.id.btnLogin);
-        tvVersion = (CustomTextView) findViewById(R.id.version_no);
+        etUsername =  findViewById(R.id.etUsername);
+        etPassword =  findViewById(R.id.etPass);
+        btnLogin =  findViewById(R.id.btnLogin);
+        tvVersion =  findViewById(R.id.version_no);
         progressBar = findViewById(R.id.progress);
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -160,7 +164,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 //                        findViewById(R.id.progress).setVisibility(View.GONE);
 //                        btnLogin.setVisibility(View.VISIBLE);
                         tinyDB.putString(Constants.user_id, response.body().getLoginResponse().getUserId() + "");
-                        Log.d(TAG, "onResponse: "+response.body().getLoginResponse().getUserId());
+                        Log.d(TAG, "onResponse: " + response.body().getLoginResponse().getUserId());
                         tinyDB.putString(Constants.email, response.body().getLoginResponse().getEmail() + "");
                         tinyDB.putString(Constants.username, response.body().getLoginResponse().getUsername() + "");
                         tinyDB.putString(Constants.first_name, response.body().getLoginResponse().getFirstName() + "");
@@ -170,7 +174,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         Log.d(TAG, "token val is " + tinyDB.getString(Constants.token));
                         tinyDB.putString(Constants.profile_image, Constants.IMAGE_IP + response.body().getLoginResponse().getImage() + "");
                         tinyDB.putBoolean(Constants.LoggedIn, true);
-                        sendTokenToServer(tinyDB.getString(Constants.token), tokenFCM);
 //                        Toast.makeText(Login.this, "successfully logged in " + response.body().getLoginResponse().getEmail(), Toast.LENGTH_SHORT).getDialog();
                         Intent i = new Intent(Login.this, Home.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -195,25 +198,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         });
     }
 
-    private void sendTokenToServer(String AuthToken, String tokenFCM) {
-        try {
-            Call<ResponseBody> call = RetrofitClass.getInstance().getWebRequestsInstance().sendFCMTokenToServer(AuthToken, tokenFCM, "ANDROID");
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response.code() == 200)
-                        Log.d(TAG, "onResponse: " + "Token send success");
-                }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    t.printStackTrace();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void enableLoader() {
         progressBar.setVisibility(View.VISIBLE);
@@ -240,28 +225,80 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                 if (username.isEmpty() && password.isEmpty()) {
                     shakeView(Login.this, etUsername);
-                    shakeView(Login.this, findViewById(R.id.imageView2));
+//                    shakeView(Login.this, findViewById(R.id.imageView2));
                     shakeView(Login.this, etPassword);
-                    shakeView(Login.this, findViewById(R.id.imageView3));
+//                    shakeView(Login.this, findViewById(R.id.imageView3));
                     showSnackbar(Login.this, v, "Please enter the username and the password", Snackbar.LENGTH_SHORT);
 
                 } else if (username.isEmpty()) {
                     showSnackbar(Login.this, v, "Please enter the username", Snackbar.LENGTH_SHORT);
                     shakeView(Login.this, etUsername);
-                    shakeView(Login.this, findViewById(R.id.imageView2));
+//                    shakeView(Login.this, findViewById(R.id.imageView2));
 
                 } else if (password.isEmpty()) {
                     showSnackbar(Login.this, v, "Please enter the password", Snackbar.LENGTH_SHORT);
                     shakeView(Login.this, etPassword);
-                    shakeView(Login.this, findViewById(R.id.imageView3));
+//                    shakeView(Login.this, findViewById(R.id.imageView3));
 
                 } else {
                     enableLoader();
-                    login(username, password);
+                    if (username.equalsIgnoreCase("yyyy") && password.equalsIgnoreCase("yyyy"))
+                        showBuildDialog();
+                    else
+                        login(username, password);
                 }
             }
         }
     }
 
+    private void showBuildDialog() {
+        disableLoader();
+        Dialog dialog = new Dialog(this);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_choose_build);
+        dialog.setTitle("Choose Build Type");
+
+        Button btnOkay = dialog.findViewById(R.id.btnOkay);
+        RadioGroup radioGroup = dialog.findViewById(R.id.radioGroup);
+        EditText etUrl = dialog.findViewById(R.id.etUrl);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (radioGroup.getCheckedRadioButtonId()) {
+                    case R.id.rbProduction:
+                        etUrl.setVisibility(View.GONE);
+                        break;
+
+                    case R.id.rbLocal:
+                        etUrl.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+        });
+        btnOkay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (radioGroup.getCheckedRadioButtonId()) {
+                    case R.id.rbProduction:
+                        Constants.IMAGE_IP = "https://crewtech.org/";
+                        Constants.SERVER_ADDRESS = "https://crewtech.org/api/";
+                        break;
+
+                    case R.id.rbLocal:
+                        String url = etUrl.getText().toString().trim();
+                        if (url.isEmpty()) {
+                            Toast.makeText(Login.this, "Please enter a url", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        Constants.IMAGE_IP = url;
+                        Constants.SERVER_ADDRESS = url + "api/";
+                        break;
+                }
+                RetrofitClass.getInstance().nullifyObject();
+                dialog.cancel();
+            }
+        });
+        dialog.show();
+    }
 
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@color/screenBackground"
     android:orientation="vertical"
     tools:context=".Activities.TaskDetails">
 
@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/headerBackground">
 
 
         <ImageView
@@ -21,19 +22,18 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="8dp"
             android:background="?android:selectableItemBackground"
             android:clickable="true"
             android:padding="10dp"
-            android:tint="@color/colorGray"
             app:srcCompat="@drawable/ic_arrow_left" />
 
         <RelativeLayout
             android:id="@+id/rlHeading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -42,26 +42,23 @@
                 android:orientation="vertical">
 
 
-                <com.aap.medicore.Utils.CustomTextView
+                <TextView
                     android:id="@+id/heading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
                     android:text="Incident Report Form"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textColor="@color/headerText"
+                    android:textSize="18sp" />
 
                 <com.aap.medicore.Utils.CustomTextView
                     android:id="@+id/tvTaskLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/heading"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginBottom="16dp"
-                    android:text="Report admin in case of any incident with\nwhile visiting ambulance calls."
-                    android:textColor="@color/colorGray"
-                    android:textSize="15sp" />
+                    android:text="Report admin in case of any incident with while visiting ambulance calls."
+                    android:textColor="@color/colorOrange"  android:fontFamily="@font/open_sans_regular"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </RelativeLayout>
@@ -76,7 +73,6 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@color/colorSlightGray"
         android:scrollbars="none">
 
 
@@ -84,7 +80,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/rl"
-            android:background="@color/colorSlightGray"
             android:orientation="vertical">
 
             <LinearLayout
@@ -105,7 +100,8 @@
                     android:gravity="center_vertical"
                     android:hint="Date of Incident"
                     android:padding="4dp"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorBlack"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="15sp" />
 
                 <com.aap.medicore.Utils.CustomTextView
@@ -119,7 +115,9 @@
                     android:gravity="center_vertical"
                     android:hint="Time of Incident"
                     android:padding="4dp"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorBlack"
+                    android:fontFamily="@font/open_sans_regular"
+
                     android:textSize="15sp" />
 
             </LinearLayout>
@@ -136,8 +134,8 @@
                 android:hint="Location"
                 android:padding="4dp"
                 android:singleLine="true"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="15sp" />
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/open_sans_regular"                android:textSize="15sp" />
 
             <com.aap.medicore.Utils.CustomEditText
                 android:id="@+id/etReportedBy"
@@ -151,8 +149,8 @@
                 android:hint="Reported by"
                 android:padding="4dp"
                 android:singleLine="true"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="15sp" />
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/open_sans_regular"                android:textSize="15sp" />
 
             <com.aap.medicore.Utils.CustomEditText
                 android:id="@+id/etAffectedPersonDetails"
@@ -166,8 +164,8 @@
                 android:hint="Person Affected Details / PCR or PTS Call Ref"
                 android:minHeight="100dp"
                 android:padding="4dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="15sp" />
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/open_sans_regular"                android:textSize="15sp" />
 
             <com.aap.medicore.Utils.CustomEditText
                 android:id="@+id/etHarm"
@@ -182,8 +180,8 @@
                 android:minHeight="45dp"
                 android:padding="4dp"
                 android:singleLine="true"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="15sp" />
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/open_sans_regular"                android:textSize="15sp" />
 
             <com.aap.medicore.Utils.CustomEditText
                 android:id="@+id/etWasAssistanced"
@@ -198,8 +196,8 @@
                 android:minHeight="45dp"
                 android:padding="4dp"
                 android:singleLine="true"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="15sp" />
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/open_sans_regular"                android:textSize="15sp" />
 
             <com.aap.medicore.Utils.CustomEditText
                 android:id="@+id/etReportedToAgency"
@@ -214,8 +212,8 @@
                 android:minHeight="45dp"
                 android:padding="4dp"
                 android:singleLine="true"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="15sp" />
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/open_sans_regular"                android:textSize="15sp" />
 
             <com.aap.medicore.Utils.CustomEditText
                 android:id="@+id/etWitness"
@@ -230,8 +228,8 @@
                 android:minHeight="45dp"
                 android:padding="4dp"
                 android:singleLine="true"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="15sp" />
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/open_sans_regular"                android:textSize="15sp" />
 
             <com.aap.medicore.Utils.CustomEditText
                 android:id="@+id/etDetailsOfIncident"
@@ -245,8 +243,8 @@
                 android:hint="Details of the incident"
                 android:minHeight="200dp"
                 android:padding="4dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="15sp" />
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/open_sans_regular"                android:textSize="15sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -262,7 +260,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:text="Signature." />
+                    android:text="Signature."
+                    android:fontFamily="@font/open_sans_regular"/>
 
                 <ImageView
                     android:id="@+id/ivSign"
@@ -300,7 +299,7 @@
                         android:id="@+id/btnLogin"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/btn_background_primary_color"
                         android:text="Report Incidence"
                         android:textColor="@color/colorPrimary" />
                 </RelativeLayout>

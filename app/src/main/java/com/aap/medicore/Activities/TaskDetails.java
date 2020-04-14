@@ -18,9 +18,11 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -75,8 +77,8 @@ public class TaskDetails extends BaseActivity {
     ImageView ivBack;
     public static TabsModel model1 = new TabsModel();
     String task_id = "", task_location = "", reported_agency = "";
-    CustomTextView heading, tvTaskLocation;
-    CustomTextView tvName, tvDate, tvMRN, tvMobility, tvInfectiousStatus, tvMedicalRequirements, tvAccount, tvOrderNo, tvFromFacility, tvToFacility, return_facility, dob, ref;
+    TextView heading, tvTaskLocation;
+   TextView tvName, tvDate, tvMRN, tvMobility, tvInfectiousStatus, tvMedicalRequirements, tvAccount, tvOrderNo, tvFromFacility, tvToFacility, return_facility, dob, ref;
     CustomButton btnSubmit, btnSave;
 
     public ArrayList<SelectImagesModel> imagesList = new ArrayList<>();
@@ -113,7 +115,7 @@ public class TaskDetails extends BaseActivity {
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     private double lat = 0.0, lng = 0.0;
-    CustomTextView notes;
+    TextView notes;
 
     LinearLayout ll;
     RecyclerView rvTabs;
@@ -124,6 +126,7 @@ public class TaskDetails extends BaseActivity {
     private GPSTracker gps;
     private View ltNoNetwork;
     private BroadcastReceiver broadcastReceiver;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +150,7 @@ public class TaskDetails extends BaseActivity {
             checkPermission();
         }
         broadcastReceiver = new NetworkReciever(ltNoNetwork);
-        registerReceiver(broadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         locationRequest = LocationRequest.create();
@@ -204,7 +207,7 @@ public class TaskDetails extends BaseActivity {
 
 
         heading = findViewById(R.id.heading);
-        notes = (CustomTextView) findViewById(R.id.note);
+        notes =  findViewById(R.id.note);
 //        heading.setText(task_location);
         tvTaskLocation = findViewById(R.id.tvTaskLocation);
 //        tvTaskLocation.setText(reported_agency);
@@ -283,29 +286,29 @@ public class TaskDetails extends BaseActivity {
                     tvName.setText(taskList.getName());
                 if (taskList.getJobDateTime() != null && !taskList.getJobDateTime().isEmpty())
                     tvDate.setText(taskList.getJobDateTime());
-                if (taskList.getMrn() != null&& !taskList.getMrn().isEmpty())
+                if (taskList.getMrn() != null && !taskList.getMrn().isEmpty())
                     tvMRN.setText(taskList.getMrn());
-                if (taskList.getMobility() != null&& !taskList.getMobility().isEmpty())
+                if (taskList.getMobility() != null && !taskList.getMobility().isEmpty())
                     tvMobility.setText(taskList.getMobility());
-                if (taskList.getInfectiousStatus() != null&& !taskList.getInfectiousStatus().isEmpty())
+                if (taskList.getInfectiousStatus() != null && !taskList.getInfectiousStatus().isEmpty())
                     tvInfectiousStatus.setText(taskList.getInfectiousStatus());
-                if (taskList.getMedicalRequirments() != null&& !taskList.getMedicalRequirments().isEmpty())
+                if (taskList.getMedicalRequirments() != null && !taskList.getMedicalRequirments().isEmpty())
                     tvMedicalRequirements.setText(taskList.getMedicalRequirments());
-                if (taskList.getAccount() != null&& !taskList.getAccount().isEmpty())
+                if (taskList.getAccount() != null && !taskList.getAccount().isEmpty())
                     tvAccount.setText(taskList.getAccount());
-                if (taskList.getOrderNo() != null&& !taskList.getOrderNo().isEmpty())
+                if (taskList.getOrderNo() != null && !taskList.getOrderNo().isEmpty())
                     tvOrderNo.setText(taskList.getOrderNo());
-                if (taskList.getFromFacitity() != null&& !taskList.getFromFacitity().isEmpty())
+                if (taskList.getFromFacitity() != null && !taskList.getFromFacitity().isEmpty())
                     tvFromFacility.setText(taskList.getFromFacitity());
-                if (taskList.getToFacility() != null&& !taskList.getToFacility().isEmpty())
+                if (taskList.getToFacility() != null && !taskList.getToFacility().isEmpty())
                     tvToFacility.setText(taskList.getToFacility());
-                if (taskList.getRef() != null&& !taskList.getRef().isEmpty())
+                if (taskList.getRef() != null && !taskList.getRef().isEmpty())
                     ref.setText(taskList.getRef());
-                if (taskList.getDob() != null&& !taskList.getDob().isEmpty())
+                if (taskList.getDob() != null && !taskList.getDob().isEmpty())
                     dob.setText(taskList.getDob());
-                if (taskList.getReturn_facility() != null&& !taskList.getReturn_facility().isEmpty())
+                if (taskList.getReturn_facility() != null && !taskList.getReturn_facility().isEmpty())
                     return_facility.setText(taskList.getReturn_facility());
-                if (taskList.getNotes() != null&& !taskList.getNotes().isEmpty())
+                if (taskList.getNotes() != null && !taskList.getNotes().isEmpty())
                     notes.setText(taskList.getNotes());
                 btnSave = findViewById(R.id.btnSave);
             }
@@ -489,6 +492,7 @@ public class TaskDetails extends BaseActivity {
             }
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void checkPermission() {
 
@@ -505,6 +509,7 @@ public class TaskDetails extends BaseActivity {
         }
 
     }
+
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -537,13 +542,45 @@ public class TaskDetails extends BaseActivity {
         }
     }
 
+    public void prepareData(QueueModel model, List<SelectImagesModel> imagesModels) {
+        try {
+            String json = model.getJson();
+            JSONObject mainObject = new JSONObject(json);
+            JSONArray array1 = mainObject.getJSONArray("fields");
+            for (int i=0; i<array1.length();i++){
+                JSONObject object = array1.getJSONObject(i);
+                if (object.get("type").equals("file"))
+                    array1.remove(i);
+            }
+            JSONArray imagesArray = new JSONArray();
+            for (int i = 0; i < imagesModels.size(); i++) {
+                imagesArray.put(imagesModels.get(i).getName());
+            }
+            mainObject.put("images",imagesArray);
+            JSONObject object = new JSONObject();
+            object.put("form-section", mainObject);
+            JSONObject obj = new JSONObject();
+
+            obj.put("job_id", task_id);
+            obj.put("form_id", model.getId());
+            JSONArray array = new JSONArray();
+            array.put(object);
+            obj.put("forms", array);
+            RequestBody bodyRequest = RequestBody.create(MediaType.parse("application/json"), obj.toString());
+            submitForms(bodyRequest, imagesModels);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void logoutConfirmDialogBox() {
         final Dialog dialog = new Dialog(this);
-        final CustomButton btnNo, btnYes;
+        final Button btnNo, btnYes;
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.save_alert);
-        btnYes = (CustomButton) dialog.findViewById(R.id.btnYes);
-        btnNo = (CustomButton) dialog.findViewById(R.id.btnNo);
+        btnYes = (Button) dialog.findViewById(R.id.btnYes);
+        btnNo = (Button) dialog.findViewById(R.id.btnNo);
 
         btnNo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -574,7 +611,6 @@ public class TaskDetails extends BaseActivity {
                     obj.put("return_facility", return_facility.getText());
 
 
-
                     JSONArray array = new JSONArray();
                     for (int i = 0; i < tabsList.size(); i++) {
 
@@ -591,7 +627,7 @@ public class TaskDetails extends BaseActivity {
 //
 //                     }
                         JSONObject jsonObject = new JSONObject(tabsList.get(i).getJsonData());
-                        jsonObject.put("form_id",tabsList.get(i).getTab_id());
+                        jsonObject.put("form_id", tabsList.get(i).getTab_id());
                         array.put(jsonObject);
                     }
                     obj.put("forms", array);
@@ -601,7 +637,7 @@ public class TaskDetails extends BaseActivity {
                         submitData(obj + "", dialog);
 
                     } else {
-                       tinyDB.putBoolean(Constants.pendingStatus,true);
+                        tinyDB.putBoolean(Constants.pendingStatus, true);
                         Toast.makeText(TaskDetails.this, "No network connection! your form is queued to be upload.", Toast.LENGTH_SHORT).show();
                         findViewById(R.id.progress).setVisibility(View.GONE);
                         btnSubmit.setVisibility(View.VISIBLE);
@@ -629,6 +665,7 @@ public class TaskDetails extends BaseActivity {
                                 DBImagesModel model = new DBImagesModel();
                                 model.setIncidenceId(task_id);
                                 model.setTempUri(imagesList.get(i).getTempUri());
+                                model.setName(imagesList.get(i).getName());
                                 handler.addImagesOnIncidenceID(model);
                             }
                             handler.deleteAssignedIncidenceOnIndidenceId(queueModel.getId());
@@ -678,7 +715,7 @@ public class TaskDetails extends BaseActivity {
         Log.d("SIZE", "IMage list size is : " + sectionImagesList.size());
 
 
-        List<SelectImagesModel> list = new ArrayList<>();
+        List<SelectImagesModel> selectImagesModels = new ArrayList<>();
         for (int i = 0; i < sectionImagesList.size(); i++) {
             SelectImagesModel model = new SelectImagesModel();
             model.setTaskId(SettingValues.getTaskId());
@@ -687,11 +724,11 @@ public class TaskDetails extends BaseActivity {
             model.setFinalImage(sectionImagesList.get(i).getFinalImage());
             model.setName(sectionImagesList.get(i).getName());
             Log.d("VALUE", "IMG VALUE IS: " + model.getFormId());
-            list.add(model);
+            selectImagesModels.add(model);
             handler.deleteTabsImagesIncidenceOnIndidenceId(String.valueOf(model.getFormId()), SettingValues.getTaskId());
         }
 
-        handler.addImagesOnTabIncidenceID(list);
+        handler.addImagesOnTabIncidenceID(selectImagesModels);
 
         SettingValues.setTabList(tabsList);
 
@@ -707,6 +744,7 @@ public class TaskDetails extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
         Log.e("code", requestCode + "");
 
 
@@ -782,18 +820,19 @@ public class TaskDetails extends BaseActivity {
 //                    if (response.body().getStatus() == 200) {
                     findViewById(R.id.progress).setVisibility(View.GONE);
                     btnSubmit.setVisibility(View.VISIBLE);
-                    handler.deleteDraftIncidencesTable();
                     handler.deleteTabsData();
+                    handler.deleteAssignedIncidenceOnIndidenceId(task_id);
+                    for (TabsModel model : tabsList) {
+                        List<SelectImagesModel> formImages =  handler.getAllTAbImagesOnImageId(model.getTab_id(),task_id);
+                        QueueModel model2 = handler.getDraftIncidenceStateOnIncidenceID(model.getTab_id(), task_id);
+                        prepareData(model2, formImages);
+                        handler.deleteDraftIncidenceOnIndidenceId(model.getTab_id(), task_id);
+                    }
+                    handler.deleteDraftIncidencesTable();
                     handler.deleteTabsImagesData();
-
 
                     Toast.makeText(TaskDetails.this, "Successfully Completed the Call!", Toast.LENGTH_SHORT).show();
                     finish();
-                    handler.deleteAssignedIncidenceOnIndidenceId(task_id);
-                    handler.deleteTabsImagesData();
-                    for (TabsModel model: tabsList){
-                        handler.deleteDraftIncidenceOnIndidenceId(model.getTab_id(),task_id);
-                    }
 //                    } else {
 
 //                        Toast.makeText(TaskDetails.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -823,6 +862,50 @@ public class TaskDetails extends BaseActivity {
         });
     }
 
+    public void submitForms(RequestBody body, List<SelectImagesModel> myImages) {
+        ArrayList<MultipartBody.Part> images = new ArrayList<>();
+        retrofit2.Call<SubmitFormResponse> call;
+
+        for (int i = 0; i < myImages.size(); i++) {
+            File file1 = new File(String.valueOf(myImages.get(i).getTempUri()));
+            images.add(MultipartBody.Part.createFormData("images", file1.getName(), RequestBody.create(MediaType.parse("image/*"), myImages.get(i).getFinalImage())));
+        }
+        if (myImages.size() == 0) {
+            call = RetrofitClass.getInstance().getWebRequestsInstance().formSubmitWitoutImages(tinyDB.getString(Constants.token), body);
+            Log.e("Token", "value of token is " + tinyDB.getString(Constants.token));
+        } else {
+            call = RetrofitClass.getInstance().getWebRequestsInstance().formSubmit(tinyDB.getString(Constants.token), body, images);
+            Log.e("Token", "value of token is " + tinyDB.getString(Constants.token));
+        }
+        call.enqueue(new Callback<SubmitFormResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<SubmitFormResponse> call, Response<SubmitFormResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus() == 200) {
+
+                        for (SelectImagesModel selectImagesModel:myImages){
+                            File dir = getFilesDir();
+                            File file = new File("/storage/emulated/0/MyFolder/Images", selectImagesModel.getName());
+                            boolean deleted = file.delete();
+                            Log.d("file", "onResponse: "+deleted);
+                        }
+//                        Toast.makeText(TaskDetails.this, "Successfully Incidence saved to Server !", Toast.LENGTH_SHORT).show();
+//                        finish();
+//                        handler.deleteAssignedIncidenceOnIndidenceId(task_id);
+                    } else {
+//                        Toast.makeText(TaskDetails.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<SubmitFormResponse> call, Throwable t) {
+                Toast.makeText(TaskDetails.this, "Can't connect to server !", Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
+            }
+        });
+
+    }
 
     /*  Show Popup to access User Permission  */
     private void requestLocationPermission() {
@@ -843,7 +926,7 @@ public class TaskDetails extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(!isConnected(this))
+        if (!isConnected(this))
             ltNoNetwork.setVisibility(View.VISIBLE);
         else
             ltNoNetwork.setVisibility(View.GONE);

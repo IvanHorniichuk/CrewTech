@@ -171,8 +171,8 @@ public class AdapterTabs extends RecyclerView.Adapter<AdapterTabs.ViewHolder> {
 //                mContext.startActivity(i);
             }
         });
-        holder.tvNum.setText(position + 1 + "");
-        holder.tvNum.setSolidColor("#2196f3");
+//        holder.tvNum.setText(position + 1 + "");
+//        holder.tvNum.setSolidColor("#2196f3");
 
         AssignedIncidencesModel model = new AssignedIncidencesModel();
         model = databaseHandler.getIncidenceOnId(task_id);
@@ -188,17 +188,17 @@ public class AdapterTabs extends RecyclerView.Adapter<AdapterTabs.ViewHolder> {
                 holder.ivWarning.setVisibility(View.GONE);
         }
         if (list.get(position).getJsonData().isEmpty()) {
-            holder.tvFormName.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
-            holder.rootLayout.setBackground(mContext.getResources().getDrawable(R.drawable.rectangle_rounded_white));
+//            holder.tvFormName.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+//            holder.rootLayout.setBackground(mContext.getResources().getDrawable(R.drawable.rectangle_rounded_white));
             holder.ivCheck.setVisibility(View.GONE);
-            holder.tvNum.setVisibility(View.VISIBLE);
+//            holder.tvNum.setVisibility(View.VISIBLE);
 
 
         } else {
-            holder.tvFormName.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-            holder.rootLayout.setBackground(mContext.getResources().getDrawable(R.drawable.btn_background_selected));
+//            holder.tvFormName.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+//            holder.rootLayout.setBackground(mContext.getResources().getDrawable(R.drawable.btn_background_selected));
             holder.ivCheck.setVisibility(View.VISIBLE);
-            holder.tvNum.setVisibility(View.GONE);
+//            holder.tvNum.setVisibility(View.GONE);
         }
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
@@ -237,7 +237,7 @@ public class AdapterTabs extends RecyclerView.Adapter<AdapterTabs.ViewHolder> {
         //        CustomButton btnTab;
 //        CustomButton plus;
         TextView tvFormName;
-        CircularTextView tvNum;
+//        CircularTextView tvNum;
         ImageView ivWarning, ivCheck;
         ConstraintLayout rootLayout;
 
@@ -250,7 +250,7 @@ public class AdapterTabs extends RecyclerView.Adapter<AdapterTabs.ViewHolder> {
 //            btnTab = view.findViewById(R.id.btnTab);
 //            plus = view.findViewById(R.id.plus);
             tvFormName = view.findViewById(R.id.tvFormName);
-            tvNum = view.findViewById(R.id.tvNum);
+//            tvNum = view.findViewById(R.id.tvNum);
             ivWarning = view.findViewById(R.id.ivWarning);
             ivCheck = view.findViewById(R.id.ivCheck);
             rootLayout = view.findViewById(R.id.rootLayout);

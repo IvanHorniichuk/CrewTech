@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-
+    android:orientation="vertical"
+    android:background="@color/screenBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorSlightGray">
+        android:background="@color/headerBackground">
 
         <ImageView
             android:id="@+id/ivBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:background="?android:selectableItemBackground"
             android:clickable="true"
-            android:paddingTop="8dp"
-            android:paddingRight="8dp"
-            android:paddingBottom="8dp"
-            android:tint="@color/colorGray"
+            android:padding="8dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/heading"
             app:srcCompat="@drawable/ic_arrow_left" />
@@ -32,12 +28,11 @@
             android:id="@+id/heading"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:text="Admin Forms"
-            android:textColor="@color/colorBlack"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/open_sans_semibold"
+            android:textColor="@color/headerText"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ivBack"
             app:layout_constraintTop_toTopOf="parent"
@@ -47,10 +42,10 @@
             android:id="@+id/subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:textColor="@color/colorGray"
-            android:textSize="18sp"
+            android:fontFamily="@font/open_sans_regular"
+            android:textColor="@color/colorOrange"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/heading"
             app:layout_constraintStart_toStartOf="@+id/heading"
@@ -71,10 +66,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:background="@drawable/shadow_gradient" />
 
     <include
         layout="@layout/layout_no_internet"
@@ -98,89 +89,77 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
 
-                android:visibility="gone">
+                android:visibility="visible">
 
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/ltVehicleDetails"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="50dp"
-                    android:text="VEHICLE DETAILS"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
+                    android:background="@color/colorWhite"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:elevation="2dp"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="18dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:text="Vehicle Details"
+                        android:textColor="@color/headerBackground"
+                        android:textSize="16sp" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/tvRegistrationLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="33dp"
+                    android:layout_marginTop="22dp"
+                    android:fontFamily="@font/open_sans_bold"
                     android:text="Registration No."
-                    app:layout_constraintEnd_toStartOf="@+id/textView6"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView6" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_begin="16dp" />
-
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="-"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                    android:textColor="@color/itemText"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toBottomOf="@id/ltVehicleDetails"  />
 
                 <TextView
                     android:id="@+id/tvRegistrationNo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="112"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/textView6"
-                    app:layout_constraintTop_toTopOf="@+id/textView6" />
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:textColor="@color/itemText"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@id/tvRegistrationLabel"
+                    app:layout_constraintTop_toBottomOf="@id/tvRegistrationLabel" />
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/tvVehicalNameLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="-"
-                    app:layout_constraintEnd_toEndOf="@+id/textView6"
-                    app:layout_constraintStart_toStartOf="@+id/textView6"
-                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginStart="85dp"
+                    android:fontFamily="@font/open_sans_bold"
                     android:text="Vehicle Name"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/textView5"
-                    app:layout_constraintStart_toStartOf="@+id/textView5"
-                    app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                    android:textColor="@color/itemText"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@id/tvRegistrationLabel"
+                    app:layout_constraintTop_toTopOf="@id/tvRegistrationLabel" />
 
                 <TextView
-
                     android:id="@+id/tvColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lexus"
-                    app:layout_constraintEnd_toEndOf="@+id/tvRegistrationNo"
-                    app:layout_constraintStart_toStartOf="@+id/tvRegistrationNo"
-                    app:layout_constraintTop_toTopOf="@+id/textView9" />
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:textColor="@color/itemText"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvVehicalNameLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvVehicalNameLabel" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
@@ -189,6 +168,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:gravity="center"
+                android:layout_marginTop="18dp"
                 android:layout_gravity="center">
 
             </LinearLayout>

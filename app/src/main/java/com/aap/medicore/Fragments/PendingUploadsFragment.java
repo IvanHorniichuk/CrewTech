@@ -71,7 +71,6 @@ public class PendingUploadsFragment extends BaseFragment {
 
         init(view);
         clickListeners();
-
         return view;
     }
 
@@ -96,7 +95,6 @@ public class PendingUploadsFragment extends BaseFragment {
         manager = new LinearLayoutManager(getActivity());
         tvNoPendingUploads = view.findViewById(R.id.tvNoPendingUploads);
         pullToRefresh = v.findViewById(R.id.pullToRefresh);
-
         list = databaseHandler.getAllQueuedIncidences();
         Log.e("Up", databaseHandler.getAllQueuedIncidences().size() + "");
 

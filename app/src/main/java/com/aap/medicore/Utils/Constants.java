@@ -20,8 +20,8 @@ public class Constants {
 
 
     //rootlocal
- public final static String IMAGE_IP =" http://10.5.6.119:8000/";
-  public final static String SERVER_ADDRESS = "http://10.5.6.119:8000/api/";
+//    public static String IMAGE_IP = "http://10.5.8.11:8001/";
+//    public static String SERVER_ADDRESS = "http://10.5.8.11:8001/api/";
 
     //rootStag
 //  public final static String IMAGE_IP ="http://159.69.88.67:3000/";
@@ -31,9 +31,9 @@ public class Constants {
 //    public final static String SERVER_ADDRESS = "https://crewtech2.theclientdemos.com/api/";
 
 
-////     new live address
-//  public final static String IMAGE_IP = "https://crewtech.org/";
-//  public final static String SERVER_ADDRESS = "https://crewtech.org/api/";
+    ////     new live address
+    public static String IMAGE_IP = "https://crewtech.org/";
+    public static String SERVER_ADDRESS = "https://crewtech.org/api/";
 
     public final static String user_id = "user_id";
     public final static String token = "token";

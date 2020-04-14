@@ -8,7 +8,16 @@ public class AssignedIncidencesModel {
     private int id;
     String json = "";
     private String date;
+    private String jobDateTime;
     private Date objDate;
+
+    public String getJobDateTime() {
+        return jobDateTime;
+    }
+
+    public void setJobDateTime(String jobDateTime) {
+        this.jobDateTime = jobDateTime;
+    }
 
     public Date getObjDate() {
         return objDate;

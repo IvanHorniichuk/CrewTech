@@ -15,7 +15,7 @@
       android:strokeWidth="1"
       android:fillColor="#FFFFFF"
       android:fillType="evenOdd"
-      android:strokeColor="#00000000"/>
+      android:strokeColor="@color/screenBackground"/>
   <path
       android:pathData="M16,19l4,-3.4036l-4,-3.5964"
       android:strokeWidth="1.2"

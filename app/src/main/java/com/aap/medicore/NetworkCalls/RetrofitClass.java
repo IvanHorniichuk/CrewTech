@@ -1,7 +1,6 @@
 package com.aap.medicore.NetworkCalls;
 
 
-
 import com.aap.medicore.Utils.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -48,8 +47,11 @@ public class RetrofitClass {
     }
 
     public webRequests getWebRequestsInstance() {
-
         return service;
+    }
+
+    public  void nullifyObject() {
+        instance = null;
     }
 
 }

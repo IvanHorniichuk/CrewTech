@@ -21,6 +21,8 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.ExifInterface;
@@ -38,6 +40,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -65,6 +68,7 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -137,7 +141,8 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
     TextView subtitle;
     LinearLayout barcodelayout;
     LinearLayout barcodeviews;
-    String start_time,end_time;
+    String start_time, end_time;
+    boolean timerFlag;
     HorizontalScrollView hsvLayout;
     //    ProgressBar bufferingIcon;
     ImageView ivSelectImages;
@@ -232,8 +237,8 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
         Log.d("ID", "vehicle id is: " + vehicleId);
         init();
 //        broadcastReceiver = new NetworkReciever(ltNoNetwork);
-        start_time="";
-        end_time="";
+        start_time = "";
+        end_time = "";
 
         id = getIntent().getIntExtra("formId", 0);
         formModel = handler.getAdminForm(id);
@@ -333,14 +338,18 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
 
     public void hideHeyboard() {
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = this.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(this);
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(
+                Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+//        InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+//        //Find the currently focused view, so we can grab the correct window token from it.
+//        View view = this.getCurrentFocus();
+//        //If no view currently has focus, create a new one, just so we can grab a window token from it
+//        if (view == null) {
+//            view = new View(this);
+//        }
+//        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override
@@ -432,7 +441,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
             case PIN_REQUEST:
                 if (data != null) {
-                    CustomEditText editText = findViewById(data.getIntExtra("ViewId", 0));
+                    EditText editText = findViewById(data.getIntExtra("ViewId", 0));
                     editText.setText(data.getStringExtra("PinValue"));
                 }
         }
@@ -440,7 +449,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
             if (data != null) {
                 int id = data.getIntExtra("ImageViewId", 0);
                 Log.d("ImageViewId", "onActivityResult: " + id);
-                CustomEditText textView = findViewById(hashmap.get(id));
+                EditText textView = findViewById(hashmap.get(id));
                 textView.setText(data.getStringExtra("Value"));
             }
         }
@@ -782,11 +791,11 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
     public void logoutConfirmDialogBox() {
         final Dialog dialog = new Dialog(this);
         dialog.setCanceledOnTouchOutside(false);
-        final CustomButton btnNo, btnYes;
+        final Button btnNo, btnYes;
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.timer);
-        btnYes = (CustomButton) dialog.findViewById(R.id.btnYes);
-        btnNo = (CustomButton) dialog.findViewById(R.id.btnNo);
+        btnYes = (Button) dialog.findViewById(R.id.btnYes);
+        btnNo = (Button) dialog.findViewById(R.id.btnNo);
         btnNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -817,14 +826,14 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     return;
                 }
                 btnYes.setEnabled(false);
-
+                timerFlag = true;
 
 
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat dateformat = new SimpleDateFormat("hh:mm:ss aa");
                 String datetime = dateformat.format(c.getTime());
 //                Toast.makeText(context, ""+datetime, Toast.LENGTH_SHORT).show();
-                Log.e("curenttime","scccccccccc"+datetime);
+                Log.e("curenttime", "scccccccccc" + datetime);
                 start_time = datetime;
 
 
@@ -938,11 +947,16 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
 
             subtitle.setText(model.getSub_title());
-        if (model.getTimeout().equals("yes")) {
-            logoutConfirmDialogBox();
-        }
+            if (model.getTimeout().equals("yes"))
+                if (!timerFlag)
+                    logoutConfirmDialogBox();
+
             btnSubmit.setVisibility(View.VISIBLE);
 //        Log.e("size", obj.toString());
+            Typeface bold = ResourcesCompat.getFont(context, R.font.open_sans_bold);
+            Typeface semiBold = ResourcesCompat.getFont(context, R.font.open_sans_semibold);
+            Typeface regular = ResourcesCompat.getFont(context, R.font.open_sans_regular);
+
             for (int position = 0; position < fields.size(); position++) {
 
                 vehicleDetail.setVisibility(View.VISIBLE);
@@ -1074,7 +1088,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
 
                 if (fields.get(position).getType().equalsIgnoreCase("text") && !(fields.get(position).getPlaceholder().equalsIgnoreCase("Time")) && !(fields.get(position).getPlaceholder().equalsIgnoreCase("signature"))) {
-//                RelativeLayout ettxt_start = new RelativeLayout(this);
+                    //                RelativeLayout ettxt_start = new RelativeLayout(this);
 //                ettxt_start.setId(View.generateViewId());
 //                CustomEditText etText = new CustomEditText(context);
 //                etText.setId(View.generateViewId());
@@ -1144,58 +1158,196 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 ////                if (obj.getFields().get(position).getFieldId()==8692){
 ////                    ettxt_start.setVisibility(View.GONE);
 ////                }
+//
+//                    SaveField2 field = fields.get(position);
+//                    RelativeLayout relativeLayout = new RelativeLayout(this);
+//                    relativeLayout.setId(View.generateViewId());
+//
+//                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//                    relativeLayout.setLayoutParams(params);
+//
+//                    EditText textView = new CustomEditText(this);
+//                    if (form_name.equalsIgnoreCase("Equipment Checklist"))
+//                        if (fields.get(position).getLabel().contains("PIN")) {
+//                            textView.setFocusable(false);
+//                            textView.setInputType(InputType.TYPE_NULL);
+//                            textView.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//
+//                                    Intent intent = new Intent(EquipmentCheckList.this, PINVerificationActivity.class);
+//                                    intent.putExtra("ViewId", textView.getId());
+//                                    startActivityForResult(intent, PIN_REQUEST);
+//                                }
+//                            });
+//                            textView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                                @Override
+//                                public void onFocusChange(View v, boolean hasFocus) {
+//                                    if (hasFocus) {
+//                                        if (flag) {
+//                                            Intent intent = new Intent(EquipmentCheckList.this, PINVerificationActivity.class);
+//                                            intent.putExtra("ViewId", textView.getId());
+//                                            startActivityForResult(intent, PIN_REQUEST);
+//                                        }
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    textView.setBackground(null);
+//                    textView.setId(View.generateViewId());
+//                    textView.setTextSize(COMPLEX_UNIT_SP, 14);
+//                    textView.setHint(fields.get(position).getLabel());
+//                    textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
+//                    RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//
+//                    ImageView ivBarcode = new ImageView(this);
+//                    ivBarcode.setVisibility(View.GONE);
+//                    ivBarcode.setId(View.generateViewId());
+//                    ivBarcode.setImageDrawable(getDrawable(R.drawable.ic_bars_code));
+//                    RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(convertToDp(30, this), convertToDp(30, this));
+//                    params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                    params2.addRule(RelativeLayout.CENTER_IN_PARENT);
+//                    params2.setMargins(0, convertToDp(4, this), 0, convertToDp(4, this));
+//                    ivBarcode.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Intent intent = new Intent(EquipmentCheckList.this, ScanActivity.class);
+//                            intent.putExtra("ImageViewId", v.getId());
+//                            Log.d("ImageViewId", "onClick: " + v.getId());
+//                            startActivityForResult(intent, BARCODE_VALUE_REQUEST);
+//                        }
+//                    });
+//                    removeView(ivBarcode);
+//                    if (fields.get(position).isBarcode())
+//                        ivBarcode.setVisibility(View.VISIBLE);
+//
+//                    tvParams.addRule(RelativeLayout.LEFT_OF, ivBarcode.getId());
+//                    relativeLayout.addView(textView, tvParams);
+//                    relativeLayout.addView(ivBarcode, params2);
+//
+//                    ImageView imageView = new ImageView(this);
+//                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                    imageView.setVisibility(View.GONE);
+//                    tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+//                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                    tvParams.setMargins(0, 0, 0, convertToDp(24, this));
+//                    relativeLayout.addView(imageView, tvParams);
+//                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
+//                        imageView.setVisibility(View.VISIBLE);
+//                    }
+//
+//                    View view = new View(context);
+//                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                    RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                    p.addRule(RelativeLayout.BELOW, textView.getId());
+//                    relativeLayout.addView(view, p);
+//                    if (field.getValue() != null) {
+//                        textView.setText(field.getValue());
+//                    }
+//                    allViewInstance.add(textView);
+//                    llViews.addView(relativeLayout);
+//                    hashMap5.put(fields.get(position).getFieldId(), relativeLayout.getId());
+//                    hashmap.put(ivBarcode.getId(), textView.getId());
+//                    hideHeyboard();
 
                     SaveField2 field = fields.get(position);
+
+                    LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+
                     RelativeLayout relativeLayout = new RelativeLayout(this);
                     relativeLayout.setId(View.generateViewId());
+                    relativeLayout.setLayoutParams(linearParams);
 
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
-                    relativeLayout.setLayoutParams(params);
 
-                    EditText textView = new CustomEditText(this);
+                    EditText editText = new EditText(this);
+                    editText.setId(View.generateViewId());
+                    editText.setBackground(null);
+                    editText.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+                    editText.setTextColor(getColor(R.color.itemText));
+                    editText.setTypeface(semiBold);
+                    editText.setTextSize(COMPLEX_UNIT_SP, 14);
+//                    editText.setHintTextColor(R.color.colorBlack);
+                    editText.setHint(field.getLabel());
+
+                    ImageView ivMandatory = new ImageView(this);
+                    ivMandatory.setId(View.generateViewId());
+                    ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                    if (field.getRequired().equalsIgnoreCase("true"))
+                        ivMandatory.setVisibility(View.VISIBLE);
+                    else
+                        ivMandatory.setVisibility(View.GONE);
+
+                    ImageView ivBarcode = new ImageView(this);
+                    ivBarcode.setId(View.generateViewId());
+                    ivBarcode.setImageDrawable(getDrawable(R.drawable.ic_bars_code));
+                    if (field.isBarcode())
+                        ivBarcode.setVisibility(View.VISIBLE);
+                    else
+                        ivBarcode.setVisibility(View.GONE);
+
+                    View view = new View(this);
+                    view.setBackgroundColor(getColor(R.color.divider));
+
+                    RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                    editText.setLayoutParams(relativeParams);
+
+                    relativeParams = new RelativeLayout.LayoutParams(convertToDp(30, this), convertToDp(30, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    ivBarcode.setLayoutParams(relativeParams);
+
+                    relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                ivMandatory.setLayoutParams(relativeParams);
+
+                    relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    view.setLayoutParams(relativeParams);
+
+                    relativeLayout.addView(editText);
+                    relativeLayout.addView(ivBarcode);
+                    relativeLayout.addView(ivMandatory);
+                    relativeLayout.addView(view);
+
+                    allViewInstance.add(editText);
+                    llViews.addView(relativeLayout);
+                    hashMap5.put(field.getFieldId(), relativeLayout.getId());
+                    hashmap.put(ivBarcode.getId(), editText.getId());
+
+                    if (field.getValue() != null)
+                        editText.setText(field.getValue());
+
                     if (form_name.equalsIgnoreCase("Equipment Checklist"))
-                        if (fields.get(position).getLabel().contains("PIN")) {
-                            textView.setFocusable(false);
-                            textView.setInputType(InputType.TYPE_NULL);
-                            textView.setOnClickListener(new View.OnClickListener() {
+                        if (field.getLabel().contains("PIN")) {
+                            editText.setFocusable(false);
+                            editText.setInputType(InputType.TYPE_NULL);
+                            editText.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
 
                                     Intent intent = new Intent(EquipmentCheckList.this, PINVerificationActivity.class);
-                                    intent.putExtra("ViewId", textView.getId());
+                                    intent.putExtra("ViewId", editText.getId());
                                     startActivityForResult(intent, PIN_REQUEST);
                                 }
                             });
-                            textView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                                 @Override
                                 public void onFocusChange(View v, boolean hasFocus) {
                                     if (hasFocus) {
                                         if (flag) {
                                             Intent intent = new Intent(EquipmentCheckList.this, PINVerificationActivity.class);
-                                            intent.putExtra("ViewId", textView.getId());
+                                            intent.putExtra("ViewId", editText.getId());
                                             startActivityForResult(intent, PIN_REQUEST);
                                         }
                                     }
                                 }
                             });
                         }
-                    textView.setBackground(null);
-                    textView.setId(View.generateViewId());
-                    textView.setTextSize(COMPLEX_UNIT_SP, 14);
-                    textView.setHint(fields.get(position).getLabel());
-                    textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
-                    RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
-                    ImageView ivBarcode = new ImageView(this);
-                    ivBarcode.setVisibility(View.GONE);
-                    ivBarcode.setId(View.generateViewId());
-                    ivBarcode.setImageDrawable(getDrawable(R.drawable.ic_bars_code));
-                    RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(convertToDp(30, this), convertToDp(30, this));
-                    params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    params2.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    params2.setMargins(0, convertToDp(4, this), 0, convertToDp(4, this));
                     ivBarcode.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -1205,82 +1357,80 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                             startActivityForResult(intent, BARCODE_VALUE_REQUEST);
                         }
                     });
-                    removeView(ivBarcode);
-                    if (fields.get(position).isBarcode())
-                        ivBarcode.setVisibility(View.VISIBLE);
-
-                    tvParams.addRule(RelativeLayout.LEFT_OF, ivBarcode.getId());
-                    relativeLayout.addView(textView, tvParams);
-                    relativeLayout.addView(ivBarcode, params2);
-
-                    ImageView imageView = new ImageView(this);
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                    imageView.setVisibility(View.GONE);
-                    tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
-                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    tvParams.setMargins(0, 0, 0, convertToDp(24, this));
-                    relativeLayout.addView(imageView, tvParams);
-                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
-                        imageView.setVisibility(View.VISIBLE);
-                    }
-
-                    View view = new View(context);
-                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                    RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                    p.addRule(RelativeLayout.BELOW, textView.getId());
-                    relativeLayout.addView(view, p);
-                    if (field.getValue() != null) {
-                        textView.setText(field.getValue());
-                    }
-                    allViewInstance.add(textView);
-                    llViews.addView(relativeLayout);
-                    hashMap5.put(fields.get(position).getFieldId(), relativeLayout.getId());
-                    hashmap.put(ivBarcode.getId(), textView.getId());
                     hideHeyboard();
-
 
                 } else if (fields.get(position).getType().equalsIgnoreCase("number")) {
 
                     SaveField2 field = fields.get(position);
 
+                    LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+
                     RelativeLayout relativeLayout = new RelativeLayout(this);
                     relativeLayout.setId(View.generateViewId());
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
-                    relativeLayout.setLayoutParams(params);
+                    relativeLayout.setLayoutParams(linearParams);
 
-                    EditText editText = new CustomEditText(this);
-
-                    editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+                    EditText editText = new EditText(this);
                     editText.setId(View.generateViewId());
-                    editText.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
                     editText.setBackground(null);
-                    editText.setHint(field.getLabel());
+                    editText.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+                    editText.setTextColor(getColor(R.color.itemText));
+                    editText.setTypeface(semiBold);
                     editText.setTextSize(COMPLEX_UNIT_SP, 14);
-                    RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//                    editText.setHintTextColor(R.color.hintText);
+                    editText.setHint(field.getLabel());
+                    editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+
+                    ImageView ivMandatory = new ImageView(this);
+                    ivMandatory.setId(View.generateViewId());
+                    ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                    if (field.getRequired().equalsIgnoreCase("true"))
+                        ivMandatory.setVisibility(View.VISIBLE);
+                    else
+                        ivMandatory.setVisibility(View.GONE);
 
                     ImageView ivBarcode = new ImageView(this);
-                    ivBarcode.setVisibility(View.GONE);
                     ivBarcode.setId(View.generateViewId());
                     ivBarcode.setImageDrawable(getDrawable(R.drawable.ic_bars_code));
-                    RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(convertToDp(30, this), convertToDp(30, this));
-                    params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    params2.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    params2.setMargins(0, convertToDp(4, this), 0, 0);
-                    ivBarcode.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(EquipmentCheckList.this, ScanActivity.class);
-                            intent.putExtra("ImageViewId", v.getId());
-                            Log.d("ImageViewId", "onClick: " + v.getId());
-                            startActivityForResult(intent, BARCODE_VALUE_REQUEST);
-                        }
-                    });
-                    removeView(ivBarcode);
                     if (field.isBarcode())
                         ivBarcode.setVisibility(View.VISIBLE);
-                    if (fields.get(position).getLabel() != null && fields.get(position).getLabel().contains("PIN")) {
+                    else
+                        ivBarcode.setVisibility(View.GONE);
+
+                    View view = new View(this);
+                    view.setBackgroundColor(getColor(R.color.divider));
+
+                    RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                    editText.setLayoutParams(relativeParams);
+
+                    relativeParams = new RelativeLayout.LayoutParams(convertToDp(30, this), convertToDp(30, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    ivBarcode.setLayoutParams(relativeParams);
+
+                    relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                    ivMandatory.setLayoutParams(relativeParams);
+
+                    relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    view.setLayoutParams(relativeParams);
+
+                    relativeLayout.addView(editText);
+                    relativeLayout.addView(ivBarcode);
+                    relativeLayout.addView(ivMandatory);
+                    relativeLayout.addView(view);
+
+                    llViews.addView(relativeLayout);
+                    allViewInstance.add(editText);
+                    hashMap5.put(field.getFieldId(), relativeLayout.getId());
+                    hashmap.put(ivBarcode.getId(), editText.getId());
+
+                    if (field.getValue() != null)
+                        editText.setText(field.getValue());
+
+                    if (field.getLabel() != null && field.getLabel().contains("PIN")) {
                         editText.setInputType(InputType.TYPE_NULL);
                         editText.setFocusable(false);
                         editText.setOnClickListener(new View.OnClickListener() {
@@ -1304,37 +1454,111 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                             }
                         });
                     }
-                    ImageView ivStar = new ImageView(this);
-                    ivStar.setId(View.generateViewId());
-                    ivStar.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                    ivStar.setVisibility(View.GONE);
-                    RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
-                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    tvParams.setMargins(0, 0, 0, convertToDp(16, this));
-//                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());
-                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
-                        ivStar.setVisibility(View.VISIBLE);
-                    }
-                    params1.addRule(RelativeLayout.LEFT_OF, ivBarcode.getId());
 
-                    View view = new View(context);
-                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                    RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                    p.addRule(RelativeLayout.BELOW, editText.getId());
-
-
-                    relativeLayout.addView(editText, params1);
-                    relativeLayout.addView(ivBarcode, params2);
-                    relativeLayout.addView(ivStar, tvParams);
-                    relativeLayout.addView(view, p);
-                    llViews.addView(relativeLayout);
-                    if (field.getValue() != null) {
-                        editText.setText(field.getValue());
-                    }
-                    allViewInstance.add(editText);
-                    hashMap5.put(fields.get(position).getFieldId(), relativeLayout.getId());
-                    hashmap.put(ivBarcode.getId(), editText.getId());
+                    ivBarcode.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(EquipmentCheckList.this, ScanActivity.class);
+                            intent.putExtra("ImageViewId", v.getId());
+                            Log.d("ImageViewId", "onClick: " + v.getId());
+                            startActivityForResult(intent, BARCODE_VALUE_REQUEST);
+                        }
+                    });
                     hideHeyboard();
+//                    SaveField2 field = fields.get(position);
+//
+//                    RelativeLayout relativeLayout = new RelativeLayout(this);
+//                    relativeLayout.setId(View.generateViewId());
+//                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//                    relativeLayout.setLayoutParams(params);
+//
+//                    EditText editText = new CustomEditText(this);
+//
+//                    editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+//                    editText.setId(View.generateViewId());
+//                    editText.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
+//                    editText.setBackground(null);
+//                    editText.setHint(field.getLabel());
+//                    editText.setTextSize(COMPLEX_UNIT_SP, 14);
+//                    RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    params1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//
+//                    ImageView ivBarcode = new ImageView(this);
+//                    ivBarcode.setVisibility(View.GONE);
+//                    ivBarcode.setId(View.generateViewId());
+//                    ivBarcode.setImageDrawable(getDrawable(R.drawable.ic_bars_code));
+//                    RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(convertToDp(30, this), convertToDp(30, this));
+//                    params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                    params2.addRule(RelativeLayout.CENTER_IN_PARENT);
+//                    params2.setMargins(0, convertToDp(4, this), 0, 0);
+//                    ivBarcode.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Intent intent = new Intent(EquipmentCheckList.this, ScanActivity.class);
+//                            intent.putExtra("ImageViewId", v.getId());
+//                            Log.d("ImageViewId", "onClick: " + v.getId());
+//                            startActivityForResult(intent, BARCODE_VALUE_REQUEST);
+//                        }
+//                    });
+//                    removeView(ivBarcode);
+//                    if (field.isBarcode())
+//                        ivBarcode.setVisibility(View.VISIBLE);
+//                    if (fields.get(position).getLabel() != null && fields.get(position).getLabel().contains("PIN")) {
+//                        editText.setInputType(InputType.TYPE_NULL);
+//                        editText.setFocusable(false);
+//                        editText.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//
+//                                Intent intent = new Intent(EquipmentCheckList.this, PINVerificationActivity.class);
+//                                intent.putExtra("ViewId", editText.getId());
+//                                startActivityForResult(intent, PIN_REQUEST);
+//                            }
+//                        });
+//                        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                            @Override
+//                            public void onFocusChange(View v, boolean hasFocus) {
+//                                if (hasFocus) {
+//
+//                                    Intent intent = new Intent(EquipmentCheckList.this, PINVerificationActivity.class);
+//                                    intent.putExtra("ViewId", editText.getId());
+//                                    startActivityForResult(intent, PIN_REQUEST);
+//                                }
+//                            }
+//                        });
+//                    }
+//                    ImageView ivStar = new ImageView(this);
+//                    ivStar.setId(View.generateViewId());
+//                    ivStar.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                    ivStar.setVisibility(View.GONE);
+//                    RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+//                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                    tvParams.setMargins(0, 0, 0, convertToDp(16, this));
+////                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());
+//                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
+//                        ivStar.setVisibility(View.VISIBLE);
+//                    }
+//                    params1.addRule(RelativeLayout.LEFT_OF, ivBarcode.getId());
+//
+//                    View view = new View(context);
+//                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                    RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                    p.addRule(RelativeLayout.BELOW, editText.getId());
+//
+//
+//                    relativeLayout.addView(editText, params1);
+//                    relativeLayout.addView(ivBarcode, params2);
+//                    relativeLayout.addView(ivStar, tvParams);
+//                    relativeLayout.addView(view, p);
+//                    llViews.addView(relativeLayout);
+//                    if (field.getValue() != null) {
+//                        editText.setText(field.getValue());
+//                    }
+//                    allViewInstance.add(editText);
+//                    hashMap5.put(fields.get(position).getFieldId(), relativeLayout.getId());
+//                    hashmap.put(ivBarcode.getId(), editText.getId());
+//                    hideHeyboard();
 
 
 //                CustomEditText barcodeValue = new CustomEditText(context);
@@ -1446,100 +1670,196 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 //                hashMap5.put(obj.getFields().get(position).getFieldId(),relativeLayout.getId());
 
                 } else if (fields.get(position).getType().equals("radio-group")) {
+//                    RelativeLayout relativeLayout = new RelativeLayout(this);
+//                    TextView tvRadioButtonTitle = new CustomTextView(context);
+//                    tvRadioButtonTitle.setText(fields.get(position).getLabel());
+//
+//                    LinearLayout.LayoutParams perams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    perams1.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//
+//                    RelativeLayout.LayoutParams perams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);// Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                    perams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+////                tvRadioButtonTitle.setTextSize(12);
+//
+////                perams.setMargins(convertToDp(16),convertToDp(4), convertToDp(16), convertToDp(4));
+//                    tvRadioButtonTitle.setLayoutParams(perams);
+//                    relativeLayout.setLayoutParams(perams1);
+//                    tvRadioButtonTitle.setLayoutParams(perams);
+//                    tvRadioButtonTitle.setTypeface(semiBold);
+//                    tvRadioButtonTitle.setTextSize(COMPLEX_UNIT_SP, 16);
+//                    tvRadioButtonTitle.setTextColor(getColor(R.color.itemText));
+////                tvRadioButtonTitle.setTextSize(14);
+////                tvRadioButtonTitle.setTypeface(tvRadioButtonTitle.getTypeface(), Typeface.NORMAL);
+////                    tvRadioButtonTitle.setTextColor(Color.parseColor("#616060"));
+//                    tvRadioButtonTitle.setText(fields.get(position).getLabel());
+////                llViews.addView(tvRadioButtonTitle);
+//
+//                    LinearLayout.LayoutParams startparams = new LinearLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+////                perams.setMargins(4, 10, 4, 4);
+//
+//                    ImageView star = new ImageView(this);
+//                    star.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                    star.setLayoutParams(startparams);
+////                star.setVisibility(View.VISIBLE);
+//                    star.setVisibility(View.GONE);
+//                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
+//                        star.setVisibility(View.VISIBLE);
+////                    tvRadioButtonTitle.setTextColor(Color.RED);
+//
+//                    }
+//                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(30, 30); //or MATCH_PARENT
+//                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+//                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//
+//                    Switch toggle = new Switch(this);
+//                    toggle.setId(View.generateViewId());
+//                    int[][] states = new int[][]{
+//                            new int[]{-android.R.attr.state_checked},
+//                            new int[]{android.R.attr.state_checked},
+//                    };
+//
+//                    int[] thumbColors = new int[]{
+//                            Color.GRAY,
+//                            Color.parseColor("#79C730"),
+//                    };
+//
+//                    int[] trackColors = new int[]{
+//                            Color.GRAY,
+//                            Color.parseColor("#79C730"),
+//                    };
+//
+//
+//                    DrawableCompat.setTintList(DrawableCompat.wrap(toggle.getThumbDrawable()), new ColorStateList(states, thumbColors));
+//                    DrawableCompat.setTintList(DrawableCompat.wrap(toggle.getTrackDrawable()), new ColorStateList(states, trackColors));
+//                    RelativeLayout.LayoutParams layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT); //or MATCH_PARENT
+//                    layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                    layoutParams1.addRule(RelativeLayout.CENTER_IN_PARENT);
+////                layoutParams1.setMarginEnd(convertToDp(4));
+//                    relativeLayout.addView(tvRadioButtonTitle);
+//                    relativeLayout.addView(toggle, layoutParams1);
+////                relativeLayout.addView(star, layoutParams);
+//                    llViews.addView(relativeLayout);
+//
+//
+////                RadioGroup rg = new RadioGroup(context);
+////                rg.setTag(obj.getFields().get(position).getFieldId() + "");
+////
+////                for (int i = 0; i < obj.getFields().get(position).getOptions().size(); i++) {
+////                    RadioButton rb = new RadioButton(context);
+////                    rb.setText(obj.getFields().get(position).getOptions().get(i).getLabel());
+////                    Typeface font = Typeface.createFromAsset(getAssets(), "ProductSans-Medium.ttf");
+////                    rb.setTypeface(font);
+////                    rb.setTextSize(14);
+////                    rb.setTextColor(Color.parseColor("#616060"));
+////                    rg.addView(rb);
+////
+////                    rb.setTag(obj.getFields().get(position).getFieldId() + "," + obj.getFields().get(position).getOptions().get(i).getId() + "," + obj.getFields().get(position).getOptions().get(i).getLabel());
+////                }
+////
+////                rg.setLayoutParams(perams);
+////
+////                llViews.addView(rg);
+////                allViewInstance.add(rg);
+//                    List<Option2> options = fields.get(position).getOptions();
+//                    toggleHash.put(toggle.getId(), options);
+//                    View view = new View(context);
+//                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                    LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                    p.setMargins(0, 16, 0, 16);
+//                    view.setLayoutParams(p);
+//                    List<Integer> list = new ArrayList<>();
+//                    for (int i = position; i < fields.size() - 1; i++) {
+//                        if (fields.get(i + 1).getType().equalsIgnoreCase("number")) {
+//                            list.add(fields.get(i + 1).getFieldId());
+//                        } else if (formModel.getTitle().equalsIgnoreCase("Adverse Incident / Near Miss Form") && fields.get(i + 1).getType().equalsIgnoreCase("text")) {
+//                            list.add(fields.get(i + 1).getFieldId());
+//                            break;
+//                        } else
+//                            break;
+//
+//                    }
+//
+//                    toggleHash2.put(toggle.getId(), list);
+////                llViews.addView(view);
+//
+//                    int finalPosition = position;
+//                    toggle.setChecked(true);
+//                    if (options != null)
+//                        for (Option2 savedOption : options)
+//                            if (savedOption.getValue() != null && savedOption.getValue().equalsIgnoreCase("no")) {
+//                                toggle.setChecked(false);
+//                            }
+//                    hashMap5.put(toggle.getId(), fields.get(finalPosition).getFieldId());
+//                    toggleHash2.put(fields.get(finalPosition).getFieldId(), list);
+//                    toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                        @Override
+//                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                            if (isChecked) {
+//                                for (int i : toggleHash2.get(buttonView.getId())) {
+//                                    findViewById(hashMap5.get(i)).setVisibility(View.VISIBLE);
+//                                }
+//
+//                            } else {
+//                                for (int i : toggleHash2.get(buttonView.getId())) {
+//                                    findViewById(hashMap5.get(i)).setVisibility(View.GONE);
+//                                }
+//                            }
+//                        }
+//
+//                    });
+//                    allViewInstance.add(toggle);
+//                    hideHeyboard();
+
+                    SaveField2 field = fields.get(position);
+
                     RelativeLayout relativeLayout = new RelativeLayout(this);
-                    TextView tvRadioButtonTitle = new CustomTextView(context);
-                    tvRadioButtonTitle.setText(fields.get(position).getLabel());
+                    relativeLayout.setId(View.generateViewId());
 
-                    LinearLayout.LayoutParams perams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    perams1.setMargins(convertToDp(16, this), convertToDp(16, this), convertToDp(16, this), convertToDp(16, this));
+                    LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
 
-                    RelativeLayout.LayoutParams perams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);// Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                    perams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-//                tvRadioButtonTitle.setTextSize(12);
+                    TextView textView = new TextView(this);
+                    textView.setId(View.generateViewId());
+                    textView.setTypeface(semiBold);
+                    textView.setTextSize(COMPLEX_UNIT_SP, 16);
+                    textView.setTextColor(getColor(R.color.itemText));
+                    textView.setText(field.getLabel());
 
-//                perams.setMargins(convertToDp(16),convertToDp(4), convertToDp(16), convertToDp(4));
-                    tvRadioButtonTitle.setLayoutParams(perams);
-                    relativeLayout.setLayoutParams(perams1);
-                    tvRadioButtonTitle.setLayoutParams(perams);
-//                tvRadioButtonTitle.setTextSize(14);
-//                tvRadioButtonTitle.setTypeface(tvRadioButtonTitle.getTypeface(), Typeface.NORMAL);
-                    tvRadioButtonTitle.setTextColor(Color.parseColor("#616060"));
-                    tvRadioButtonTitle.setText(fields.get(position).getLabel());
-//                llViews.addView(tvRadioButtonTitle);
+                    ImageView ivMandatory = new ImageView(this);
+                    ivMandatory.setId(View.generateViewId());
+                    ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                    if (field.getRequired().equalsIgnoreCase("true"))
+                        ivMandatory.setVisibility(View.VISIBLE);
+                    else
+                        ivMandatory.setVisibility(View.GONE);
 
-                    LinearLayout.LayoutParams startparams = new LinearLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-//                perams.setMargins(4, 10, 4, 4);
+                    List<Option2> options = field.getOptions();
+                    AppCompatSpinner spinner = new AppCompatSpinner(this);
+                    spinner.setId(View.generateViewId());
+                    spinner.setPadding(convertToDp(8, this), 0, convertToDp(8, this), 0);
+                    EqipmentCheckListSpinnerArrayAdapter adapter = new EqipmentCheckListSpinnerArrayAdapter(context, R.layout.custom_spinner_item, options, form_name);
+                    spinner.setAdapter(adapter);
 
-                    ImageView star = new ImageView(this);
-                    star.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                    star.setLayoutParams(startparams);
-//                star.setVisibility(View.VISIBLE);
-                    star.setVisibility(View.GONE);
-                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
-                        star.setVisibility(View.VISIBLE);
-//                    tvRadioButtonTitle.setTextColor(Color.RED);
+                    RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                    textView.setLayoutParams(relativeParams);
 
-                    }
-                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(30, 30); //or MATCH_PARENT
-                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                    ivMandatory.setLayoutParams(relativeParams);
 
-                    Switch toggle = new Switch(this);
-                    toggle.setId(View.generateViewId());
-                    int[][] states = new int[][]{
-                            new int[]{-android.R.attr.state_checked},
-                            new int[]{android.R.attr.state_checked},
-                    };
+                    relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    relativeParams.topMargin = convertToDp(8, this);
+                    relativeParams.addRule(RelativeLayout.BELOW, textView.getId());
+                    spinner.setLayoutParams(relativeParams);
 
-                    int[] thumbColors = new int[]{
-                            Color.GRAY,
-                            Color.parseColor("#79C730"),
-                    };
-
-                    int[] trackColors = new int[]{
-                            Color.GRAY,
-                            Color.parseColor("#79C730"),
-                    };
-
-
-                    DrawableCompat.setTintList(DrawableCompat.wrap(toggle.getThumbDrawable()), new ColorStateList(states, thumbColors));
-                    DrawableCompat.setTintList(DrawableCompat.wrap(toggle.getTrackDrawable()), new ColorStateList(states, trackColors));
-                    RelativeLayout.LayoutParams layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT); //or MATCH_PARENT
-                    layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    layoutParams1.addRule(RelativeLayout.CENTER_IN_PARENT);
-//                layoutParams1.setMarginEnd(convertToDp(4));
-                    relativeLayout.addView(tvRadioButtonTitle);
-                    relativeLayout.addView(toggle, layoutParams1);
-//                relativeLayout.addView(star, layoutParams);
+                    relativeLayout.setLayoutParams(linearParams);
+                    relativeLayout.addView(textView);
+                    relativeLayout.addView(ivMandatory);
+                    relativeLayout.addView(spinner);
                     llViews.addView(relativeLayout);
+                    allViewInstance.add(spinner);
 
-
-//                RadioGroup rg = new RadioGroup(context);
-//                rg.setTag(obj.getFields().get(position).getFieldId() + "");
-//
-//                for (int i = 0; i < obj.getFields().get(position).getOptions().size(); i++) {
-//                    RadioButton rb = new RadioButton(context);
-//                    rb.setText(obj.getFields().get(position).getOptions().get(i).getLabel());
-//                    Typeface font = Typeface.createFromAsset(getAssets(), "ProductSans-Medium.ttf");
-//                    rb.setTypeface(font);
-//                    rb.setTextSize(14);
-//                    rb.setTextColor(Color.parseColor("#616060"));
-//                    rg.addView(rb);
-//
-//                    rb.setTag(obj.getFields().get(position).getFieldId() + "," + obj.getFields().get(position).getOptions().get(i).getId() + "," + obj.getFields().get(position).getOptions().get(i).getLabel());
-//                }
-//
-//                rg.setLayoutParams(perams);
-//
-//                llViews.addView(rg);
-//                allViewInstance.add(rg);
-                    List<Option2> options = fields.get(position).getOptions();
-                    toggleHash.put(toggle.getId(), options);
-                    View view = new View(context);
-                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                    LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                    p.setMargins(0, 16, 0, 16);
-                    view.setLayoutParams(p);
                     List<Integer> list = new ArrayList<>();
                     for (int i = position; i < fields.size() - 1; i++) {
                         if (fields.get(i + 1).getType().equalsIgnoreCase("number")) {
@@ -1552,36 +1872,42 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
                     }
 
-                    toggleHash2.put(toggle.getId(), list);
-//                llViews.addView(view);
+                    toggleHash2.put(spinner.getId(), list);
+                    hashMap5.put(spinner.getId(), field.getFieldId());
+                    toggleHash2.put(field.getFieldId(), list);
 
-                    int finalPosition = position;
-                    toggle.setChecked(true);
-                    if (options != null)
-                        for (Option2 savedOption : options)
-                            if (savedOption.getValue() != null && savedOption.getValue().equalsIgnoreCase("no")) {
-                                toggle.setChecked(false);
-                            }
-                    hashMap5.put(toggle.getId(), fields.get(finalPosition).getFieldId());
-                    toggleHash2.put(fields.get(finalPosition).getFieldId(), list);
-                    toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if (isChecked) {
-                                for (int i : toggleHash2.get(buttonView.getId())) {
-                                    findViewById(hashMap5.get(i)).setVisibility(View.VISIBLE);
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            TextView textView = view.findViewById(R.id.tvEventName);
+                            String text = textView.getText().toString();
+                            for (int j : toggleHash2.get(adapterView.getId()))
+                                if (text.equalsIgnoreCase("yes")) {
+                                    RelativeLayout relativeLayout1 = findViewById(hashMap5.get(j));
+                                    relativeLayout1.setVisibility(View.VISIBLE);
+                                    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) relativeLayout1.getLayoutParams();
+                                    layoutParams.setMargins(convertToDp(36, context), convertToDp(0, context), convertToDp(36, context), convertToDp(8, context));
+//                                    RelativeLayout relativeLayout2 = (RelativeLayout) adapterView.getParent();
+//                                    LinearLayout.LayoutParams layoutParams2 = (LinearLayout.LayoutParams) relativeLayout1.getLayoutParams();
+//                                    layoutParams.bottomMargin = convertToDp(0, EquipmentCheckList.this);
+                                } else {
+                                    findViewById(hashMap5.get(j)).setVisibility(View.GONE);
+                                    RelativeLayout relativeLayout1 = (RelativeLayout) adapterView.getParent();
+                                    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) relativeLayout1.getLayoutParams();
+                                    layoutParams.bottomMargin = convertToDp(8, EquipmentCheckList.this);
+                                    relativeLayout.setLayoutParams(layoutParams);
                                 }
-
-                            } else {
-                                for (int i : toggleHash2.get(buttonView.getId())) {
-                                    findViewById(hashMap5.get(i)).setVisibility(View.GONE);
-                                }
-                            }
                         }
 
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
                     });
-                    allViewInstance.add(toggle);
-                    hideHeyboard();
+                    for (int i = 0; i < options.size(); i++) {
+                        if (options.get(i).getValue() != null && !options.get(i).getValue().isEmpty())
+                            spinner.setSelection(i);
+                    }
 
                 } else if (fields.get(position).getType().equals("checkbox-group")) {
 //                setUpEquipmentList();
@@ -1599,25 +1925,30 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     TextView tvCheckBoxTitle = new CustomTextView(context);
                     tvCheckBoxTitle.setText(fields.get(position).getLabel());
                     LinearLayout.LayoutParams perams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+                    perams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(4, this));
                     relativeLayout.setLayoutParams(perams);
                     RelativeLayout.LayoutParams perams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
 //                perams.setMargins(20, 20, 20, 20);
-                    perams1.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+//                    perams1.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
                     tvCheckBoxTitle.setId(View.generateViewId());
-                    if (position != 0 && position + 1 < fields.size())
-                        if ((fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("header")) || (fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("textarea"))) {
-                            if (formModel.getTitle().equalsIgnoreCase("Equipment checkList")) {
-//                        relativeLayout.setGravity(Gravity.CENTER);
-                                tvCheckBoxTitle.setTextColor(getResources().getColor(R.color.colorPrimary));
-                                tvCheckBoxTitle.setTextSize(COMPLEX_UNIT_SP, 16);
-                            }
-
-                        } else {
-                            tvCheckBoxTitle.setTextColor(Color.parseColor("#616060"));
-                            tvCheckBoxTitle.setTextSize(COMPLEX_UNIT_SP, 14);
-
-                            tvCheckBoxTitle.setText(fields.get(position).getLabel());
-                        }
+                    tvCheckBoxTitle.setText(fields.get(position).getLabel());
+                    tvCheckBoxTitle.setTextColor(getColor(R.color.itemText));
+                    tvCheckBoxTitle.setTypeface(semiBold);
+                    tvCheckBoxTitle.setTextSize(COMPLEX_UNIT_SP, 16);
+//                    if (position != 0 && position + 1 < fields.size())
+//                        if ((fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("header")) || (fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("textarea"))) {
+//                            if (formModel.getTitle().equalsIgnoreCase("Equipment checkList")) {
+////                        relativeLayout.setGravity(Gravity.CENTER);
+//                                tvCheckBoxTitle.setTextColor(getResources().getColor(R.color.colorPrimary));
+//                                tvCheckBoxTitle.setTextSize(COMPLEX_UNIT_SP, 16);
+//                            }
+//
+//                        } else {
+//                            tvCheckBoxTitle.setTextColor(Color.parseColor("#616060"));
+//                            tvCheckBoxTitle.setTextSize(COMPLEX_UNIT_SP, 14);
+//
+//                            tvCheckBoxTitle.setText(fields.get(position).getLabel());
+//                        }
 //                llViews.addView(tvCheckBoxTitle);
                     RelativeLayout.LayoutParams startparams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
 //                    perams.setMargins(4, 10, 4, 4);
@@ -1640,33 +1971,33 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     selectedTV = new TextView(this);
                     selectedTV.setId(View.generateViewId());
                     selectedTV.setTextSize(COMPLEX_UNIT_SP, 14);
-                    if (position != 0 && position + 1 < fields.size())
-                        if ((fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("header")) || (fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("textarea"))) {
-                            if (formModel.getTitle().equalsIgnoreCase("Equipment checkList")) {
-                                selectedTV.setTextSize(COMPLEX_UNIT_SP, 16);
-                            }
-
-                        }
+//                    if (position != 0 && position + 1 < fields.size())
+//                        if ((fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("header")) || (fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("textarea"))) {
+//                            if (formModel.getTitle().equalsIgnoreCase("Equipment checkList")) {
+//                                selectedTV.setTextSize(COMPLEX_UNIT_SP, 16);
+//                            }
+//
+//                        }
                     RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT); //or MATCH_PARENT
                     tvParams.addRule(RelativeLayout.RIGHT_OF, tvCheckBoxTitle.getId());
 //                tvParams.setMargins(16, 0, 0, 0);
 //                tvParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    tvParams.setMargins(0, convertToDp(8, this), 0, convertToDp(8, this));
+                    tvParams.setMargins(convertToDp(8, this), convertToDp(2, this), 0, 0);
 
                     selectedTV.setLayoutParams(tvParams);
-                    selectedTV.setTextColor(Color.parseColor("#79C730"));
+                    selectedTV.setTextColor(getColor(R.color.colorOrange));
                     selectedTV.setText(numSelected + "/" + list.size()); /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     relativeLayout.addView(selectedTV);
 //                relativeLayout.addView(star, layoutParams);
-                    if (position != 0 && position + 1 < fields.size())
-                        if ((fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("header")) || (fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("textarea"))) {
-                            if (formModel.getTitle().equalsIgnoreCase("Equipment checkList")) {
-                                relativeLayout.setGravity(Gravity.CENTER);
-                                perams.setMargins(convertToDp(24, this), 0, convertToDp(16, this), 0);
-                                relativeLayout.setLayoutParams(perams);
-                            }
-
-                        }
+//                    if (position != 0 && position + 1 < fields.size())
+//                        if ((fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("header")) || (fields.get(position - 1).getType().equalsIgnoreCase("header") && fields.get(position + 1).getType().equalsIgnoreCase("textarea"))) {
+//                            if (formModel.getTitle().equalsIgnoreCase("Equipment checkList")) {
+//                                relativeLayout.setGravity(Gravity.CENTER);
+//                                perams.setMargins(convertToDp(24, this), 0, convertToDp(16, this), 0);
+//                                relativeLayout.setLayoutParams(perams);
+//                            }
+//
+//                        }
                     llViews.addView(relativeLayout);
 
                     LinearLayout ll = new LinearLayout(context);
@@ -1699,7 +2030,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     rightArrow.setPadding(0, 0, convertToDp(16, this), 0);
 
                     LinearLayout linearLayout = new LinearLayout(this);
-                    linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+//                    linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
                     params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     params.addRule(RelativeLayout.RIGHT_OF, leftArrow.getId());
                     params.addRule(RelativeLayout.LEFT_OF, rightArrow.getId());
@@ -1749,9 +2080,9 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     allViewInstance.add(ll);
 
                     View view = new View(context);
-                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+                    view.setBackgroundColor(getResources().getColor(R.color.divider));
                     LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                    p.setMargins(convertToDp(16, this), 16, convertToDp(16, this), 16);
+                    p.setMargins(convertToDp(18, this), convertToDp(8, this), convertToDp(18, this), convertToDp(8, this));
                     view.setLayoutParams(p);
 //                if (obj.getFields().get(position).getFieldId() == 8303 || obj.getFields().get(position).getFieldId() == 8299)
                     llViews.addView(view);
@@ -1821,73 +2152,125 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 //                allViewInstance.add(etTextArea);
 //
 //                llViews.addView(view);
+//
+//                    RelativeLayout relativeLayout = new RelativeLayout(this);
+//                    relativeLayout.setId(View.generateViewId());
+//
+//                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//                    relativeLayout.setLayoutParams(params);
+//
+//                    EditText textView = new CustomEditText(this);
+//                    textView.setBackground(null);
+//                    textView.setId(View.generateViewId());
+//                    textView.setTextSize(COMPLEX_UNIT_SP, 14);
+//                    textView.setHint(fields.get(position).getLabel());
+//                    textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
+//                    RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//                    relativeLayout.addView(textView, tvParams);
+//
+//                    ImageView ivBarcode = new ImageView(this);
+//                    ivBarcode.setVisibility(View.GONE);
+//                    ivBarcode.setId(View.generateViewId());
+//                    ivBarcode.setImageDrawable(getDrawable(R.drawable.ic_bars_code));
+//                    RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(60, 60);
+//                    params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                    params2.addRule(RelativeLayout.CENTER_IN_PARENT);
+//                    params2.setMargins(0, convertToDp(4, this), 0, 0);
+//                    ivBarcode.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Intent intent = new Intent(EquipmentCheckList.this, ScanActivity.class);
+//                            intent.putExtra("ImageViewId", v.getId());
+//                            Log.d("ImageViewId", "onClick: " + v.getId());
+//                            startActivityForResult(intent, BARCODE_VALUE_REQUEST);
+//                        }
+//                    });
+//                    removeView(ivBarcode);
+//                    if (fields.get(position).isBarcode())
+//                        ivBarcode.setVisibility(View.VISIBLE);
+//
+//                    tvParams.addRule(RelativeLayout.LEFT_OF, ivBarcode.getId());
+//                    removeView(textView);
+//                    relativeLayout.addView(textView, tvParams);
+//                    relativeLayout.addView(ivBarcode, params2);
+//
+//                    ImageView imageView = new ImageView(this);
+//                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                    imageView.setVisibility(View.GONE);
+//                    tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+//                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                    tvParams.setMargins(0, 0, 0, convertToDp(16, this));
+////                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
+//                    relativeLayout.addView(imageView, tvParams);
+//                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
+//                        imageView.setVisibility(View.VISIBLE);
+//                    }
+//
+//                    View view = new View(context);
+//                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                    RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                    p.addRule(RelativeLayout.BELOW, textView.getId());
+//                    relativeLayout.addView(view, p);
+//                    if (fields.get(position).getValue() != null) {
+//                        textView.setText(fields.get(position).getValue());
+//                    }
+//                    allViewInstance.add(textView);
+//                    llViews.addView(relativeLayout);
+//                    hideHeyboard();
+
+                    SaveField2 field = fields.get(position);
+
+                    LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
 
                     RelativeLayout relativeLayout = new RelativeLayout(this);
                     relativeLayout.setId(View.generateViewId());
+                    relativeLayout.setLayoutParams(linearParams);
 
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
-                    relativeLayout.setLayoutParams(params);
+                    EditText editText = new EditText(this);
+                    editText.setId(View.generateViewId());
+                    editText.setBackground(null);
+                    editText.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+                    editText.setTextColor(getColor(R.color.itemText));
+                    editText.setTypeface(semiBold);
+                    editText.setTextSize(COMPLEX_UNIT_SP, 14);
+//                    editText.setHintTextColor(R.color.hintText);
+                    editText.setHint(field.getLabel());
 
-                    EditText textView = new CustomEditText(this);
-                    textView.setBackground(null);
-                    textView.setId(View.generateViewId());
-                    textView.setTextSize(COMPLEX_UNIT_SP, 14);
-                    textView.setHint(fields.get(position).getLabel());
-                    textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
-                    RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    relativeLayout.addView(textView, tvParams);
+                    ImageView ivMandatory = new ImageView(this);
+                    ivMandatory.setId(View.generateViewId());
+                    ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                    if (field.getRequired().equalsIgnoreCase("true"))
+                        ivMandatory.setVisibility(View.VISIBLE);
+                    else
+                        ivMandatory.setVisibility(View.GONE);
 
-                    ImageView ivBarcode = new ImageView(this);
-                    ivBarcode.setVisibility(View.GONE);
-                    ivBarcode.setId(View.generateViewId());
-                    ivBarcode.setImageDrawable(getDrawable(R.drawable.ic_bars_code));
-                    RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(60, 60);
-                    params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    params2.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    params2.setMargins(0, convertToDp(4, this), 0, 0);
-                    ivBarcode.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(EquipmentCheckList.this, ScanActivity.class);
-                            intent.putExtra("ImageViewId", v.getId());
-                            Log.d("ImageViewId", "onClick: " + v.getId());
-                            startActivityForResult(intent, BARCODE_VALUE_REQUEST);
-                        }
-                    });
-                    removeView(ivBarcode);
-                    if (fields.get(position).isBarcode())
-                        ivBarcode.setVisibility(View.VISIBLE);
+                    View view = new View(this);
+                    view.setBackgroundColor(getColor(R.color.divider));
 
-                    tvParams.addRule(RelativeLayout.LEFT_OF, ivBarcode.getId());
-                    removeView(textView);
-                    relativeLayout.addView(textView, tvParams);
-                    relativeLayout.addView(ivBarcode, params2);
+                    RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                    editText.setLayoutParams(relativeParams);
 
-                    ImageView imageView = new ImageView(this);
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                    imageView.setVisibility(View.GONE);
-                    tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
-                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    tvParams.setMargins(0, 0, 0, convertToDp(16, this));
-//                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
-                    relativeLayout.addView(imageView, tvParams);
-                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
-                        imageView.setVisibility(View.VISIBLE);
-                    }
+                    relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                    ivMandatory.setLayoutParams(relativeParams);
 
-                    View view = new View(context);
-                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                    RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                    p.addRule(RelativeLayout.BELOW, textView.getId());
-                    relativeLayout.addView(view, p);
-                    if (fields.get(position).getValue() != null) {
-                        textView.setText(fields.get(position).getValue());
-                    }
-                    allViewInstance.add(textView);
+                    relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    view.setLayoutParams(relativeParams);
+
+                    relativeLayout.addView(editText);
+                    relativeLayout.addView(ivMandatory);
+                    relativeLayout.addView(view);
+
+                    allViewInstance.add(editText);
                     llViews.addView(relativeLayout);
-                    hideHeyboard();
+
+                    if (field.getValue() != null)
+                        editText.setText(field.getValue());
 
                 } else if (fields.get(position).getType().equals("select")) {
 //                RelativeLayout relativeLayout = new RelativeLayout(this);
@@ -1931,10 +2314,11 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 //                relativeLayout.addView(star, layoutParams);
 //                llViews.addView(relativeLayout);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(convertToDp(16, context), 0, convertToDp(16, context), 0);
+                    params.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(4, this));
+
                     RelativeLayout relativeLayout = new RelativeLayout(this);
                     relativeLayout.setLayoutParams(params);
-                    RelativeLayout.LayoutParams starParams = new RelativeLayout.LayoutParams(10, 10);
+                    RelativeLayout.LayoutParams starParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
                     starParams.addRule(RelativeLayout.ALIGN_PARENT_END);
                     starParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                     ImageView ivStar = new ImageView(this);
@@ -1945,7 +2329,9 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     starParams.addRule(RelativeLayout.ALIGN_PARENT_START);
                     TextView textView = new CustomTextView(context);
                     textView.setLayoutParams(starParams);
-                    textView.setTextColor(Color.parseColor("#616060"));
+                    textView.setTextColor(getColor(R.color.itemText));
+                    textView.setTypeface(semiBold);
+                    textView.setTextSize(COMPLEX_UNIT_SP, 16);
 
                     relativeLayout.addView(ivStar);
                     relativeLayout.addView(textView);
@@ -1954,14 +2340,14 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                         ivStar.setVisibility(View.VISIBLE);
 
                     AppCompatSpinner spinner = new AppCompatSpinner(context);
-//                spinner.setBackgroundColor(getColor(R.color.colorSlightGray));
+//                spinner.setBackgroundColor(getColor(R.color.colorOrange));
                     List<Option2> list = fields.get(position).getOptions();
-                    if (formModel.getTitle().equalsIgnoreCase("Equipment Checklist")) {
-                        Option2 option = new Option2();
-                        option.setOption(fields.get(position).getLabel());
-                        list.add(option);
-                        ivStar.setVisibility(View.VISIBLE);
-                    }
+//                    if (formModel.getTitle().equalsIgnoreCase("Equipment Checklist")) {
+//                        Option2 option = new Option2();
+//                        option.setOption(fields.get(position).getLabel());
+//                        list.add(option);
+//                        ivStar.setVisibility(View.VISIBLE);
+//                    }
                     EqipmentCheckListSpinnerArrayAdapter adapter = new EqipmentCheckListSpinnerArrayAdapter(context,
                             R.layout.custom_spinner_item, list, form_name);
 
@@ -1977,15 +2363,18 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     });
 
 //                star.setLayoutParams(startparams);
-                    if (formModel.getTitle().equalsIgnoreCase("Equipment Checklist"))
-                        spinner.setSelection(adapter.getCount());
-                    else textView.setText(fields.get(position).getLabel());
-                    spinner.setPadding(convertToDp(2, this), 0, 0, 0);
+//                    if (formModel.getTitle().equalsIgnoreCase("Equipment Checklist"))
+//                    spinner.setSelection(adapter.getCount());
+//                    else
+                    textView.setText(fields.get(position).getLabel());
+                    spinner.setPadding(convertToDp(8, this), 0, convertToDp(8, this), 0);
 //                RelativeLayout.LayoutParams apinnerParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //                apinnerParams.setMargins(0, 0, 0, convertToDp(16, this));
 //                apinnerParams.addRule(RelativeLayout.LEFT_OF, star.getId());
 //                spinner.setLayoutParams(apinnerParams);
-
+                    LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params2.setMargins(convertToDp(18, this), convertToDp(2, this), convertToDp(18, this), convertToDp(0, this));
+                    spinner.setLayoutParams(params2);
 //                removeView(relativeLayout);
 //                relativeLayout.addView(spinner);
                     llViews.addView(spinner);
@@ -1997,13 +2386,13 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                             spinner.setSelection(i);
                     }
                     View view = new View(context);
-                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+                    view.setBackgroundColor(getResources().getColor(R.color.divider));
                     LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                    p.setMargins(0, 16, 0, 16);
+                    p.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
                     view.setLayoutParams(p);
                     hideHeyboard();
 
-//                llViews.addView(view);
+                    llViews.addView(view);
 
 
                 } else if (fields.get(position).getType().equals("text") && (fields.get(position).getPlaceholder().equalsIgnoreCase("Time"))) {
@@ -2113,52 +2502,139 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 //                });
 //                hideHeyboard();
 
+//                    RelativeLayout relativeLayout = new RelativeLayout(this);
+//                    relativeLayout.setId(View.generateViewId());
+//
+//                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//                    relativeLayout.setLayoutParams(params);
+//
+//                    CustomTextView textView = new CustomTextView(this);
+//                    if (fields.get(position).getValue() != null) {
+//                        textView.setText(fields.get(position).getValue());
+//                    }
+//                    textView.setBackground(null);
+//                    textView.setId(View.generateViewId());
+//                    textView.setTextSize(COMPLEX_UNIT_SP, 14);
+//                    textView.setHint(fields.get(position).getLabel());
+//                    textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
+//                    RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//                    relativeLayout.addView(textView, tvParams);
+//
+//
+//                    removeView(textView);
+//                    relativeLayout.addView(textView, tvParams);
+//
+//                    ImageView imageView = new ImageView(this);
+//                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                    imageView.setVisibility(View.GONE);
+//                    tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+//                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                    tvParams.setMargins(0, 0, 0, convertToDp(16, this));
+////                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
+//                    relativeLayout.addView(imageView, tvParams);
+//                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
+//                        imageView.setVisibility(View.VISIBLE);
+//                    }
+//                    if (fields.get(position).getValue() != null) {
+//                        textView.setText(fields.get(position).getValue());
+//                    }
+//                    View view = new View(context);
+//                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                    RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                    p.addRule(RelativeLayout.BELOW, textView.getId());
+//                    relativeLayout.addView(view, p);
+//
+//                    allViewInstance.add(textView);
+//                    llViews.addView(relativeLayout);
+//                    textView.setOnClickListener(new View.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(View v) {
+//                            // TODO Auto-generated method stub
+//                            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+//                                return;
+//                            }
+//                            mLastClickTime = SystemClock.elapsedRealtime();
+//                            Calendar mcurrentTime = Calendar.getInstance();
+//                            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+//                            int minute = mcurrentTime.get(Calendar.MINUTE);
+//                            TimePickerDialog mTimePicker;
+//                            mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+//                                @Override
+//                                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+////                                etText.setText("  " + selectedHour + " : " + selectedMinute);
+//
+//                                    if (selectedHour < 10 && selectedMinute < 10) {
+//                                        textView.setText("  " + "0" + selectedHour + " : " + "0" + selectedMinute);
+//                                    } else if (selectedHour < 10) {
+//                                        textView.setText("  " + "0" + selectedHour + " : " + selectedMinute);
+//                                    } else if (selectedMinute < 10) {
+//                                        textView.setText("  " + selectedHour + " : " + "0" + selectedMinute);
+//                                    } else {
+//                                        textView.setText("  " + selectedHour + " : " + selectedMinute);
+//                                    }
+//
+//
+//                                }
+//                            }, hour, minute, true);//Yes 24 hour time
+//                            mTimePicker.setTitle("Select Time");
+//                            mTimePicker.show();
+//
+//                        }
+//                    });
+
+
+                    SaveField2 field = fields.get(position);
+
+                    LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+
                     RelativeLayout relativeLayout = new RelativeLayout(this);
                     relativeLayout.setId(View.generateViewId());
+                    relativeLayout.setLayoutParams(linearParams);
 
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
-                    relativeLayout.setLayoutParams(params);
-
-                    CustomTextView textView = new CustomTextView(this);
-                    if (fields.get(position).getValue() != null) {
-                        textView.setText(fields.get(position).getValue());
-                    }
-                    textView.setBackground(null);
+                    TextView textView = new TextView(this);
                     textView.setId(View.generateViewId());
+                    textView.setBackground(null);
+                    textView.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+                    textView.setTextColor(getColor(R.color.itemText));
+                    textView.setTypeface(semiBold);
                     textView.setTextSize(COMPLEX_UNIT_SP, 14);
-                    textView.setHint(fields.get(position).getLabel());
-                    textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
-                    RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    relativeLayout.addView(textView, tvParams);
+//                    editText.setHintTextColor(R.color.hintText);
+                    textView.setHint(field.getLabel());
 
+                    ImageView ivMandatory = new ImageView(this);
+                    ivMandatory.setId(View.generateViewId());
+                    ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                    if (field.getRequired().equalsIgnoreCase("true"))
+                        ivMandatory.setVisibility(View.VISIBLE);
+                    else
+                        ivMandatory.setVisibility(View.GONE);
 
-                    removeView(textView);
-                    relativeLayout.addView(textView, tvParams);
+                    View view = new View(this);
+                    view.setBackgroundColor(getColor(R.color.divider));
 
-                    ImageView imageView = new ImageView(this);
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                    imageView.setVisibility(View.GONE);
-                    tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
-                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    tvParams.setMargins(0, 0, 0, convertToDp(16, this));
-//                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
-                    relativeLayout.addView(imageView, tvParams);
-                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
-                        imageView.setVisibility(View.VISIBLE);
-                    }
-                    if (fields.get(position).getValue() != null) {
-                        textView.setText(fields.get(position).getValue());
-                    }
-                    View view = new View(context);
-                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                    RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                    p.addRule(RelativeLayout.BELOW, textView.getId());
-                    relativeLayout.addView(view, p);
+                    RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                    textView.setLayoutParams(relativeParams);
+
+                    relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                    ivMandatory.setLayoutParams(relativeParams);
+
+                    relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    view.setLayoutParams(relativeParams);
+
+                    relativeLayout.addView(textView);
+                    relativeLayout.addView(ivMandatory);
+                    relativeLayout.addView(view);
 
                     allViewInstance.add(textView);
                     llViews.addView(relativeLayout);
+
                     textView.setOnClickListener(new View.OnClickListener() {
 
                         @Override
@@ -2195,6 +2671,9 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
                         }
                     });
+
+                    if (field.getValue() != null)
+                        textView.setText(field.getValue());
 
                 } else if (fields.get(position).getType().equals("date")) {
 //                RelativeLayout relativeLayout = new RelativeLayout(this);
@@ -2306,49 +2785,136 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 //                });
 //                hideHeyboard();
 
+//                    RelativeLayout relativeLayout = new RelativeLayout(this);
+//                    relativeLayout.setId(View.generateViewId());
+//
+//                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
+//                    relativeLayout.setLayoutParams(params);
+//
+//                    CustomTextView textView = new CustomTextView(this);
+//
+//                    textView.setBackground(null);
+//                    textView.setId(View.generateViewId());
+//                    textView.setTextSize(COMPLEX_UNIT_SP, 14);
+//                    textView.setHint(fields.get(position).getLabel());
+//                    textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
+//                    RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//                    relativeLayout.addView(textView, tvParams);
+//
+//
+//                    removeView(textView);
+//                    relativeLayout.addView(textView, tvParams);
+//
+//                    ImageView imageView = new ImageView(this);
+//                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
+//                    imageView.setVisibility(View.GONE);
+//                    tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+//                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                    tvParams.setMargins(0, 0, 0, convertToDp(16, this));
+////                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
+//                    relativeLayout.addView(imageView, tvParams);
+//                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
+//                        imageView.setVisibility(View.VISIBLE);
+//                    }
+//
+//                    View view = new View(context);
+//                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
+//                    RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+//                    p.addRule(RelativeLayout.BELOW, textView.getId());
+//                    relativeLayout.addView(view, p);
+//
+//                    allViewInstance.add(textView);
+//                    llViews.addView(relativeLayout);
+//                    if (fields.get(position).getValue() != null) {
+//                        textView.setText(fields.get(position).getValue());
+//                    }
+//                    final Calendar myCalendar = Calendar.getInstance();
+//
+//                    final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+//
+//                        @Override
+//                        public void onDateSet(DatePicker view, int year, int monthOfYear,
+//                                              int dayOfMonth) {
+//                            // TODO Auto-generated method stub
+//                            myCalendar.set(Calendar.YEAR, year);
+//                            myCalendar.set(Calendar.MONTH, monthOfYear);
+//                            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//
+//                            String myFormat = " MM - dd - yyyy"; //In which you need put here
+//                            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+//
+//                            textView.setText(" " + sdf.format(myCalendar.getTime()));
+//                        }
+//
+//                    };
+//
+//                    textView.setOnClickListener(new View.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(View v) {
+//                            // TODO Auto-generated method stub
+//                            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+//                                return;
+//                            }
+//                            mLastClickTime = SystemClock.elapsedRealtime();
+//                            new DatePickerDialog(context, date, myCalendar
+//                                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+//                                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+//                        }
+//                    });
+
+                    SaveField2 field = fields.get(position);
+
+                    LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    linearParams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+
                     RelativeLayout relativeLayout = new RelativeLayout(this);
                     relativeLayout.setId(View.generateViewId());
+                    relativeLayout.setLayoutParams(linearParams);
 
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(convertToDp(16, this), convertToDp(8, this), convertToDp(16, this), convertToDp(8, this));
-                    relativeLayout.setLayoutParams(params);
-
-                    CustomTextView textView = new CustomTextView(this);
-
-                    textView.setBackground(null);
+                    TextView textView = new TextView(this);
                     textView.setId(View.generateViewId());
+                    textView.setBackground(null);
+                    textView.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+                    textView.setTextColor(getColor(R.color.itemText));
+                    textView.setTypeface(semiBold);
                     textView.setTextSize(COMPLEX_UNIT_SP, 14);
-                    textView.setHint(fields.get(position).getLabel());
-                    textView.setPadding(convertToDp(8, this), convertToDp(4, this), convertToDp(8, this), convertToDp(4, this));
-                    RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    relativeLayout.addView(textView, tvParams);
+//                    editText.setHintTextColor(R.color.hintText);
+                    textView.setHint(field.getLabel());
 
+                    ImageView ivMandatory = new ImageView(this);
+                    ivMandatory.setId(View.generateViewId());
+                    ivMandatory.setImageDrawable(getDrawable(R.drawable.red_astrik));
+                    if (field.getRequired().equalsIgnoreCase("true"))
+                        ivMandatory.setVisibility(View.VISIBLE);
+                    else
+                        ivMandatory.setVisibility(View.GONE);
 
-                    removeView(textView);
-                    relativeLayout.addView(textView, tvParams);
+                    View view = new View(this);
+                    view.setBackgroundColor(getColor(R.color.divider));
 
-                    ImageView imageView = new ImageView(this);
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.red_astrik));
-                    imageView.setVisibility(View.GONE);
-                    tvParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
-                    tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    tvParams.setMargins(0, 0, 0, convertToDp(16, this));
-//                tvParams.addRule(RelativeLayout.ABOVE, ;ivBarcode.getId());//                tvParams.addRule(RelativeLayout.ABOVE, textView.getId());
-                    relativeLayout.addView(imageView, tvParams);
-                    if (fields.get(position).getRequired().equalsIgnoreCase("true")) {
-                        imageView.setVisibility(View.VISIBLE);
-                    }
+                    RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                    textView.setLayoutParams(relativeParams);
 
-                    View view = new View(context);
-                    view.setBackgroundColor(getResources().getColor(R.color.colorSlightGray));
-                    RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                    p.addRule(RelativeLayout.BELOW, textView.getId());
-                    relativeLayout.addView(view, p);
+                    relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                                       ivMandatory.setLayoutParams(relativeParams);
+
+                    relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
+                    relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    view.setLayoutParams(relativeParams);
+
+                    relativeLayout.addView(textView);
+                    relativeLayout.addView(ivMandatory);
+                    relativeLayout.addView(view);
 
                     allViewInstance.add(textView);
                     llViews.addView(relativeLayout);
-                    if (fields.get(position).getValue() != null) {
+
+                    if (field.getValue() != null) {
                         textView.setText(fields.get(position).getValue());
                     }
                     final Calendar myCalendar = Calendar.getInstance();
@@ -2389,14 +2955,18 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                 } else if (fields.get(position).getType().equals("header")) {
 
                     RelativeLayout relativeLayout = new RelativeLayout(this);
+                    relativeLayout.setBackgroundColor(getColor(R.color.colorWhite));
+                    relativeLayout.setElevation(convertToDp(2, this));
 //                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
 //                    params.setMargins(8, 8, 8, 8);
 
                     final TextView textView = new CustomTextView(context);
                     RelativeLayout.LayoutParams perams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);    // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-                    perams.setMargins(convertToDp(16, this), convertToDp(16, this), convertToDp(16, this), convertToDp(16, this));
-                    perams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                    perams.setMargins(convertToDp(18, this), convertToDp(12, this), convertToDp(18, this), convertToDp(12, this));
+                    perams.addRule(RelativeLayout.ALIGN_PARENT_START);
                     textView.setLayoutParams(perams);
+                    textView.setTextColor(getColor(R.color.headerBackground));
+                    textView.setTypeface(semiBold);
                     if (fields.get(position).getPlaceholder().equalsIgnoreCase("h1")) {
                         textView.setTextSize(COMPLEX_UNIT_SP, 20);
                     } else if (fields.get(position).getPlaceholder().equalsIgnoreCase("h2")) {
@@ -2404,9 +2974,9 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     } else if (fields.get(position).getPlaceholder().equalsIgnoreCase("h3")) {
                         textView.setTextSize(COMPLEX_UNIT_SP, 16);
                     } else if (fields.get(position).getPlaceholder().equalsIgnoreCase("h4")) {
-                        textView.setTextSize(COMPLEX_UNIT_SP, 4);
+                        textView.setTextSize(COMPLEX_UNIT_SP, 14);
                     }
-                    textView.setTextColor(getResources().getColor(R.color.colorPrimary));
+//                    textView.setTextColor(getResources().getColor(R.color.colorPrimary));
                     textView.setText(fields.get(position).getLabel());
                     textView.setId(View.generateViewId());
 //                    textView.setPadding(28, 28, 28, 28);
@@ -2419,23 +2989,23 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     textView.setTag(fields.get(position).getPlaceholder());
                     Log.e("Tag", fields.get(position).getPlaceholder());
 
-                    int nxt2nxtPosition = position + 2;
-                    if (nxt2nxtPosition < fields.size()) {
-                        if (fields.get(nxt2nxtPosition).getType().equalsIgnoreCase("header") || fields.get(nxt2nxtPosition).getType().equalsIgnoreCase("textarea")) {
-
-                        } else {
-                            removeView(textView);
-                            relativeLayout.addView(textView);
-                            removeView(relativeLayout);
-                            llViews.addView(relativeLayout);
-                        }
-                    }
-                    if (position == 0) {
-                        removeView(textView);
-                        relativeLayout.addView(textView);
-                        removeView(relativeLayout);
-                        llViews.addView(relativeLayout);
-                    }
+//                    int nxt2nxtPosition = position + 2;
+//                    if (nxt2nxtPosition < fields.size()) {
+//                        if (fields.get(nxt2nxtPosition).getType().equalsIgnoreCase("header") || fields.get(nxt2nxtPosition).getType().equalsIgnoreCase("textarea")) {
+//
+//                        } else {
+//                            removeView(textView);
+//                            relativeLayout.addView(textView);
+//                            removeView(relativeLayout);
+//                            llViews.addView(relativeLayout);
+//                        }
+//                    }
+//                    if (position == 0) {
+                    removeView(textView);
+                    relativeLayout.addView(textView);
+                    removeView(relativeLayout);
+                    llViews.addView(relativeLayout);
+//                    }
                     allViewInstance.add(textView);
                     hideHeyboard();
 
@@ -2555,13 +3125,33 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
 
             }
-
+            List<Integer> integers = new ArrayList<>();
             for (SaveField2 saveField2 : fields) {
                 if (saveField2.getType().equalsIgnoreCase("radio-group"))
                     for (Option2 option2 : saveField2.getOptions())
-                        if (option2.getValue() != null && option2.getValue().equalsIgnoreCase("no"))
-                            for (int i : toggleHash2.get(saveField2.getFieldId()))
-                                findViewById(hashMap5.get(i)).setVisibility(View.GONE);
+                        if (option2.getValue() != null) {
+                            integers = toggleHash2.get(saveField2.getFieldId());
+                            for (int i : integers) {
+                                if (option2.getValue().equalsIgnoreCase("no")) {
+                                    findViewById(hashMap5.get(i)).setVisibility(View.GONE);
+                                } else if (option2.getValue().equalsIgnoreCase("yes")) {
+                                    RelativeLayout relativeLayout1 = findViewById(hashMap5.get(i));
+                                    relativeLayout1.setVisibility(View.VISIBLE);
+                                    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) relativeLayout1.getLayoutParams();
+                                    layoutParams.setMargins(convertToDp(36, context), convertToDp(0, context), convertToDp(36, context), convertToDp(8, context));
+                                }
+                            }
+//                            for (int i : toggleHash2.get(saveField2.getFieldId())) {
+//                                RelativeLayout relativeLayout1 = findViewById(hashMap5.get(i));
+//                                relativeLayout1.setVisibility(View.VISIBLE);
+//                                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) relativeLayout1.getLayoutParams();
+//                                layoutParams.setMargins(convertToDp(36, context), convertToDp(0, context), convertToDp(36, context), convertToDp(8, context));
+//                                relativeLayout1.setLayoutParams(layoutParams);
+////                                RelativeLayout relativeLayout2 = (RelativeLayout) adapterView.getParent();
+////                                LinearLayout.LayoutParams layoutParams2 = (LinearLayout.LayoutParams) relativeLayout1.getLayoutParams();
+////                                layoutParams.bottomMargin = convertToDp(0, EquipmentCheckList.this);
+//                            }
+                        }
             }
 
             flag = true;
@@ -2579,7 +3169,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     getDataFromDynamicViews(formModel);
                     if (isMandatoryFilled) {
                         submitData(obj.toString());
-                    }else {
+                    } else {
                         Toast.makeText(EquipmentCheckList.this, "Please fill all the mandatory fields", Toast.LENGTH_SHORT).show();
                         disableLoader();
                     }
@@ -2853,18 +3443,18 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     String selected_id;
                     int a = spinner.getSelectedItemPosition();
                     int b = spinner.getAdapter().getCount();
-                    if (formModel.getTitle().equalsIgnoreCase("Equipment Checklist") && spinner.getSelectedItemPosition() == spinner.getAdapter().getCount()) {
-                        isMandatoryFilled = false;
-                    }
+//                    if (formModel.getTitle().equalsIgnoreCase("Equipment Checklist") && spinner.getSelectedItemPosition() == spinner.getAdapter().getCount()) {
+//                        isMandatoryFilled = false;
+//                    }
                     String selected_name;
-                    if (form_name.equalsIgnoreCase("Equipment Checklist") && spinner.getSelectedItemPosition() == 3) {
-                        selected_id = "0";
-                        selected_name = fields.get(noOfViews).getLabel();
-                    } else {
-                        selected_id = Integer.toString(fields.get(noOfViews).getOptions().get(spinner.getSelectedItemPosition()).getId());
-                        selected_name = fields.get(noOfViews).getOptions().get(spinner.getSelectedItemPosition()).getOption();
-                    }//Log.e("Selected_field_ID", response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getFieldId() + "");
-                    Log.e("value", selected_name + "");
+//                    if (form_name.equalsIgnoreCase("Equipment Checklist") && spinner.getSelectedItemPosition() == 3) {
+//                        selected_id = "0";
+//                        selected_name = fields.get(noOfViews).getLabel();
+//                    } else {
+                    selected_id = Integer.toString(fields.get(noOfViews).getOptions().get(spinner.getSelectedItemPosition()).getId());
+                    selected_name = fields.get(noOfViews).getOptions().get(spinner.getSelectedItemPosition()).getOption();
+//                    }//Log.e("Selected_field_ID", response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getFieldId() + "");
+//                    Log.e("value", selected_name + "");
                     Log.e("field_id", selected_id + "");
                     fieldsObj.put("field_id", "" + fields.get(noOfViews).getFieldId());
                     fieldsObj.put("input_type", "select");
@@ -2907,68 +3497,121 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
 
                     try {
-                        Switch toggle = (Switch) allViewInstance.get(noOfViews);
-//                        if (fields.get(noOfViews).getRequired().equalsIgnoreCase("true")) {
-//                            if (toggle.isChecked()) {
-////                                List<ChecklistFormOption> list = toggleHash.get(toggle.getId());
-////                                for (ChecklistFormOption option : list) {
-////
-////                                }
+//                        Switch toggle = (Switch) allViewInstance.get(noOfViews);
+////                        if (fields.get(noOfViews).getRequired().equalsIgnoreCase("true")) {
+////                            if (toggle.isChecked()) {
+//////                                List<ChecklistFormOption> list = toggleHash.get(toggle.getId());
+//////                                for (ChecklistFormOption option : list) {
+//////
+//////                                }
+////                            }
+////                        }
+////                        RadioGroup radioGroup = (RadioGroup) allViewInstance.get(noOfViews);
+////                        RadioButton selectedRadioBtn = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+////                        Log.e("selected_radio_button", selectedRadioBtn.getTag().toString() + "");
+//
+////                        String a[] = selectedRadioBtn.getTag().toString().split(",");
+////                            fieldsObj.put("field_id", "" + a[0]);
+//                        fieldsObj.put("field_id", "" + saveField.getFieldId());
+//                        fieldsObj.put("value", "");
+//
+////                        Log.e("f", a[0]);
+////                        Log.e("s", a[1]);
+////                        Log.e("s", a[2]);
+//
+//                        JSONArray optionsArray = new JSONArray();
+////                    for (int k = 0; k < response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getOptions().size(); k++) {
+//                        JSONObject optionsObj = new JSONObject();
+//                        Option2 optionYes = new Option2();
+//                        Option2 optionNo = new Option2();
+//                        for (Option2 option : toggleHash.get(toggle.getId())) {
+//                            if (option.getOption().equalsIgnoreCase("yes")) {
+//                                optionYes = option;
+//                            } else if (option.getOption().equalsIgnoreCase("no")) {
+//                                optionNo = option;
 //                            }
+//
 //                        }
-//                        RadioGroup radioGroup = (RadioGroup) allViewInstance.get(noOfViews);
-//                        RadioButton selectedRadioBtn = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
-//                        Log.e("selected_radio_button", selectedRadioBtn.getTag().toString() + "");
+//                        if (toggle.isChecked()) {
+//                            optionsObj.put("id", "" + optionYes.getId());
+//                            fieldsObj.put("input_type", "radio-group");
+//                            optionsObj.put("value", optionYes.getOption());
+//                        } else {
+//                            optionsObj.put("id", "" + optionNo.getId());
+//                            fieldsObj.put("input_type", "radio-group");
+//                            optionsObj.put("value", "" + optionNo.getOption());
+//                        }
+//                        optionsArray.put(optionsObj);
+//                        fieldsObj.put("formOptions", optionsArray);
+//                        jsonArray.put(fieldsObj);
+//
+//                        JSONArray savedOptionArray = new JSONArray();
+//                        for (Option2 option : saveField.getOptions()) {
+//                            JSONObject jsonObject = new JSONObject();
+//                            jsonObject.put("option", option.getOption());
+//                            jsonObject.put("id", option.getId());
+//                            if (toggle.isChecked())
+//                                jsonObject.put("value", "yes");
+//                            else
+//                                jsonObject.put("value", "no");
+//                            savedOptionArray.put(jsonObject);
+//                        }
+//                        saveFieldsObj.put("id", saveField.getFieldId());
+//                        saveFieldsObj.put("input_type", "radio-group");
+//                        saveFieldsObj.put("formOptions", savedOptionArray);
+//                        saveFieldsObj.put("label", saveField.getLabel());
+//                        saveFieldsObj.put("name", saveField.getName());
+//                        saveFieldsObj.put("placeholder", saveField.getPlaceholder());
+//                        saveFieldsObj.put("required", saveField.getRequired());
+//                        saveFieldsObj.put("barcode", saveField.isBarcode());
+//                        saveFieldsObj.put("value", "");
+//                        saveFieldsJsonArray.put(saveFieldsObj);
 
-//                        String a[] = selectedRadioBtn.getTag().toString().split(",");
-//                            fieldsObj.put("field_id", "" + a[0]);
-                        fieldsObj.put("field_id", "" + saveField.getFieldId());
+                        Spinner spinner = (Spinner) allViewInstance.get(noOfViews);
+                        String selected_id;
+                        int a = spinner.getSelectedItemPosition();
+                        int b = spinner.getAdapter().getCount();
+//                    if (formModel.getTitle().equalsIgnoreCase("Equipment Checklist") && spinner.getSelectedItemPosition() == spinner.getAdapter().getCount()) {
+//                        isMandatoryFilled = false;
+//                    }
+                        String selected_name;
+//                    if (form_name.equalsIgnoreCase("Equipment Checklist") && spinner.getSelectedItemPosition() == 3) {
+//                        selected_id = "0";
+//                        selected_name = fields.get(noOfViews).getLabel();
+//                    } else {
+                        selected_id = Integer.toString(fields.get(noOfViews).getOptions().get(spinner.getSelectedItemPosition()).getId());
+                        selected_name = fields.get(noOfViews).getOptions().get(spinner.getSelectedItemPosition()).getOption();
+//                    }//Log.e("Selected_field_ID", response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getFieldId() + "");
+//                    Log.e("value", selected_name + "");
+                        Log.e("field_id", selected_id + "");
+                        fieldsObj.put("field_id", "" + fields.get(noOfViews).getFieldId());
+                        fieldsObj.put("input_type", "radio-group");
                         fieldsObj.put("value", "");
-
-//                        Log.e("f", a[0]);
-//                        Log.e("s", a[1]);
-//                        Log.e("s", a[2]);
 
                         JSONArray optionsArray = new JSONArray();
 //                    for (int k = 0; k < response.body().getForm().getFields().get(spinner.getSelectedItemPosition()).getOptions().size(); k++) {
                         JSONObject optionsObj = new JSONObject();
-                        Option2 optionYes = new Option2();
-                        Option2 optionNo = new Option2();
-                        for (Option2 option : toggleHash.get(toggle.getId())) {
-                            if (option.getOption().equalsIgnoreCase("yes")) {
-                                optionYes = option;
-                            } else if (option.getOption().equalsIgnoreCase("no")) {
-                                optionNo = option;
-                            }
-
-                        }
-                        if (toggle.isChecked()) {
-                            optionsObj.put("id", "" + optionYes.getId());
-                            fieldsObj.put("input_type", "radio-group");
-                            optionsObj.put("value", optionYes.getOption());
-                        } else {
-                            optionsObj.put("id", "" + optionNo.getId());
-                            fieldsObj.put("input_type", "radio-group");
-                            optionsObj.put("value", "" + optionNo.getOption());
-                        }
+                        optionsObj.put("id", selected_id);
+                        optionsObj.put("value", selected_name);
                         optionsArray.put(optionsObj);
                         fieldsObj.put("formOptions", optionsArray);
                         jsonArray.put(fieldsObj);
 
-                        JSONArray savedOptionArray = new JSONArray();
-                        for (Option2 option : saveField.getOptions()) {
+                        JSONArray savedOptionsArray = new JSONArray();
+                        for (Option2 savedOption : fields.get(noOfViews).getOptions()) {
                             JSONObject jsonObject = new JSONObject();
-                            jsonObject.put("option", option.getOption());
-                            jsonObject.put("id", option.getId());
-                            if (toggle.isChecked())
-                                jsonObject.put("value", "yes");
+                            jsonObject.put("option", savedOption.getOption());
+                            jsonObject.put("id", savedOption.getId());
+                            if (savedOption.getId() == Integer.parseInt(selected_id))
+                                jsonObject.put("value", savedOption.getOption());
                             else
-                                jsonObject.put("value", "no");
-                            savedOptionArray.put(jsonObject);
+                                jsonObject.put("value", null);
+                            savedOptionsArray.put(jsonObject);
+
                         }
-                        saveFieldsObj.put("id", saveField.getFieldId());
                         saveFieldsObj.put("input_type", "radio-group");
-                        saveFieldsObj.put("formOptions", savedOptionArray);
+                        saveFieldsObj.put("id", saveField.getFieldId());
+                        saveFieldsObj.put("formOptions", savedOptionsArray);
                         saveFieldsObj.put("label", saveField.getLabel());
                         saveFieldsObj.put("name", saveField.getName());
                         saveFieldsObj.put("placeholder", saveField.getPlaceholder());
@@ -3136,7 +3779,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     if (fields.get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = fields.get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
                         fieldsObj.put("field_id", field_id);
@@ -3166,7 +3809,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     } else {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = fields.get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -3196,7 +3839,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     if (fields.get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = fields.get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
                         fieldsObj.put("field_id", field_id);
@@ -3226,7 +3869,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     } else {
                         String field_id, text;
 
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
                         field_id = fields.get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -3256,7 +3899,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
                     if (fields.get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
 
                         text = textView.getText().toString();
                         field_id = fields.get(noOfViews).getFieldId() + "";
@@ -3288,7 +3931,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                         Log.e("textarea", "ID: " + field_id + " Text: " + textView.getText().toString() + "");
                     } else {
                         String field_id, text;
-                        CustomEditText textView = (CustomEditText) allViewInstance.get(noOfViews);
+                        EditText textView = (EditText) allViewInstance.get(noOfViews);
 
                         text = textView.getText().toString();
                         field_id = fields.get(noOfViews).getFieldId() + "";
@@ -3324,7 +3967,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     if (fields.get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = fields.get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
                         fieldsObj.put("field_id", field_id);
@@ -3354,7 +3997,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     } else {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = fields.get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -3387,7 +4030,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                         //Date
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = fields.get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
                         fieldsObj.put("field_id", field_id);
@@ -3419,7 +4062,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                         //Date
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = fields.get(noOfViews).getFieldId() + "";
                         text = textView.getText().toString();
 
@@ -3451,7 +4094,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     if (fields.get(noOfViews).getRequired().equalsIgnoreCase("true")) {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = fields.get(noOfViews).getFieldId() + "";
                         text = textView.getTag().toString();
 
@@ -3482,7 +4125,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     } else {
                         String field_id, text;
 
-                        CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                        TextView textView = (TextView) allViewInstance.get(noOfViews);
                         field_id = fields.get(noOfViews).getFieldId() + "";
                         text = textView.getTag().toString();
 
@@ -3667,7 +4310,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
             obj.put("lat", wayLatitude);
             obj.put("lng", wayLongitude);
 //            Toast.makeText(context, ""+val, Toast.LENGTH_SHORT).show();
-            obj.put("timeCount", "Start Time : "+start_time+"  "+"End Time :"+"  "+end_time);
+            obj.put("timeCount", "Start Time : " + start_time + "  " + "End Time :" + "  " + end_time);
 //            submitData(obj.toString());
 
 
@@ -3711,7 +4354,12 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 //                    if (response.body().getStatus() == 200) {
                     disableLoader();
                     handler.updateAdminForm(formModel.getForm_id(), getEmptyFields(), "");
+                    for (SelectImagesModel selectImagesModel : myImages) {
+                        File file = new File("/storage/emulated/0/MyFolder/Images", selectImagesModel.getName());
+                        boolean deleted = file.delete();
+                    }
                     Toast.makeText(EquipmentCheckList.this, "Successfully Incidence saved to server !", Toast.LENGTH_SHORT).show();
+                    timerFlag = false;
                     finish();
 //                    } else {
 //                        Toast.makeText(EquipmentCheckList.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -3788,7 +4436,23 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
         textView.setText(s);
         field2checkList.put(hashMap5.get(recyclerViewId), list);
     }
-
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View view = getCurrentFocus();
+            if (view instanceof EditText) {
+                Rect r = new Rect();
+                view.getGlobalVisibleRect(r);
+                int rawX = (int)ev.getRawX();
+                int rawY = (int)ev.getRawY();
+                if (!r.contains(rawX, rawY)) {
+                    view.clearFocus();
+                    hideHeyboard();
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
     public static class Arrows {
 
         int leftArrow;

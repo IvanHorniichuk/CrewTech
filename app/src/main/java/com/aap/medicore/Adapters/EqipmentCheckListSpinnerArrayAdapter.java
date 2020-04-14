@@ -59,9 +59,7 @@ public class EqipmentCheckListSpinnerArrayAdapter extends ArrayAdapter<String> {
     @Override
     public int getCount() {
         int count = super.getCount();
-        if (formName.equalsIgnoreCase("Equipment Checklist"))
-            return count > 0 ? count - 1 : count;
-        else
+
             return count;
     }
 }

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.aap.medicore.DatabaseHandler.DatabaseHandler;
 import com.aap.medicore.Models.DBImagesModel;
 import com.aap.medicore.Models.QueueModel;
+import com.aap.medicore.Models.SelectImagesModel;
 import com.aap.medicore.Models.SubmitFormResponse;
 import com.aap.medicore.NetworkCalls.RetrofitClass;
 
@@ -120,19 +121,7 @@ public class UploaderService extends Service {
     public void sendData(QueueModel model) {
         String task_id = model.getId();
 
-        ArrayList<DBImagesModel> imagesList = new ArrayList<>();
 
-        imagesList = databaseHandler.getAllImagesOnImageId(task_id);
-
-        Log.e("serviceImagesList", imagesList.size() + ", " + task_id);
-
-
-        ArrayList<MultipartBody.Part> images = new ArrayList<>();
-
-        for (int i = 0; i < imagesList.size(); i++) {
-            File file1 = new File(String.valueOf(imagesList.get(i).getTempUri()));
-            images.add(MultipartBody.Part.createFormData("images", file1.getName(), RequestBody.create(MediaType.parse("image/*"), new File(imagesList.get(i).getTempUri().toString()))));
-        }
         JSONArray forms = new JSONArray();
 
 
@@ -148,6 +137,17 @@ public class UploaderService extends Service {
             try {
 
                 org.json.JSONObject object1 = (JSONObject) forms.get(i);
+//                JSONArray array1 = object1.getJSONArray("fields");
+//                for (int j=0; j<array1.length();j++){
+//                    JSONObject object = array1.getJSONObject(j);
+//                    if (object.get("type").equals("file"))
+//                        array1.remove(j);
+//                }
+//                JSONArray imagesArray = new JSONArray();
+//                for (int j = 0; j < imagesList.size(); j++) {
+//                    imagesArray.put(imagesList.get(j).getName());
+//                }
+//                object1.put("images",imagesArray);
                 JSONObject object = new JSONObject();
                 object.put("job_id", task_id);
                 String formId = (String) object1.get("form_id");
@@ -164,6 +164,20 @@ public class UploaderService extends Service {
                         break;
                     }
                 }
+                ArrayList<SelectImagesModel> imagesList = new ArrayList<>();
+
+                imagesList = databaseHandler.getAllTAbImagesOnImageId(formId,task_id);
+
+                Log.e("serviceImagesList", imagesList.size() + ", " + task_id);
+
+
+                ArrayList<MultipartBody.Part> images = new ArrayList<>();
+
+                for (int j = 0; j < imagesList.size(); j++) {
+
+                    File file1 = new File(String.valueOf(imagesList.get(j).getTempUri()));
+                    images.add(MultipartBody.Part.createFormData("images", file1.getName(), RequestBody.create(MediaType.parse("image/*"), new File(imagesList.get(j).getTempUri().toString()))));
+                }
                 if (!flag) {
                     if (imagesList.size() == 0) {
                         call = RetrofitClass.getInstance().getWebRequestsInstance().formSubmitWitoutImages(tinyDB.getString(Constants.token), bodyRequest);
@@ -171,6 +185,8 @@ public class UploaderService extends Service {
                         call = RetrofitClass.getInstance().getWebRequestsInstance().formSubmit(tinyDB.getString(Constants.token), bodyRequest, images);
                     }
 
+//                    ArrayList<DBImagesModel> finalImagesList = imagesList;
+                    ArrayList<SelectImagesModel> finalImagesList = imagesList;
                     call.enqueue(new Callback<SubmitFormResponse>() {
                         @Override
                         public void onResponse(Call<SubmitFormResponse> call, Response<SubmitFormResponse> response) {
@@ -179,6 +195,12 @@ public class UploaderService extends Service {
                                 QueueModel model = databaseHandler.getQueueIncidenceStateOnIncidenceID(task_id);
                                 model.setNumSubmitted(++numSubmitted + "");
                                 databaseHandler.updateQueuedIncidenceStateOnRunId(model);
+                                for (SelectImagesModel selectImagesModel: finalImagesList){
+                                    File dir = getFilesDir();
+                                    File file = new File("/storage/emulated/0/MyFolder/Images", selectImagesModel.getName());
+                                    boolean deleted = file.delete();
+                                    Log.d("file", "onResponse: "+deleted);
+                                }
 //                            updateUI.updateUI(databaseHandler.getAllQueuedIncidences());
 //                            sendBroadcast(newintent);
                                 EventBus.getDefault().post(new MessageEvent("Form Submitted"));
@@ -204,7 +226,7 @@ public class UploaderService extends Service {
             }
 
         }
-        Log.e("serviceImgPrtsList", images.size() + "");
+//        Log.e("serviceImgPrtsList", images.size() + "");
 
         RequestBody bodyRequest = RequestBody.create(MediaType.parse("application/json"), completeCallObject.toString());
         retrofit2.Call<SubmitFormResponse> call;
@@ -213,10 +235,9 @@ public class UploaderService extends Service {
         call.enqueue(new Callback<SubmitFormResponse>() {
             @Override
             public void onResponse(Call<SubmitFormResponse> call, Response<SubmitFormResponse> response) {
+                newintent = new Intent(BROADCAST_ACTION);
+
                 if (response.isSuccessful()) {
-
-                    newintent = new Intent(BROADCAST_ACTION);
-
                     if (response.body().getStatus() == 200) {
                         newintent.putExtra(Constants.pendingStatus, false);
                         tinyDB.putBoolean(Constants.pendingStatus, false);

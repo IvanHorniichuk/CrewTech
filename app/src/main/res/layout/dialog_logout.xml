@@ -3,62 +3,66 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:layout_margin="20dp"
-    android:gravity="center_horizontal"
+    android:background="@color/screenBackground"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="30dp"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/app_logo" />
-
-    <com.aap.medicore.Utils.CustomTextView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="LOGOUT"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="20sp" />
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="18dp"
+        android:fontFamily="@font/open_sans_semibold"
+        android:text="Logout"
+        android:textColor="@color/headerBackground"
+        android:textSize="22sp" />
 
 
-    <com.aap.medicore.Utils.CustomTextView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="22dp"
+        android:fontFamily="@font/open_sans_regular"
+        android:text="Are you sure you want to logout?"
+        android:textColor="@color/headerBackground"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
         android:layout_marginTop="20dp"
-        android:layout_marginRight="8dp"
-        android:text="Are you sure you want to Logout?"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="14sp" />
+        android:background="@color/divider" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:layout_marginEnd="12dp"
+        android:gravity="end"
+        android:orientation="horizontal">
 
-        <com.aap.medicore.Utils.CustomButton
+        <Button
             android:id="@+id/btnNo"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="0.5"
-            android:background="@drawable/btn_background_primary_color"
-            android:text="NO"
-            android:textColor="@color/colorPrimary" />
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/screenBackground"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="CANCEL"
+            android:textColor="@color/headerBackground"
+            android:textSize="16sp" />
 
-        <com.aap.medicore.Utils.CustomButton
+        <Button
             android:id="@+id/btnYes"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_weight="0.5"
-            android:background="@drawable/btn_background_primary_color"
-            android:text="YES"
-            android:textColor="@color/colorPrimary" />
+            android:background="@color/screenBackground"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="LOGOUT"
+            android:textColor="@color/headerBackground"
+            android:textSize="16sp" />
     </LinearLayout>
 
 </LinearLayout>

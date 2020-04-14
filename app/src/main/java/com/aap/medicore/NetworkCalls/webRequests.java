@@ -81,8 +81,9 @@ public interface webRequests {
     @POST("dynamic-form/form-data-submit")
     Call<SubmitFormResponse> formSubmitWitoutImages(@Header("Authorization") String token,@Part("json") RequestBody body);
 
-    @GET("user/user-status")
-    Call<StatusResponse> hitUserStatus(@Header("Authorization") String token,@Query("user_id") String user_id, @Query("status") String status);
+    @FormUrlEncoded
+    @POST("user/user-status")
+    Call<StatusResponse> hitUserStatus(@Header("Authorization") String token,@Field("user_id") String user_id, @Field("status") String status);
 
     @Multipart
     @POST("dynamic-form/complete-call")
@@ -109,7 +110,9 @@ public interface webRequests {
 
     @GET("user/api-version")
     Call<VersionCheck> versioncheck();
-
+    @FormUrlEncoded
+    @POST("dynamic-form/version")
+    Call<Version> versioncheck(@Field("version") String version_no);
     @Multipart
     @POST("dynamic-form/checklist-data-submit")
     Call<SubmitFormResponse> submitChecklistData(@Header("Authorization") String token,@Part("json") RequestBody body,@Part ArrayList<MultipartBody.Part> images,@Part("vehicle_id") RequestBody vehicle_id, @Part("checklist_type") RequestBody checklist_type,@Part("form_id") int id);
@@ -124,4 +127,8 @@ public interface webRequests {
     @FormUrlEncoded
     @POST("user/updatefirebasedata")
     Call<ResponseBody> sendFCMTokenToServer(@Header("Authorization") String token, @Field("device_id")String deviceId, @Field("device_type") String deviceType);
+
+    @FormUrlEncoded
+    @POST("user/crew-logout")
+    Call<ResponseBody> crewLogout (@Header("Authorization") String token,@Field("user_id") String userId);
 }

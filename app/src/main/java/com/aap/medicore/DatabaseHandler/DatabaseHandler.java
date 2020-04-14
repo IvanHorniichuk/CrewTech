@@ -39,6 +39,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ASSIGNED_INCIDENCES_ID = "assigned_incidence_id";
     private static final String KEY_ASSIGNED_INCIDENCES_JSON = "assigned_incidence_json";
     private static final String KEY_ASSIGNED_INCIDENCE_DATE = "assigned_incidence_date";
+    private static final String KEY_ASSIGNED_INCIDENCE_TIME = "assigned_incidence_time";
 
     // table name
     private static final String TABLE_QUEUED_INCIDENCES = "queued_incidences";
@@ -88,6 +89,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_QUEUED_IMAGE_INCIDENCE_ID = "queued_image_incidence_id";
     private static final String KEY_QUEUED_IMAGE_URI = "queued_image_uri";
     private static final String KEY_NUM_FORMS_SUBMITTED = "number_of_forms_submitted";
+    private static final String KEY_QUEUED_IMAGE_NAME = "queued_image_name";
 
     //table name
     public static final String TABLE_ADMIN_FORMS = "admin_forms_table";
@@ -113,7 +115,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + TABLE_ASSIGNED_INCIDENCES
                 + "(" + KEY_ASSIGNED_INCIDENCES_ID + " INTEGER PRIMARY KEY,"
                 + KEY_ASSIGNED_INCIDENCES_JSON + " TEXT,"
-                + KEY_ASSIGNED_INCIDENCE_DATE + " TEXT"
+                + KEY_ASSIGNED_INCIDENCE_DATE + " TEXT,"
+                + KEY_ASSIGNED_INCIDENCE_TIME + " TEXT"
                 + ")";
 //
         String CREATE_TABLE_QUEUED_INCIDENCES = "CREATE TABLE IF NOT EXISTS "
@@ -158,7 +161,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + TABLE_QUEUED_IMAGES
                 + "(" + KEY_QUEUED_IMAGE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + KEY_QUEUED_IMAGE_INCIDENCE_ID + " TEXT,"
-                + KEY_QUEUED_IMAGE_URI + " TEXT"
+                + KEY_QUEUED_IMAGE_URI + " TEXT,"
+                + KEY_QUEUED_IMAGE_NAME + " TEXT"
                 + ")";
 
         String CREATE_TABLE_ADMIN_FORMS = "CREATE TABLE IF NOT EXISTS "
@@ -252,7 +256,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return formModel;
     }
 
-    public void removeAdminForm(int id){
+    public void removeAdminForm(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from " + TABLE_ADMIN_FORMS + " WHERE "
                 + KEY_ADMIN_FORM_ID + " = " + id);
@@ -267,7 +271,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             ContentValues contentValues = new ContentValues();
             contentValues.put(KEY_ASSIGNED_INCIDENCES_ID, model.getId());
             contentValues.put(KEY_ASSIGNED_INCIDENCES_JSON, model.getJson());
-            contentValues.put(KEY_ASSIGNED_INCIDENCE_DATE,model.getDate());
+            contentValues.put(KEY_ASSIGNED_INCIDENCE_DATE, model.getDate());
+            contentValues.put(KEY_ASSIGNED_INCIDENCE_TIME, model.getJobDateTime());
 
             database.insert(TABLE_ASSIGNED_INCIDENCES, null, contentValues);
             database.close();
@@ -371,7 +376,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 model.setId(cursor.getInt(0));
                 model.setJson(cursor.getString(1));
                 model.setDate(cursor.getString(2));
-
+                model.setJobDateTime(cursor.getString(3));
                 // Adding contact to list
                 list.add(model);
             } while (cursor.moveToNext());
@@ -397,6 +402,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 model.setId(cursor.getInt(0));
                 model.setJson(cursor.getString(1));
                 model.setDate(cursor.getString(2));
+                model.setJobDateTime(cursor.getString(3));
                 // Adding contact to list
             } while (cursor.moveToNext());
         }
@@ -763,7 +769,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //            contentValues.put(KEY_QUEUED_INCIDENCES_ID, model.getId());
         contentValues.put(KEY_QUEUED_IMAGE_INCIDENCE_ID, model.getIncidenceId());
         contentValues.put(KEY_QUEUED_IMAGE_URI, model.getTempUri() + "");
-
+        contentValues.put(KEY_QUEUED_IMAGE_NAME, model.getName());
         database.insert(TABLE_QUEUED_IMAGES, null, contentValues);
         database.close();
 
@@ -828,7 +834,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 model.setId(cursor.getInt(0));
                 model.setIncidenceId(cursor.getString(1));
                 model.setTempUri(Uri.parse(cursor.getString(2)));
-
+                model.setName(cursor.getString(3));
                 // Adding contact to list
                 list.add(model);
             } while (cursor.moveToNext());

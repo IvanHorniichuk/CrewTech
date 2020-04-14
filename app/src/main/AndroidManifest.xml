@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aap.medicore">
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -24,37 +25,35 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activities.FormSection"
+        <activity
+            android:name=".Activities.FormSection"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateAlwaysHidden">
 
         </activity>
         <activity
             android:name=".Activities.SignatureActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
-
-        </activity>
-        <activity android:name=".Activities.VehicleCheckList"
-            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:windowSoftInputMode="stateHidden"></activity>
+        <activity
+            android:name=".Activities.VehicleCheckList"
             android:screenOrientation="portrait"
-
-            />
-        <activity android:name=".Activities.EquipmentCheckList"
-            android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".Activities.EquipmentCheckList"
             android:screenOrientation="portrait"
-
-
-            />
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Activities.IncidentReport"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Activities.StateActivity"
+        <activity
+            android:name=".Activities.StateActivity"
             android:screenOrientation="portrait"
 
             />
-        <activity android:name=".Activities.VehicleDetails"
+        <activity
+            android:name=".Activities.VehicleDetails"
             android:screenOrientation="portrait"
 
             />
@@ -81,12 +80,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.ScanActivity" />
-        <activity android:name=".Activities.GameView"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".Activities.PINVerificationActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
+        <activity
+            android:name=".Activities.GameView"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.PINVerificationActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
 
         <service android:name=".Utils.UploaderService" />
@@ -100,19 +99,19 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
 
-<!--            <meta-data-->
-<!--                android:name="com.google.firebase.messaging.default_notification_icon"-->
-<!--                android:resource="@drawable/ic_launcher" />-->
+            <!--            <meta-data-->
+            <!--                android:name="com.google.firebase.messaging.default_notification_icon"-->
+            <!--                android:resource="@drawable/ic_launcher" />-->
 
-<!--            <meta-data-->
-<!--                android:name="com.google.firebase.messaging.default_notification_color"-->
-<!--                android:resource="#FFF" />-->
+            <!--            <meta-data-->
+            <!--                android:name="com.google.firebase.messaging.default_notification_color"-->
+            <!--                android:resource="#FFF" />-->
         </service>
 
 
         <receiver
             android:name=".Utils.NetworkReciever"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
 
                 <!-- Intent filters for broadcast receiver -->

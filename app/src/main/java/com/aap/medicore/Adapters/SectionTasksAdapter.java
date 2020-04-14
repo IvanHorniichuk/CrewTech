@@ -43,7 +43,8 @@ public class SectionTasksAdapter extends BaseAdapter implements StickyListHeader
         this.context = context;
         this.assignedIncidencesModels = assignedIncidencesModels;
         this.bitmapList = bitmapList;
-        layoutInflater = LayoutInflater.from(context);
+        if (context != null)
+            layoutInflater = LayoutInflater.from(context);
         simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     }
@@ -78,13 +79,13 @@ public class SectionTasksAdapter extends BaseAdapter implements StickyListHeader
                 if (getDifferenceInDates(currentDate, jobDate) == 1)
                     headerText = "Yesterday's Calls";
                 else
-                    headerText = simpleDateFormat.format(jobDate);
+                    headerText = "Past Calls";
                 break;
             case -1:
                 if (getDifferenceInDates(jobDate, currentDate) == 1)
                     headerText = "Tomorrow's Calls";
                 else
-                    headerText = simpleDateFormat.format(jobDate);
+                    headerText = "Future Calls";
                 break;
 
         }
@@ -137,7 +138,8 @@ public class SectionTasksAdapter extends BaseAdapter implements StickyListHeader
             convertView = layoutInflater.inflate(R.layout.layout_row_tasks, parent, false);
             holder.tvHeading = convertView.findViewById(R.id.tvHeading);
             holder.rootLayout = convertView.findViewById(R.id.rootLayout);
-            holder.tvDetails = convertView.findViewById(R.id.tvDetails);
+            holder.tvFromFacility = convertView.findViewById(R.id.tvFromFacility);
+            holder.tvToFacilty = convertView.findViewById(R.id.tvToFacility);
             holder.tvTime = convertView.findViewById(R.id.tvTime);
 
             convertView.setTag(holder);
@@ -152,9 +154,9 @@ public class SectionTasksAdapter extends BaseAdapter implements StickyListHeader
         holder.tvHeading.setText(name);
 //        holder.tvHeading.setText(response.body().getTaskList().get(position).getName());
         taskLocation = obj.getFromFacitity();
+        holder.tvFromFacility.setText(taskLocation);
         if (obj.getToFacility() != null && !obj.getToFacility().isEmpty())
-            taskLocation = taskLocation + ":" + obj.getToFacility();
-        holder.tvDetails.setText(taskLocation);
+            holder.tvToFacilty.setText(obj.getToFacility());
 //        holder.tvDetails.setText(response.body().getTaskList().get(position).getFromFacitity() + " : " + response.body().getTaskList().get(position).getToFacility());
         time = obj.getJobDateTime();
         holder.tvTime.setText(time);
@@ -192,7 +194,7 @@ public class SectionTasksAdapter extends BaseAdapter implements StickyListHeader
     }
 
     class ItemViewHolder {
-        CustomTextView tvHeading, tvDetails, tvTime/*, tvDate*/;
+        TextView tvHeading, tvFromFacility, tvToFacilty, tvTime/*, tvDate*/;
         ConstraintLayout rootLayout;
     }
 }

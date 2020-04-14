@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,7 +66,7 @@ public class Staticpages extends BaseFragment {
             @Override
             public void onRefresh() {
                 hitTasksList();
-                pullToRefresh.setRefreshing(false);
+//                pullToRefresh.setRefreshing(false);
             }
         });
 
@@ -109,24 +110,34 @@ public class Staticpages extends BaseFragment {
                                 rv_admin.setLayoutManager(new LinearLayoutManager(getActivity()));
                                 adapter = new StaticPagesAdapter(getActivity(), animalNames, response);
                                 rv_admin.setAdapter(adapter);
+                                rv_admin.getViewTreeObserver()
+                                        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                            @Override
+                                            public void onGlobalLayout() {
+                                                //At this point the layout is complete and the
+                                                //dimensions of recyclerView and any child views are known.
+                                                //Remove listener after changed RecyclerView's height to prevent infinite
+                                                pullToRefresh.setRefreshing(false);
+                                                rv_admin.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                            }
+                                        });
                             }
                         }
 
                         Log.e("size", "sizeeee" + animalNames.size());
 
 
-                    } else if (response.body().getStatus() == 404) {
-
-
                     }
                 } else if (response.code() == 401) {
                     if (getActivity() != null)
                         new SessionTimeoutDialog((BaseActivity) getActivity()).getDialog().show();
+                    pullToRefresh.setRefreshing(false);
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<StaticPages> call, Throwable t) {
+                pullToRefresh.setRefreshing(false);
                 t.printStackTrace();
             }
         });

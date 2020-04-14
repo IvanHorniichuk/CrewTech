@@ -14,22 +14,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.aap.medicore.Activities.Login;
 import com.aap.medicore.Activities.StateActivity;
-import com.aap.medicore.Activities.VehicleDetails;
-import com.aap.medicore.Adapters.AdapterTasksList;
 import com.aap.medicore.Adapters.SectionTasksAdapter;
-import com.aap.medicore.Adapters.SortingModelAdapter;
 import com.aap.medicore.BaseClasses.BaseActivity;
 import com.aap.medicore.BaseClasses.BaseFragment;
 import com.aap.medicore.DatabaseHandler.DatabaseHandler;
@@ -37,7 +36,6 @@ import com.aap.medicore.Models.AssignedIncidencesModel;
 import com.aap.medicore.Models.QueueModel;
 import com.aap.medicore.Models.SortingModel;
 import com.aap.medicore.Models.TasksListResponse;
-import com.aap.medicore.Models.VehicleDetail;
 import com.aap.medicore.Models.VehicleResponse;
 import com.aap.medicore.NetworkCalls.RetrofitClass;
 import com.aap.medicore.R;
@@ -69,16 +67,16 @@ public class DashbordFragment extends BaseFragment {
     private StickyListHeadersListView rvVisits;
     private View view;
     private LinearLayoutManager manager;
-//    private AdapterTasksList adapter;
+    //    private AdapterTasksList adapter;
 //    private SortingModelAdapter adapter;
     private SectionTasksAdapter adapter;
-    private CustomTextView tvBedsCount, tvEngineHorsepower, tvColor, tvRegistrationNo, tvStatus, tvState, tvVehicleErrorMessage, tvNoCalls;
+    private TextView tvBedsCount, tvEngineHorsepower, tvColor, tvRegistrationNo, tvStatus, tvState, tvVehicleErrorMessage, tvNoCalls;
     //    private LinearLayout llVRegistration, llVName;
     private TinyDB tinyDB;
-    private LinearLayout llLogout, llState;
+    private LinearLayout /*llLogout,*/ llState;
     private ConstraintLayout llNoVehicleData, llVehicleDetails;
     private SwipeRefreshLayout pullToRefresh;
-    private ImageView ivStatus, ivState;
+    private ImageView ivStatus, ivLogout/*, ivState*/;
     //    private ImageView profileImage;
     private DatabaseHandler databaseHandler;
     private Response<TasksListResponse> responselist;
@@ -174,7 +172,7 @@ public class DashbordFragment extends BaseFragment {
 
         manager = new LinearLayoutManager(getActivity());
         tvCallsCount = v.findViewById(R.id.tvCallsCount);
-        llLogout = v.findViewById(R.id.llLogout);
+        ivLogout = v.findViewById(R.id.ivLogout);
 
 //        tvBedsCount = v.findViewById(R.id.tvBedsCount);
 //        tvEngineHorsepower = v.findViewById(R.id.tvEngineHorsepower);
@@ -187,7 +185,7 @@ public class DashbordFragment extends BaseFragment {
         ivStatus = v.findViewById(R.id.ivStatus);
         tvStatus = v.findViewById(R.id.tvStatus);
 
-        ivState = v.findViewById(R.id.ivState);
+//        ivState = v.findViewById(R.id.ivState);
         tvState = v.findViewById(R.id.tvState);
 
         if (!(tinyDB.getString(Constants.StateTitle).isEmpty())) {
@@ -210,7 +208,7 @@ public class DashbordFragment extends BaseFragment {
 
     private void clickListeners() {
 
-        llLogout.setOnClickListener(new View.OnClickListener() {
+        ivLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 logoutConfirmDialogBox();
@@ -222,19 +220,19 @@ public class DashbordFragment extends BaseFragment {
             public void onRefresh() {
 
 //                hitPullToRefreshTasksList(pullToRefresh);
+//                pullToRefresh.setRefreshing(true);
                 hitTasksList();
                 fetchVehicleData();
-                pullToRefresh.setRefreshing(false);
             }
         });
 
-        ivState.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), StateActivity.class);
-                startActivity(i);
-            }
-        });
+//        ivState.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent i = new Intent(getActivity(), StateActivity.class);
+//                startActivity(i);
+//            }
+//        });
 
         llState.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -315,6 +313,7 @@ public class DashbordFragment extends BaseFragment {
                             String json = gson.toJson(response.body().getTaskList().get(i));
                             model.setJson(json);
                             model.setDate(response.body().getTaskList().get(i).getJobDate());
+                            model.setJobDateTime(response.body().getTaskList().get(i).getJobDateTime());
                             QueueModel queueIncidenceStateOnIncidenceID = databaseHandler.getQueueIncidenceStateOnIncidenceID(model.getId() + "");
                             if (queueIncidenceStateOnIncidenceID.getId().isEmpty())
                                 databaseHandler.addIncidences(model);
@@ -332,15 +331,30 @@ public class DashbordFragment extends BaseFragment {
                             dateList.clear();
 //                            sortList();
 //                            adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
-                            Collections.sort(assignedIncidencesModels,new DateComparator());
+                            Collections.sort(assignedIncidencesModels, new DateComparator());
 //                            adapter = new SortingModelAdapter(sortingModelList, getContext(),bitmapArray);
                             tvCallsCount.setText(Integer.toString(assignedIncidencesModels.size()));
 //                            rvVisits.setLayoutManager(manager);
-                            adapter = new SectionTasksAdapter(getContext(),assignedIncidencesModels,bitmapArray);
+                            adapter = new SectionTasksAdapter(getContext(), assignedIncidencesModels, bitmapArray);
                             rvVisits.setAdapter(adapter);
+                            rvVisits.getViewTreeObserver()
+                                    .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                        @Override
+                                        public void onGlobalLayout() {
+                                            //At this point the layout is complete and the
+                                            //dimensions of recyclerView and any child views are known.
+                                            //Remove listener after changed RecyclerView's height to prevent infinite
+                                            pullToRefresh.setRefreshing(false);
+                                            rvVisits.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                        }
+                                    });
+
                         } else {
                             rvVisits.setVisibility(View.GONE);
                             tvNoCalls.setVisibility(View.VISIBLE);
+                            tvCallsCount.setText("0");
+                            pullToRefresh.setRefreshing(false);
+
                         }
 
 
@@ -366,21 +380,63 @@ public class DashbordFragment extends BaseFragment {
 //                            rvVisits.setVisibility(View.VISIBLE);
 //                            tvNoCalls.setVisibility(View.GONE);
 //                        } else {
-//                            rvVisits.setVisibility(View.GONE);
-//                            tvNoCalls.setVisibility(View.VISIBLE);
+                        rvVisits.setVisibility(View.GONE);
+                        tvNoCalls.setVisibility(View.VISIBLE);
+                        tvCallsCount.setText("0");
+                        pullToRefresh.setRefreshing(false);
+
 //                        }
 
                     } else if (response.code() == 401) {
                         if (getActivity() != null)
                             new SessionTimeoutDialog((BaseActivity) getActivity()).getDialog().show();
+                        pullToRefresh.setRefreshing(false);
 
                     }
                 }
+//                pullToRefresh.setRefreshing(false);
+
             }
 
             @Override
             public void onFailure(retrofit2.Call<TasksListResponse> call, Throwable t) {
                 t.printStackTrace();
+                assignedIncidencesModels = databaseHandler.getAllIncidences();
+
+                if (assignedIncidencesModels.size() > 0) {
+                    rvVisits.setVisibility(View.VISIBLE);
+                    tvNoCalls.setVisibility(View.GONE);
+                    assignedIncidencesModels2.clear();
+                    sortingModelList.clear();
+                    dateList.clear();
+//                            sortList();
+//                            adapter = new AdapterTasksList(databaseHandler.getAllIncidences(), getActivity(), bitmapArray/*, response*/);
+                    Collections.sort(assignedIncidencesModels, new DateComparator());
+//                            adapter = new SortingModelAdapter(sortingModelList, getContext(),bitmapArray);
+                    tvCallsCount.setText(Integer.toString(assignedIncidencesModels.size()));
+//                            rvVisits.setLayoutManager(manager);
+                    adapter = new SectionTasksAdapter(getContext(), assignedIncidencesModels, bitmapArray);
+                    rvVisits.setAdapter(adapter);
+                    rvVisits.getViewTreeObserver()
+                            .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                @Override
+                                public void onGlobalLayout() {
+                                    //At this point the layout is complete and the
+                                    //dimensions of recyclerView and any child views are known.
+                                    //Remove listener after changed RecyclerView's height to prevent infinite
+                                    pullToRefresh.setRefreshing(false);
+                                    rvVisits.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                }
+                            });
+
+                } else {
+                    rvVisits.setVisibility(View.GONE);
+                    tvNoCalls.setVisibility(View.VISIBLE);
+                    tvCallsCount.setText("0");
+                    pullToRefresh.setRefreshing(false);
+                }
+//                pullToRefresh.setRefreshing(false);
+
             }
         });
     }
@@ -567,11 +623,11 @@ public class DashbordFragment extends BaseFragment {
 
     public void logoutConfirmDialogBox() {
         final Dialog dialog = new Dialog(getActivity());
-        final CustomButton btnNo, btnYes;
+        final Button btnNo, btnYes;
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_logout);
-        btnYes = (CustomButton) dialog.findViewById(R.id.btnYes);
-        btnNo = (CustomButton) dialog.findViewById(R.id.btnNo);
+        btnYes = (Button) dialog.findViewById(R.id.btnYes);
+        btnNo = (Button) dialog.findViewById(R.id.btnNo);
         btnNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -584,7 +640,7 @@ public class DashbordFragment extends BaseFragment {
                 if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
                     return;
                 }
-                deleteFCM_Token(dialog);
+                logoutCrew(tinyDB.getString(Constants.user_id),dialog);
             }
         });
         dialog.show();
@@ -615,6 +671,24 @@ public class DashbordFragment extends BaseFragment {
         });
     }
 
+    private void logoutCrew(String userId, Dialog dialog){
+        Call<ResponseBody> call = RetrofitClass.getInstance().getWebRequestsInstance().crewLogout(tinyDB.getString(Constants.token),userId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful())
+                    deleteFCM_Token(dialog);
+                else
+                    cancelDialog(dialog);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                cancelDialog(dialog);
+            }
+        });
+    }
+
     private void removeLocalUserData(Dialog dialog) {
 
         mLastClickTime = SystemClock.elapsedRealtime();
@@ -625,6 +699,7 @@ public class DashbordFragment extends BaseFragment {
         tinyDB.remove(Constants.first_name);
         tinyDB.remove(Constants.last_name);
         tinyDB.remove(Constants.username);
+        tinyDB.remove(Constants.StateTitle);
 //        tinyDB.remove(Constants.tokenFCM);
 
         Intent i = new Intent(getActivity(), Login.class);
@@ -783,11 +858,11 @@ public class DashbordFragment extends BaseFragment {
             if (status) {
                 ivStatus.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_status_online_new));
                 tvStatus.setText("Online");
-                tvStatus.setTextColor(getActivity().getResources().getColor(R.color.green));
+//                tvStatus.setTextColor(getActivity().getResources().getColor(R.color.green));
             } else {
                 ivStatus.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_status_offline_new));
                 tvStatus.setText("Offline");
-                tvStatus.setTextColor(getActivity().getResources().getColor(R.color.colorGray));
+//                tvStatus.setTextColor(getActivity().getResources().getColor(R.color.colorGray));
             }
             Log.e("Status", intent.getBooleanExtra(Constants.Status, false) + "");
 

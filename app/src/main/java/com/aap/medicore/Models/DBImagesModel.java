@@ -4,9 +4,18 @@ import android.net.Uri;
 
 public class DBImagesModel {
 
+    private String name;
     private Uri tempUri;
     private int id;
     private String incidenceId;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Uri getTempUri() {
         return tempUri;

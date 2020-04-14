@@ -30,6 +30,9 @@ public class SaveField2 {
     @SerializedName("formOptions")
     @Expose
     private ArrayList<Option2> options ;
+
+    @SerializedName("barcode")
+    @Expose
     private boolean barcode;
 
     public String getValue() {

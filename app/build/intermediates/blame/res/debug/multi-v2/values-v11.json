@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/root-admin/AndroidStudioProjects/CrewTech-Android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v11/values-v11.xml",
+            "outputFile": "C:\\Users\\AJ\\AndroidStudioProjects\\CrewTech-Android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
             "map": [
                 {
-                    "source": "/home/root-admin/.gradle/caches/transforms-2/files-2.1/4035bee9fd0d8bd45ed00d67d76770da/res/values-v11/values.xml",
+                    "source": "C:\\Users\\AJ\\.gradle\\caches\\transforms-2\\files-2.1\\eacb33412369022537802b5736b45277\\jetified-library-1.1.0\\res\\values-v11\\values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "4",

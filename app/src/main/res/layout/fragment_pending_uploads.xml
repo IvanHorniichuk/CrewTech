@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="4dp"
     tools:context=".Fragments.DashbordFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -16,25 +15,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 
-            android:background="@color/colorSlightGray">
+            android:background="@color/screenBackground">
 
             <RelativeLayout
                 android:id="@+id/rlHeading"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
+                android:layout_height="61dp"
+                android:gravity="center"
+                android:background="@color/headerBackground">
 
                 <com.aap.medicore.Utils.CustomTextView
                     android:id="@+id/heading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
+
                     android:text="Pending Uploads"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="24sp" />
+                    android:textColor="@color/headerText"
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="24sp"/>
 
                 <!--  <com.aap.medicore.Utils.CustomTextView
                       android:id="@+id/tvDesc"
@@ -47,11 +46,7 @@
                       android:textColor="@color/colorGray"
                       android:textSize="18sp" />-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="4dp"
-                    android:layout_below="@id/heading"
-                    android:background="@drawable/shadow_gradient" />
+
 
 
 
@@ -86,6 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="No Pending Uploads are queued yet!"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="14sp" />
         </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
