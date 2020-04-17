@@ -11,7 +11,7 @@ public class DateComparator implements Comparator<AssignedIncidencesModel> {
 
         int value1 = o2.getObjDate().compareTo(o1.getObjDate());
         if (value1 == 0) {
-            return o2.getJobDateTime().compareTo(o1.getJobDateTime());
+            return o1.getJobDateTime().compareTo(o2.getJobDateTime());
         }
         return value1;
     }

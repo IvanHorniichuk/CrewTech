@@ -6,46 +6,46 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="19"
-8-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml
+8-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml
 9        android:targetSdkVersion="28" />
-9-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml
+9-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml
 10
 11    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-11-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:5:5-81
-11-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:5:22-78
+11-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:5:5-81
+11-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:5:22-78
 12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-12-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:6:5-79
-12-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:6:22-76
+12-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:6:5-79
+12-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:6:22-76
 13    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-13-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:7:5-79
-13-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:7:22-76
+13-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:7:5-79
+13-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:7:22-76
 14    <uses-permission android:name="android.permission.INTERNET" />
-14-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:8:5-67
-14-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:8:22-64
+14-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:8:5-67
+14-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:8:22-64
 15    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-15-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:10:5-81
-15-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:10:22-78
+15-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:10:5-81
+15-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:10:22-78
 16    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-16-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:7:5-79
-16-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:7:22-76
+16-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:7:5-79
+16-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:7:22-76
 17    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-17-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:10:5-81
-17-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:10:22-78
+17-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:10:5-81
+17-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:10:22-78
 18    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-18-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:13:5-76
-18-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:13:22-73
+18-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:13:5-76
+18-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:13:22-73
 19    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-19-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:14:5-80
-19-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:14:22-77
+19-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:14:5-80
+19-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:14:22-77
 20    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-20-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:5:5-81
-20-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:5:22-78
+20-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:5:5-81
+20-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:5:22-78
 21    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
-21-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:16:5-81
-21-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:16:22-78
+21-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:16:5-81
+21-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:16:22-78
 22    <uses-permission android:name="android.permission.CAMERA" />
-22-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:17:5-65
-22-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:17:22-62
+22-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:17:5-65
+22-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:17:22-62
 23    <uses-permission android:name="android.permission.VIBRATE" />
 23-->[com.fxn769:pix:1.2.5] C:\Users\AJ\.gradle\caches\transforms-2\files-2.1\7d3718ada5da306f78dbfff41f1dff4b\jetified-pix-1.2.5\AndroidManifest.xml:13:5-66
 23-->[com.fxn769:pix:1.2.5] C:\Users\AJ\.gradle\caches\transforms-2\files-2.1\7d3718ada5da306f78dbfff41f1dff4b\jetified-pix-1.2.5\AndroidManifest.xml:13:22-63
@@ -68,163 +68,163 @@
 31-->[com.google.firebase:firebase-iid:20.0.0] C:\Users\AJ\.gradle\caches\transforms-2\files-2.1\ecfdef5fba41eaa6ebed5cf94d7d37b2\jetified-firebase-iid-20.0.0\AndroidManifest.xml:26:22-79
 32
 33    <application
-33-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:19:5-124:19
+33-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:19:5-124:19
 34        android:name="com.aap.medicore.BaseClasses.BaseApplication"
-34-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:20:9-52
+34-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:20:9-52
 35        android:allowBackup="false"
-35-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:21:9-36
+35-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:21:9-36
 36        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 36-->[androidx.core:core:1.1.0] C:\Users\AJ\.gradle\caches\transforms-2\files-2.1\586989deb99e1d86d83428b9ac0b799b\core-1.1.0\AndroidManifest.xml:24:18-86
 37        android:debuggable="true"
 38        android:icon="@mipmap/ic_launcher"
-38-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:22:9-43
+38-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:22:9-43
 39        android:label="@string/app_name"
-39-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:23:9-41
+39-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:23:9-41
 40        android:largeHeap="true"
 40-->[com.fxn769:pix:1.2.5] C:\Users\AJ\.gradle\caches\transforms-2\files-2.1\7d3718ada5da306f78dbfff41f1dff4b\jetified-pix-1.2.5\AndroidManifest.xml:17:9-33
 41        android:roundIcon="@mipmap/ic_launcher_round"
-41-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:24:9-54
+41-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:24:9-54
 42        android:supportsRtl="true"
-42-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:25:9-35
+42-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:25:9-35
 43        android:testOnly="true"
 44        android:theme="@style/AppTheme"
-44-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:26:9-40
+44-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:26:9-40
 45        android:usesCleartextTraffic="true" >
-45-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:27:9-44
+45-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:27:9-44
 46        <activity
-46-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:28:9-33:20
+46-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:28:9-33:20
 47            android:name="com.aap.medicore.Activities.FormSection"
-47-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:29:13-51
+47-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:29:13-51
 48            android:screenOrientation="portrait"
-48-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:30:13-49
+48-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:30:13-49
 49            android:windowSoftInputMode="stateAlwaysHidden" >
-49-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:31:13-60
+49-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:31:13-60
 50        </activity>
 51        <activity
-51-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:34:9-37:66
+51-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:34:9-37:66
 52            android:name="com.aap.medicore.Activities.SignatureActivity"
-52-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:35:13-57
+52-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:35:13-57
 53            android:screenOrientation="portrait"
-53-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:36:13-49
+53-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:36:13-49
 54            android:windowSoftInputMode="stateHidden" />
-54-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:37:13-54
+54-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:37:13-54
 55        <activity
-55-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:38:9-41:71
+55-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:38:9-41:71
 56            android:name="com.aap.medicore.Activities.VehicleCheckList"
-56-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:39:13-56
+56-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:39:13-56
 57            android:screenOrientation="portrait"
-57-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:40:13-49
+57-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:40:13-49
 58            android:windowSoftInputMode="stateVisible|adjustResize" />
-58-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:41:13-68
+58-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:41:13-68
 59        <activity
-59-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:42:9-45:57
+59-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:42:9-45:57
 60            android:name="com.aap.medicore.Activities.EquipmentCheckList"
-60-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:43:13-58
+60-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:43:13-58
 61            android:screenOrientation="portrait"
-61-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:44:13-49
+61-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:44:13-49
 62            android:windowSoftInputMode="stateHidden" />
-62-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:45:13-54
+62-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:45:13-54
 63        <activity
-63-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:46:9-49:57
+63-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:46:9-49:57
 64            android:name="com.aap.medicore.Activities.IncidentReport"
-64-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:47:13-54
+64-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:47:13-54
 65            android:screenOrientation="portrait"
-65-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:48:13-49
+65-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:48:13-49
 66            android:windowSoftInputMode="stateHidden" />
-66-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:49:13-54
+66-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:49:13-54
 67        <activity
-67-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:50:9-54:15
+67-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:50:9-54:15
 68            android:name="com.aap.medicore.Activities.StateActivity"
-68-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:51:13-53
+68-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:51:13-53
 69            android:screenOrientation="portrait" />
-69-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:52:13-49
+69-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:52:13-49
 70        <activity
-70-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:55:9-59:15
+70-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:55:9-59:15
 71            android:name="com.aap.medicore.Activities.VehicleDetails"
-71-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:56:13-54
+71-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:56:13-54
 72            android:screenOrientation="portrait" />
-72-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:57:13-49
+72-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:57:13-49
 73        <activity
-73-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:60:9-63:70
+73-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:60:9-63:70
 74            android:name="com.aap.medicore.Activities.TaskDetails"
-74-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:61:13-51
+74-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:61:13-51
 75            android:screenOrientation="portrait"
-75-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:62:13-49
+75-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:62:13-49
 76            android:windowSoftInputMode="stateHidden|adjustResize" />
-76-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:63:13-67
+76-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:63:13-67
 77        <activity
-77-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:64:9-68:71
+77-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:64:9-68:71
 78            android:name="com.aap.medicore.Activities.Home"
-78-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:65:13-44
+78-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:65:13-44
 79            android:label="@string/title_activity_home"
-79-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:66:13-56
+79-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:66:13-56
 80            android:screenOrientation="portrait"
-80-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:67:13-49
+80-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:67:13-49
 81            android:windowSoftInputMode="stateVisible|adjustResize" />
-81-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:68:13-68
+81-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:68:13-68
 82        <activity
-82-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:69:9-72:57
+82-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:69:9-72:57
 83            android:name="com.aap.medicore.Activities.Login"
-83-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:70:13-45
+83-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:70:13-45
 84            android:screenOrientation="portrait"
-84-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:71:13-49
+84-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:71:13-49
 85            android:windowSoftInputMode="stateHidden" />
-85-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:72:13-54
+85-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:72:13-54
 86        <activity
-86-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:73:9-81:20
+86-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:73:9-81:20
 87            android:name="com.aap.medicore.Activities.Splash"
-87-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:74:13-46
+87-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:74:13-46
 88            android:screenOrientation="portrait"
-88-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:75:13-49
+88-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:75:13-49
 89            android:windowSoftInputMode="stateHidden|adjustResize" >
-89-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:76:13-67
+89-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:76:13-67
 90            <intent-filter>
-90-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:77:13-80:29
+90-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:77:13-80:29
 91                <action android:name="android.intent.action.MAIN" />
-91-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:78:17-69
-91-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:78:25-66
+91-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:78:17-69
+91-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:78:25-66
 92
 93                <category android:name="android.intent.category.LAUNCHER" />
-93-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:79:17-77
-93-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:79:27-74
+93-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:79:17-77
+93-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:79:27-74
 94            </intent-filter>
 95        </activity>
 96        <activity android:name="com.aap.medicore.Activities.ScanActivity" />
-96-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:82:9-61
-96-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:82:19-58
+96-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:82:9-61
+96-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:82:19-58
 97        <activity
-97-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:83:9-85:52
+97-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:83:9-85:52
 98            android:name="com.aap.medicore.Activities.GameView"
-98-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:84:13-48
+98-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:84:13-48
 99            android:screenOrientation="portrait" />
-99-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:85:13-49
+99-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:85:13-49
 100        <activity
-100-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:86:9-88:63
+100-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:86:9-88:63
 101            android:name="com.aap.medicore.Activities.PINVerificationActivity"
-101-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:87:13-63
+101-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:87:13-63
 102            android:windowSoftInputMode="stateAlwaysHidden" />
-102-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:88:13-60
+102-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:88:13-60
 103
 104        <service android:name="com.aap.medicore.Utils.UploaderService" />
-104-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:91:9-58
-104-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:91:18-55
+104-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:91:9-58
+104-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:91:18-55
 105        <service
-105-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:92:9-94:40
+105-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:92:9-94:40
 106            android:name="com.novoda.merlin.MerlinService"
-106-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:93:13-59
+106-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:93:13-59
 107            android:exported="false" />
-107-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:94:13-37
+107-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:94:13-37
 108        <service
-108-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:95:9-109:19
+108-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:95:9-109:19
 109            android:name="com.aap.medicore.Utils.MyFirebaseMessagingService"
-109-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:96:13-61
+109-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:96:13-61
 110            android:exported="false" >
-110-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:97:13-37
+110-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:97:13-37
 111            <intent-filter>
-111-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:98:13-100:29
+111-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:98:13-100:29
 112                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-112-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:99:17-78
-112-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:99:25-75
+112-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:99:17-78
+112-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:99:25-75
 113            </intent-filter>
 114
 115            <!-- <meta-data -->
@@ -238,18 +238,18 @@
 123        </service>
 124
 125        <receiver
-125-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:112:9-121:20
+125-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:112:9-121:20
 126            android:name="com.aap.medicore.Utils.NetworkReciever"
-126-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:113:13-50
+126-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:113:13-50
 127            android:enabled="true" >
-127-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:114:13-35
+127-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:114:13-35
 128            <intent-filter>
-128-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:115:13-120:29
+128-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:115:13-120:29
 129
 130                <!-- Intent filters for broadcast receiver -->
 131                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-131-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:118:17-79
-131-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:118:25-76
+131-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:118:17-79
+131-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:118:25-76
 132            </intent-filter>
 133        </receiver>
 134
@@ -296,10 +296,10 @@
 158            android:exported="false" >
 158-->[com.google.firebase:firebase-messaging:20.0.0] C:\Users\AJ\.gradle\caches\transforms-2\files-2.1\421d70af8daf97ec3105b5015d9f437e\jetified-firebase-messaging-20.0.0\AndroidManifest.xml:30:13-37
 159            <intent-filter android:priority="-500" >
-159-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:98:13-100:29
+159-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:98:13-100:29
 160                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-160-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:99:17-78
-160-->C:\Users\AJ\AndroidStudioProjects\CrewTech-Android\app\src\main\AndroidManifest.xml:99:25-75
+160-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:99:17-78
+160-->C:\Users\AJ\AndroidStudioProjects\CrewTech\app\src\main\AndroidManifest.xml:99:25-75
 161            </intent-filter>
 162        </service>
 163
