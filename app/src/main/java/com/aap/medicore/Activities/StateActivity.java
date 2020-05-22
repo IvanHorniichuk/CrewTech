@@ -184,7 +184,7 @@ public class StateActivity extends BaseActivity {
 
         retrofit2.Call<StatusResponse> call;
 
-        call = RetrofitClass.getInstance().getWebRequestsInstance().hitUserStatus(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id), tinyDB.getString(Constants.StateTitle));
+        call = RetrofitClass.getInstance().getWebRequestsInstance().hitUserStatus(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id), tinyDB.getString(Constants.StateTitle),"online");
 
         call.enqueue(new Callback<StatusResponse>() {
             private Intent newintent;

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\AJ\\AndroidStudioProjects\\CrewTech\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
+            "outputFile": "C:\\Users\\AJ\\AndroidStudioProjects\\CrewTech-Android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
             "map": [
                 {
                     "source": "C:\\Users\\AJ\\.gradle\\caches\\transforms-2\\files-2.1\\eacb33412369022537802b5736b45277\\jetified-library-1.1.0\\res\\values-v11\\values.xml",

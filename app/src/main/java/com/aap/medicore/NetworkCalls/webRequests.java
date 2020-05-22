@@ -83,7 +83,7 @@ public interface webRequests {
 
     @FormUrlEncoded
     @POST("user/user-status")
-    Call<StatusResponse> hitUserStatus(@Header("Authorization") String token,@Field("user_id") String user_id, @Field("status") String status);
+    Call<StatusResponse> hitUserStatus(@Header("Authorization") String token,@Field("user_id") String user_id, @Field("status") String status, @Field("user_status") String userStatus);
 
     @Multipart
     @POST("dynamic-form/complete-call")

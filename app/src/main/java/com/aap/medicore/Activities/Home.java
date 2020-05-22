@@ -263,7 +263,7 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
     private void hitUserStatus(){
         retrofit2.Call<StatusResponse> call;
 
-        call = RetrofitClass.getInstance().getWebRequestsInstance().hitUserStatus(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id), state);
+        call = RetrofitClass.getInstance().getWebRequestsInstance().hitUserStatus(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id), state,"online");
 
         call.enqueue(new Callback<StatusResponse>() {
             @Override

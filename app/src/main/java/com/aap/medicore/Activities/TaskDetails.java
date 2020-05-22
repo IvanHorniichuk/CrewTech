@@ -133,6 +133,7 @@ public class TaskDetails extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_task_details);
         getSupportActionBar().hide();
+
         if (getIntent() != null) {
             task_id = getIntent().getStringExtra(Constants.task_id);
             SettingValues.setTaskId(task_id);
@@ -812,7 +813,6 @@ public class TaskDetails extends BaseActivity {
 //            call = RetrofitClass.getInstance().getWebRequestsInstance().formSubmit(tinyDB.getString(Constants.token), bodyRequest, images);
 //            Log.e("Token", "value of token is " + tinyDB.getString(Constants.token));
 //        }
-
         call.enqueue(new Callback<SubmitFormResponse>() {
             @Override
             public void onResponse(retrofit2.Call<SubmitFormResponse> call, Response<SubmitFormResponse> response) {
@@ -827,7 +827,6 @@ public class TaskDetails extends BaseActivity {
                         QueueModel model2 = handler.getDraftIncidenceStateOnIncidenceID(model.getTab_id(), task_id);
                         prepareData(model2, formImages);
                         handler.deleteDraftIncidenceOnIndidenceId(model.getTab_id(), task_id);
-
                     }
                     handler.deleteDraftIncidencesTable();
                     handler.deleteTabsImagesData();
