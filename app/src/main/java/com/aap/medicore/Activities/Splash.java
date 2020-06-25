@@ -63,19 +63,20 @@ tinyDB = new TinyDB(Splash.this);
             @Override
             public void onResponse(retrofit2.Call<Version> call, Response<Version> response) {
                 if (response.isSuccessful()) {
-                    if (response.body().getStatus() == 200) {
+                    //uncoment to enable version check
+                  /*  if (response.body().getStatus() == 200) {
                         permissionAccess();
                     }
                     else{
                         logoutConfirmDialogBox();
-                    }
-
+                    }*/
+                    permissionAccess();
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<Version> call, Throwable t) {
-
+                //todo what to do if no internet connection is available
             }
         });
     }

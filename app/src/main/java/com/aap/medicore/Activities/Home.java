@@ -98,7 +98,8 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
                 case R.id.navigation_patient_information:
                     pager.setCurrentItem(2, false);
                     return true;
-                    case R.id.Staticpages:
+
+                case R.id.Staticpages:
                     pager.setCurrentItem(3, false);
                     return true;
 
@@ -145,7 +146,7 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
                         wayLatitude = location.getLatitude();
                         wayLongitude = location.getLongitude();
 
-                        Log.e("location","loccccccccccc"+wayLongitude+" ,"+wayLatitude);
+                        Log.e("location", "loccccccccccc" + wayLongitude + " ," + wayLatitude);
                         if (!isContinue) {
 
                         } else {
@@ -165,7 +166,6 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
 
 
         getLocation();
-
 
 
         if (!(tinyDB.getString(Constants.StateTitle).isEmpty())) {
@@ -279,7 +279,7 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
 
                 retrofit2.Call<StatusResponse> call;
 
-                call = RetrofitClass.getInstance().getWebRequestsInstance().hitUserStatus(tinyDB.getString(Constants.token),tinyDB.getString(Constants.user_id), state);
+                call = RetrofitClass.getInstance().getWebRequestsInstance().hitUserStatus(tinyDB.getString(Constants.token), tinyDB.getString(Constants.user_id), state);
 
                 call.enqueue(new Callback<StatusResponse>() {
                     @Override
@@ -352,6 +352,7 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
                     bottomNavigationView.setSelectedItemId(R.id.navigation_patient_information);
 
                 }
+
             }
 
             @Override

@@ -9,9 +9,9 @@ public class Constants {
 
 //new local address
 ////
-      public final static String SERVER_ADDRESS = "http://192.168.10.104:8080/api/";
+//-      public final static String SERVER_ADDRESS = "http://192.168.10.104:8080/api/";
 
-      public final static String IMAGE_IP = "http://192.168.10.104:8080";
+ //-     public final static String IMAGE_IP = "http://192.168.10.104:8080";
 
 
     public final static String webaddress = "http://192.168.10.104:8080/";
@@ -23,8 +23,8 @@ public class Constants {
 
 
 //     new live address
-//  public final static String IMAGE_IP = "https://crewtech.org/";
-//  public final static String SERVER_ADDRESS = "https://crewtech.org/api/";
+    public final static String IMAGE_IP = "https://crewtech.org/";
+    public final static String SERVER_ADDRESS = "https://crewtech.org/api/";
 
     public final static String user_id = "user_id";
     public final static String token = "token";
