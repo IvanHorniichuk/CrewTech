@@ -1302,7 +1302,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
                     relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
                     relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-                ivMandatory.setLayoutParams(relativeParams);
+                    ivMandatory.setLayoutParams(relativeParams);
 
                     relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
                     relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -2901,7 +2901,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 
                     relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
                     relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-                                       ivMandatory.setLayoutParams(relativeParams);
+                    ivMandatory.setLayoutParams(relativeParams);
 
                     relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(2, this));
                     relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -2929,7 +2929,8 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                             myCalendar.set(Calendar.MONTH, monthOfYear);
                             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                            String myFormat = " MM - dd - yyyy"; //In which you need put here
+                           // String myFormat = " MM - dd - yyyy"; //In which you need put here
+                            String myFormat = "dd/MM/yyyy"; //In which you need put here
                             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
                             textView.setText(" " + sdf.format(myCalendar.getTime()));
@@ -3114,6 +3115,13 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                         }
                     });
 
+                    String path=fields.get(position).getValue();
+                    if(path!=null&&!path.isEmpty())
+                    {
+                        etText.setTag(path);
+                        iv.setVisibility(View.VISIBLE);
+                        Glide.with(context).load(path).into(iv);
+                    }
 
 //                iv.setVisibility(View.GONE);
 
@@ -3167,7 +3175,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                     Log.e("curenttime", "scccccccccc" + datetime);
                     end_time = datetime;
                     getDataFromDynamicViews(formModel);
-                    if (isMandatoryFilled) {
+                    if (isMandatoryFilled && obj != null) {
                         submitData(obj.toString());
                     } else {
                         Toast.makeText(EquipmentCheckList.this, "Please fill all the mandatory fields", Toast.LENGTH_SHORT).show();
@@ -4172,11 +4180,12 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                             fieldsObj.put("field_id", field_id);
                             saveFieldsObj.put("id", field_id);
                             fieldsObj.put("input_type", "signature");
-                            saveFieldsObj.put("input_type", "signature");
+                           // saveFieldsObj.put("input_type", "signature");
+                            saveFieldsObj.put("input_type", "text");
                             fieldsObj.put("value", encodedImage);
-                            saveFieldsObj.put("value", encodedImage);
+                           // saveFieldsObj.put("value", encodedImage);
+                            saveFieldsObj.put("value", text);
                             if (!text.equalsIgnoreCase("")) {
-
                             } else {
                                 isMandatoryFilled = false;
 
@@ -4197,7 +4206,28 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                         } catch (NullPointerException e) {
                             e.printStackTrace();
                             isMandatoryFilled = false;
+                            String field_id;
+                            CustomTextView textView = (CustomTextView) allViewInstance.get(noOfViews);
+                            field_id = fields.get(noOfViews).getFieldId() + "";
 
+                            fieldsObj.put("field_id", field_id);
+                            saveFieldsObj.put("id", field_id);
+                            fieldsObj.put("input_type", "signature");
+                            // saveFieldsObj.put("input_type", "signature");
+                            saveFieldsObj.put("input_type", "text");
+                            fieldsObj.put("value", "");
+                            saveFieldsObj.put("value", "");
+
+                            JSONArray optionsArray = new JSONArray();
+                            fieldsObj.put("formOptions", optionsArray);
+                            jsonArray.put(fieldsObj);
+                            saveFieldsObj.put("formOptions", optionsArray);
+                            saveFieldsObj.put("label", saveField.getLabel());
+                            saveFieldsObj.put("name", saveField.getName());
+                            saveFieldsObj.put("placeholder", saveField.getPlaceholder());
+                            saveFieldsObj.put("required", saveField.getRequired());
+                            saveFieldsObj.put("barcode", saveField.isBarcode());
+                            saveFieldsJsonArray.put(saveFieldsObj);
                         }
                     } else {
                         try {
@@ -4219,9 +4249,11 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                             fieldsObj.put("field_id", field_id);
                             saveFieldsObj.put("id", field_id);
                             fieldsObj.put("input_type", "signature");
-                            saveFieldsObj.put("input_type", "signature");
+                           // saveFieldsObj.put("input_type", "signature");
+                            saveFieldsObj.put("input_type", "text");
                             fieldsObj.put("value", encodedImage);
-                            saveFieldsObj.put("value", encodedImage);
+                            //saveFieldsObj.put("value", encodedImage);
+                            saveFieldsObj.put("value", text);
 
 
                             JSONArray optionsArray = new JSONArray();
@@ -4246,7 +4278,8 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
                             fieldsObj.put("field_id", field_id);
                             saveFieldsObj.put("id", field_id);
                             fieldsObj.put("input_type", "signature");
-                            saveFieldsObj.put("input_type", "signature");
+                           // saveFieldsObj.put("input_type", "signature");
+                            saveFieldsObj.put("input_type", "text");
                             fieldsObj.put("value", "");
                             saveFieldsObj.put("value", "");
 
@@ -4436,6 +4469,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
         textView.setText(s);
         field2checkList.put(hashMap5.get(recyclerViewId), list);
     }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
@@ -4443,8 +4477,8 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
             if (view instanceof EditText) {
                 Rect r = new Rect();
                 view.getGlobalVisibleRect(r);
-                int rawX = (int)ev.getRawX();
-                int rawY = (int)ev.getRawY();
+                int rawX = (int) ev.getRawX();
+                int rawY = (int) ev.getRawY();
                 if (!r.contains(rawX, rawY)) {
                     view.clearFocus();
                     hideHeyboard();
@@ -4453,6 +4487,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
         }
         return super.dispatchTouchEvent(ev);
     }
+
     public static class Arrows {
 
         int leftArrow;

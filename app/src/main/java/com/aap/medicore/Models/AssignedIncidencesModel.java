@@ -46,7 +46,8 @@ public class AssignedIncidencesModel {
     public void setDate(String date) {
         this.date = date;
         try {
-            objDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+            //objDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+            objDate = new SimpleDateFormat("dd/MM/yyyy").parse(date);
         }
         catch (ParseException e) {
             e.printStackTrace();

@@ -45,7 +45,8 @@ public class SectionTasksAdapter extends BaseAdapter implements StickyListHeader
         this.bitmapList = bitmapList;
         if (context != null)
             layoutInflater = LayoutInflater.from(context);
-        simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        //simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     }
 

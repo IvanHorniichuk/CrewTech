@@ -1178,7 +1178,8 @@ public class VehicleCheckList extends BaseActivity {
                         myCalendar.set(Calendar.MONTH, monthOfYear);
                         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                        String myFormat = " MM - dd - yyyy"; //In which you need put here
+                        //String myFormat = " MM - dd - yyyy"; //In which you need put here
+                        String myFormat = "dd/MM/yyyy"; //In which you need put here
                         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
                         etText.setText(" " + sdf.format(myCalendar.getTime()));
