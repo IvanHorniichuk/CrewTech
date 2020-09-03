@@ -13,6 +13,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.aap.medicore.Activities.Splash;
+import com.aap.medicore.DatabaseHandler.DatabaseHandler;
+import com.aap.medicore.Models.InboxMessage;
 import com.aap.medicore.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -23,59 +25,31 @@ import java.util.Map;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMessagingServ";
     private String messageBody, messageSound, messageTitle;
-    private static final String CHANNEL_ID = "com.aap.medicore.Utils";
-
+    private InboxMessageRepo inboxMessageRepo;
+    private NotificationsHandler notificationsHandler;
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+        inboxMessageRepo = InboxMessageRepo.getInstance(getApplicationContext());
+        notificationsHandler = NotificationsHandler.getInstance(getApplicationContext());
+        //inbox message
+        if (remoteMessage.getNotification() == null) {
+            Map<String, String> data = remoteMessage.getData();
+            if (!data.isEmpty() && data.containsKey(Constants.message_title) && data.containsKey(Constants.message_content)) {
+                InboxMessage msg = inboxMessageRepo.createNewInboxMessage(remoteMessage);
 
-        if (remoteMessage.getData().size() > 0) {
-
-            Map<String, String> message = remoteMessage.getData();
-            for (Map.Entry<String, String> entry : remoteMessage.getData().entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                if (key.equals("body"))
-                    messageBody = entry.getValue();
-                else if (key.equals("sound"))
-                    messageSound = entry.getValue();
-                else if (key.equals("title"))
-                    messageTitle = entry.getValue();
+                Intent intent = new Intent(Constants.INBOX_MESSAGE_EVENT);
+                intent.setPackage(getPackageName());
+                getApplicationContext().sendBroadcast(intent);
             }
-        } else if (remoteMessage.getNotification() != null) {
+        } else
+        //notification
+        {
             messageBody = remoteMessage.getNotification().getBody().toString();
             messageTitle = remoteMessage.getNotification().getTitle().toString();
+            notificationsHandler.publishNotification(messageTitle, messageBody);
         }
-
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        CharSequence name = getString(R.string.channel_name);
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel mChannel = new NotificationChannel(
-                    CHANNEL_ID, name, importance);
-
-            assert notificationManager != null;
-            notificationManager.createNotificationChannel(mChannel);
-        }
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle(messageTitle)
-                .setContentText(messageBody)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true);
-        //NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, Splash.class), PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        mBuilder.setContentIntent(contentIntent);
-        notificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
     }
 
     @Override

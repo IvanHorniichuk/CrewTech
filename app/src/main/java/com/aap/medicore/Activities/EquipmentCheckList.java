@@ -64,6 +64,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -791,11 +792,11 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
     public void logoutConfirmDialogBox() {
         final Dialog dialog = new Dialog(this);
         dialog.setCanceledOnTouchOutside(false);
-        final Button btnNo, btnYes;
+        final AppCompatButton btnNo, btnYes;
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.timer);
-        btnYes = (Button) dialog.findViewById(R.id.btnYes);
-        btnNo = (Button) dialog.findViewById(R.id.btnNo);
+        btnYes = (AppCompatButton) dialog.findViewById(R.id.btnYes);
+        btnNo = (AppCompatButton) dialog.findViewById(R.id.btnNo);
         btnNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -4519,3 +4520,4 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
         }
     }
 }
+

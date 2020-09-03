@@ -12,6 +12,10 @@
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/layout/activity_equipment_check_list.xml"
     },
     {
+        "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/layout_inbox_message_detail_fragment.xml.flat",
+        "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/layout/inbox_message_detail_fragment.xml"
+    },
+    {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/mipmap-xxhdpi_ic_password.png.flat",
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/mipmap-xxhdpi/ic_password.png"
     },
@@ -26,6 +30,10 @@
     {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/layout_layout_frag_dashboard.xml.flat",
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/layout/layout_frag_dashboard.xml"
+    },
+    {
+        "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/drawable_ic_email.xml.flat",
+        "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/drawable/ic_email.xml"
     },
     {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/drawable_layout_ring_blue.xml.flat",
@@ -70,6 +78,10 @@
     {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/layout_equipment_accessory_item.xml.flat",
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/layout/equipment_accessory_item.xml"
+    },
+    {
+        "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/drawable_ic_email_unread.xml.flat",
+        "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/drawable/ic_email_unread.xml"
     },
     {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/anim_cycle_5.xml.flat",
@@ -412,6 +424,10 @@
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/drawable/dotted.xml"
     },
     {
+        "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/drawable_ic_email_read.xml.flat",
+        "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/drawable/ic_email_read.xml"
+    },
+    {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/mipmap-hdpi_ic_logo1_foreground.png.flat",
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/mipmap-hdpi/ic_logo1_foreground.png"
     },
@@ -552,6 +568,10 @@
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/drawable-mdpi/logout_new.png"
     },
     {
+        "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/drawable_ic_trash_bin.xml.flat",
+        "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/drawable/ic_trash_bin.xml"
+    },
+    {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/drawable_ic_ecg.xml.flat",
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/drawable/ic_ecg.xml"
     },
@@ -582,6 +602,10 @@
     {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/mipmap-xxhdpi_ic_logo1_foreground.png.flat",
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/mipmap-xxhdpi/ic_logo1_foreground.png"
+    },
+    {
+        "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/layout_inbox_list_fragment.xml.flat",
+        "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/layout/inbox_list_fragment.xml"
     },
     {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/drawable_ic_logout.xml.flat",
@@ -744,6 +768,10 @@
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/drawable/ic_warning.xml"
     },
     {
+        "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/layout_inbox_item.xml.flat",
+        "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/layout/inbox_item.xml"
+    },
+    {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/mipmap-anydpi-v26_ic_logo.xml.flat",
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/mipmap-anydpi-v26/ic_logo.xml"
     },
@@ -774,6 +802,10 @@
     {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/drawable_ic_error_warning_fill.xml.flat",
         "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/drawable/ic_error_warning_fill.xml"
+    },
+    {
+        "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/layout_inbox_fragment.xml.flat",
+        "source": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/src/main/res/layout/inbox_fragment.xml"
     },
     {
         "merged": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/res/merged/release/font_open_sans_bold.ttf.flat",

@@ -4,20 +4,20 @@
             "outputFile": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-en-rXC/values-en-rXC.xml",
             "map": [
                 {
-                    "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/586989deb99e1d86d83428b9ac0b799b/core-1.1.0/res/values-en-rXC/values-en-rXC.xml",
+                    "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/32c4223f879842bd271501e32c15e12c/core-1.2.0/res/values-en-rXC/values-en-rXC.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
                         "startOffsets": "55",
-                        "endColumns": "202",
-                        "endOffsets": "253"
+                        "endColumns": "203",
+                        "endOffsets": "254"
                     },
                     "to": {
                         "startLines": "30",
                         "startColumns": "4",
                         "startOffsets": "5682",
-                        "endColumns": "202",
-                        "endOffsets": "5880"
+                        "endColumns": "203",
+                        "endOffsets": "5881"
                     }
                 },
                 {

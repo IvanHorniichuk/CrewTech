@@ -4,16 +4,6 @@
             "outputFile": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-hdpi-v4/values-hdpi-v4.xml",
             "map": [
                 {
-                    "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/3c1ef67964b09fa1bb0dcf1e5f59fda6/jetified-core-1.9/res/values-hdpi-v4/values-hdpi-v4.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,113",
-                        "endColumns": "57,55",
-                        "endOffsets": "108,164"
-                    }
-                },
-                {
                     "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/aa2f04ce40fc6d393a87b79333eaa145/appcompat-1.1.0/res/values-hdpi-v4/values-hdpi-v4.xml",
                     "from": {
                         "startLines": "2",
@@ -30,6 +20,16 @@
                         "endLines": "8",
                         "endColumns": "13",
                         "endOffsets": "441"
+                    }
+                },
+                {
+                    "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/5551b82f545fd5775e8281b3f1c309df/jetified-core-1.9/res/values-hdpi-v4/values-hdpi-v4.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,113",
+                        "endColumns": "57,55",
+                        "endOffsets": "108,164"
                     }
                 }
             ]

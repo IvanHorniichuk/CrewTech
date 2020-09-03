@@ -15,11 +15,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.aap.medicore"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         multiDexEnabled true
         ndk.abiFilters 'armeabi-v7a', 'arm64-v8a'
         versionCode 15
@@ -79,7 +79,7 @@ dependencies {
 
     implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:2.1.0'
 
-    implementation 'com.google.android.material:material:1.0.0-beta01'
+    implementation 'com.google.android.material:material:1.3.0-alpha02'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'org.greenrobot:eventbus:3.1.1'

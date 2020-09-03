@@ -55,6 +55,23 @@
                     }
                 },
                 {
+                    "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/32c4223f879842bd271501e32c15e12c/core-1.2.0/res/values-vi/values-vi.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "49",
+                        "startColumns": "4",
+                        "startOffsets": "5732",
+                        "endColumns": "100",
+                        "endOffsets": "5828"
+                    }
+                },
+                {
                     "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/421d70af8daf97ec3105b5015d9f437e/jetified-firebase-messaging-20.0.0/res/values-vi/values.xml",
                     "from": {
                         "startLines": "4",
@@ -69,23 +86,6 @@
                         "startOffsets": "5545",
                         "endColumns": "102",
                         "endOffsets": "5643"
-                    }
-                },
-                {
-                    "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/586989deb99e1d86d83428b9ac0b799b/core-1.1.0/res/values-vi/values-vi.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "49",
-                        "startColumns": "4",
-                        "startOffsets": "5732",
-                        "endColumns": "100",
-                        "endOffsets": "5828"
                     }
                 }
             ]

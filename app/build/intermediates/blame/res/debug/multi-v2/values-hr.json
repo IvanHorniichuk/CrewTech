@@ -38,6 +38,23 @@
                     }
                 },
                 {
+                    "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/32c4223f879842bd271501e32c15e12c/core-1.2.0/res/values-hr/values-hr.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "49",
+                        "startColumns": "4",
+                        "startOffsets": "5680",
+                        "endColumns": "100",
+                        "endOffsets": "5776"
+                    }
+                },
+                {
                     "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/27241ee4e3051768c8630d4b66f9f04f/jetified-play-services-basement-17.0.0/res/values-hr/values.xml",
                     "from": {
                         "startLines": "4",
@@ -69,23 +86,6 @@
                         "startOffsets": "5492",
                         "endColumns": "103",
                         "endOffsets": "5591"
-                    }
-                },
-                {
-                    "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/586989deb99e1d86d83428b9ac0b799b/core-1.1.0/res/values-hr/values-hr.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "49",
-                        "startColumns": "4",
-                        "startOffsets": "5680",
-                        "endColumns": "100",
-                        "endOffsets": "5776"
                     }
                 }
             ]

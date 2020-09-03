@@ -67,4 +67,10 @@ public class Constants {
     public final static String StateUploadSucceeded = "StateUploadSucceeded";
     public final static String StateUploadFailed = "StateUploadFailed";
 
+    public final static String INBOX_MESSAGE_EVENT = "INBOX_MESSAGE_EVENT";
+    public final static String message_title = "message_title";
+    public final static String message_content = "message_content";
+    public final static String OPEN_INBOX_MESSAGE_ACTION = "OPEN_INBOX_MESSAGE_ACTION";
+    public final static String INBOX_MESSAGE_ID = "INBOX_MESSAGE_ID";
+
 }

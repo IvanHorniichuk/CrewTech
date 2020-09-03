@@ -4,7 +4,7 @@
             "outputFile": "/home/ivan_horniichuk/AndroidStudioProjects/CrewTech/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-xhdpi-v4/values-xhdpi-v4.xml",
             "map": [
                 {
-                    "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/3c1ef67964b09fa1bb0dcf1e5f59fda6/jetified-core-1.9/res/values-xhdpi-v4/values-xhdpi-v4.xml",
+                    "source": "/home/ivan_horniichuk/.gradle/caches/transforms-2/files-2.1/3213bd37263471cad30b1898e81f4827/jetified-core-1.9/res/values-xhdpi-v4/values-xhdpi-v4.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",
