@@ -134,6 +134,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -3497,8 +3498,12 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 AppCompatSpinner spinner = new AppCompatSpinner(context);
                 spinner.setLayoutParams(perams);
                 spinner.setPadding(convertToDp(8, this), 0, convertToDp(8, this), 0);
+                List<Option> spinnerOptionsList=obj.getFields().get(position).getOptions();
+                //TODO review
+                Collections.reverse(spinnerOptionsList);
+
                 SpinnerArrayAdapter adapter = new SpinnerArrayAdapter(context,
-                        R.layout.custom_spinner_item, obj.getFields().get(position).getOptions());
+                        R.layout.custom_spinner_item, spinnerOptionsList);
                 spinner.setAdapter(adapter);
 
                 for (int i = 0; i < obj.getFields().get(position).getOptions().size(); i++) {
