@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -623,11 +624,11 @@ public class DashbordFragment extends BaseFragment {
 
     public void logoutConfirmDialogBox() {
         final Dialog dialog = new Dialog(getActivity());
-        final Button btnNo, btnYes;
+        final AppCompatButton btnNo, btnYes;
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_logout);
-        btnYes = (Button) dialog.findViewById(R.id.btnYes);
-        btnNo = (Button) dialog.findViewById(R.id.btnNo);
+        btnYes =  dialog.findViewById(R.id.btnYes);
+        btnNo =  dialog.findViewById(R.id.btnNo);
         btnNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

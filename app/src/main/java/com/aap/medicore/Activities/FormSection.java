@@ -103,6 +103,7 @@ import com.aap.medicore.Utils.NetworkReciever;
 import com.aap.medicore.Utils.SessionTimeoutDialog;
 import com.aap.medicore.Utils.SettingValues;
 import com.aap.medicore.Utils.TinyDB;
+import com.aap.medicore.Utils.Utils;
 import com.bumptech.glide.Glide;
 import com.fxn.pix.Pix;
 import com.github.gcacace.signaturepad.views.SignaturePad;
@@ -1984,12 +1985,12 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 @Override
                 public void onClick(View view) {
 //                    drawingView.clear();
-
                     String s = taskList.getDrawOverImage();
-                    if (s.toCharArray()[0] == '/')
+                    String drawImg= Utils.tryParseImagePathWithError(s);
+                    /*if (s.toCharArray()[0] == '/')
                         s = s.replaceFirst("/", "");
 
-                    String drawImg = Constants.IMAGE_IP + s;
+                    String drawImg = Constants.IMAGE_IP + s;*/
                     //the size will be -> 50 + 0.5 * (100 - 50) = 75 pixel
                     new ConvertUrlToBitmap().execute(drawImg);
 
@@ -2018,9 +2019,11 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 //                    drawingView.setBackgroundImage(img_bm);
                 } else {
                     String s = taskList.getDrawOverImage();
-                    if (s.toCharArray()[0] == '/')
+                    String drawImg= Utils.tryParseImagePathWithError(s);
+                   /* if (s.toCharArray()[0] == '/')
                         s = s.replaceFirst("/", "");
                     String drawImg = Constants.IMAGE_IP + s;
+                    */
                     //the size will be -> 50 + 0.5 * (100 - 50) = 75 pixel
                     new ConvertUrlToBitmap().execute(drawImg);
 
@@ -2029,10 +2032,11 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
             } else {
                 String s = taskList.getDrawOverImage();
-                if (s.toCharArray()[0] == '/')
+                String drawImg= Utils.tryParseImagePathWithError(s);
+                /*if (s.toCharArray()[0] == '/')
                     s = s.replaceFirst("/", "");
 
-                String drawImg = Constants.IMAGE_IP + s;
+                String drawImg = Constants.IMAGE_IP + s;*/
                 //the size will be -> 50 + 0.5 * (100 - 50) = 75 pixel
                 new ConvertUrlToBitmap().execute(drawImg);
 
@@ -3500,7 +3504,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 spinner.setPadding(convertToDp(8, this), 0, convertToDp(8, this), 0);
                 List<Option> spinnerOptionsList=obj.getFields().get(position).getOptions();
                 //TODO review
-                Collections.reverse(spinnerOptionsList);
+                //Collections.reverse(spinnerOptionsList);
 
                 SpinnerArrayAdapter adapter = new SpinnerArrayAdapter(context,
                         R.layout.custom_spinner_item, spinnerOptionsList);
@@ -4292,7 +4296,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
         String savedImagePath = null;
 
         String imageFileName = "Draw_OVER_IMAGE" + ".jpg";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        File storageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 + "/Draw_OVER_IMAGES");
 
         boolean success = true;
@@ -4569,7 +4573,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
     public File getAlbumStorageDir(String albumName) {
         // Get the directory for the user's public pictures directory.
-        File file = new File(Environment.getExternalStoragePublicDirectory(
+        File file = new File(getExternalFilesDir(
                 Environment.DIRECTORY_PICTURES), albumName);
         if (!file.mkdirs()) {
             Log.e("SignaturePad", "Directory not created");
@@ -5539,7 +5543,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
     }
 
     public String getFilename() {
-        File file = new File(Environment.getExternalStorageDirectory().getPath(), "MyFolder/Images");
+        File file = new File(getExternalFilesDir(null).getPath(), "MyFolder/Images");
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -5707,8 +5711,9 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         onReturn();
+        super.onBackPressed();
+
     }
 
     public void onReturn() {
