@@ -12,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -48,7 +47,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -57,7 +55,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -70,7 +67,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -89,7 +85,6 @@ import com.aap.medicore.NetworkCalls.RetrofitClass;
 import com.aap.medicore.R;
 import com.aap.medicore.Utils.Constants;
 import com.aap.medicore.Utils.CustomButton;
-import com.aap.medicore.Utils.CustomEditText;
 import com.aap.medicore.Utils.CustomTextView;
 import com.aap.medicore.Utils.GPSTracker;
 import com.aap.medicore.Utils.SessionTimeoutDialog;
@@ -3356,6 +3351,7 @@ public class EquipmentCheckList extends BaseActivity implements EquipmentAccesso
 //                }
             }
         });
+
         dialog.show();
 
 
