@@ -13,7 +13,6 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-
         <RelativeLayout
             android:id="@+id/rlHeading"
             android:layout_width="match_parent"
@@ -26,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:orientation="vertical">
-
 
                 <com.aap.medicore.Utils.CustomTextView
                     android:id="@+id/heading"

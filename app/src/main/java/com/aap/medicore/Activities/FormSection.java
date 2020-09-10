@@ -109,6 +109,8 @@ import com.fxn.pix.Pix;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -2598,16 +2600,24 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 relativeLayout.setId(View.generateViewId());
                 relativeLayout.setLayoutParams(linearParams);
 
-                EditText editText = new EditText(this);
+                TextInputLayout inputLayout=new TextInputLayout(this);
+                TextInputEditText editText = new TextInputEditText(inputLayout.getContext());
                 editText.setId(View.generateViewId());
-                editText.setBackground(null);
-                editText.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
+                editText.setBackgroundColor(getColor(android.R.color.transparent));
+//                editText.setPadding(convertToDp(8, this), convertToDp(8, this), convertToDp(8, this), convertToDp(8, this));
                 editText.setTextColor(getColor(R.color.itemText));
                 editText.setTypeface(semiBold);
                 editText.setTextSize(COMPLEX_UNIT_SP, 14);
-//                    editText.setHintTextColor(R.color.hintText);
-                editText.setHint(field.getLabel());
+                //editText.setHint(field.getLabel());
                 editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+
+                LinearLayout.LayoutParams editTextParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                inputLayout.addView(editText,editTextParams);
+                inputLayout.setHintEnabled(true);
+                inputLayout.setHint(field.getLabel());
+                inputLayout.setBackgroundColor(getColor(android.R.color.transparent));
 
                 ImageView ivMandatory = new ImageView(this);
                 ivMandatory.setId(View.generateViewId());
@@ -2622,7 +2632,8 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
 
                 RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START);
-                editText.setLayoutParams(relativeParams);
+               // editText.setLayoutParams(relativeParams);
+                inputLayout.setLayoutParams(relativeParams);
 
                 relativeParams = new RelativeLayout.LayoutParams(convertToDp(10, this), convertToDp(10, this));
                 relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END);
@@ -2632,7 +2643,7 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 view.setLayoutParams(relativeParams);
 
-                relativeLayout.addView(editText);
+                relativeLayout.addView(inputLayout);
                 relativeLayout.addView(ivMandatory);
                 relativeLayout.addView(view);
 
