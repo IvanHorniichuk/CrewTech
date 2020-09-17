@@ -70,7 +70,9 @@ import com.aap.medicore.Utils.SessionTimeoutDialog;
 import com.aap.medicore.Utils.SettingValues;
 import com.aap.medicore.Utils.TinyDB;
 import com.bumptech.glide.Glide;
+import com.fxn.pix.Options;
 import com.fxn.pix.Pix;
+import com.fxn.utility.PermUtil;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.google.gson.Gson;
 
@@ -515,6 +517,21 @@ public class VehicleCheckList extends BaseActivity {
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Pix.start(this, Options.init().setRequestCode(REQUEST_GALLERY_PERMISSION));
+                } else {
+                    Toast.makeText(this, "Approve permissions to open Pix ImagePicker", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }
+    }
+
     private void permissionAccess() {
         if (!checkPermission(p1)) {
             Log.e("TAG", p1);
@@ -523,9 +540,17 @@ public class VehicleCheckList extends BaseActivity {
             Log.e("TAG", p2);
             requestPermission(p2);
         } else {
+            Options options = Options.init()
+                    .setRequestCode(REQUEST_GALLERY_PERMISSION)                                           //Request code for activity results
+                    .setCount(30 - myImages.size())                                                   //Number of images to restict selection count
+                    .setFrontfacing(false)                                         //Front Facing camera on start
+                    .setExcludeVideos(true)      ;                                 //Option to exclude videos
+
+            Pix.start(this, options);
+            /*
             Pix.start(VehicleCheckList.this,                    //Activity or Fragment Instance
                     REQUEST_GALLERY_PERMISSION,                //Request code for activity results
-                    30 - myImages.size());
+                    30 - myImages.size());*/
 //            Toast.makeText(CreateJob.this, "All permission granted", Toast.LENGTH_LONG).getDialog();
         }
 
