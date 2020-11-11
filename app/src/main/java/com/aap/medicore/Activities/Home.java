@@ -124,7 +124,7 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
                     else
                         setStatusItem();
                     pager.setCurrentItem(1, false);
-                    showCallBadge(false);
+                    new Handler().postDelayed(()->showCallBadge(false),2000);
                     return true;
 
                 case R.id.navigation_patient_information:
@@ -378,7 +378,6 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
         if (bottomNavigationView != null) {
             lottieAnimationView = itemView.findViewById(R.id.lottie);
             checkForNewMessages();
-            showCallBadge(false);
             if (tinyDB.getBoolean(Constants.pendingStatus)) {
                 lottieAnimationView.setVisibility(View.VISIBLE);
 
@@ -443,22 +442,30 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
     protected void onPause() {
 //        h.removeCallbacks(runnable); //stop handler when activity not visible
         merlin.unbind();
-        unregisterReceiver(broadcastReceiver);
-        unregisterReceiver(networkReceiver);
-        unregisterReceiver(this.mConnReceiver);
-        unregisterReceiver(this.messageIntentReceiver);
-        unregisterReceiver(this.callNotificationIntentReceiver);
-        super.onPause();
+        try {
+            unregisterReceiver(this.mConnReceiver);
+            unregisterReceiver(this.messageIntentReceiver);
+            unregisterReceiver(this.callNotificationIntentReceiver);
+            super.onPause();
+        } catch(IllegalArgumentException e) {
+            super.onPause();
+            Log.e(TAG,"OnPause receivers unregister fail");
+        }
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(broadcastReceiver);
-        unregisterReceiver(networkReceiver);
-        unregisterReceiver(this.mConnReceiver);
-        unregisterReceiver(this.messageIntentReceiver);
-        unregisterReceiver(this.callNotificationIntentReceiver);
+        try {
+            unregisterReceiver(broadcastReceiver);
+            unregisterReceiver(networkReceiver);
+            unregisterReceiver(this.mConnReceiver);
+            unregisterReceiver(this.messageIntentReceiver);
+            unregisterReceiver(this.callNotificationIntentReceiver);
+        } catch(IllegalArgumentException e) {
+            Log.e(TAG,"OnDestroy receivers unregister fail");
+        }
     }
 
     private void init() {
