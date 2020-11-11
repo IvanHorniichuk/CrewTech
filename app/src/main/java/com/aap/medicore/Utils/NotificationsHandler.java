@@ -22,6 +22,7 @@ import com.aap.medicore.R;
 
 public class NotificationsHandler {
 
+    public static final String TAG="NotificationsHandler";
     private static NotificationsHandler notificationsHandler;
     private static final String MAIN_CHANNEL_ID = "com.aap.medicore.Utils.notifications.channel";
     private final String GROUP_CHANNEL_ID = "com.aap.medicore.Utils.notifications.groupchannel";
@@ -86,7 +87,7 @@ public class NotificationsHandler {
                 }
             }
         } catch (Exception e) {
-            Log.d("sdd", "jj");
+            Log.d(TAG, "publishNotification("+notification.toString()+","+id+")");
         }
 
     }

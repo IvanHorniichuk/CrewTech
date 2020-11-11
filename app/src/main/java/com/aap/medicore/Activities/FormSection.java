@@ -3835,7 +3835,6 @@ public class FormSection extends BaseActivity implements Serializable, Equipment
                 }
         }
 
-
         if (requestCode == REQUEST_GALLERY_PERMISSION) {
             if (resultCode == Activity.RESULT_OK) {
 

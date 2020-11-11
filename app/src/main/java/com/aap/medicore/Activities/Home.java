@@ -124,6 +124,7 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
                     else
                         setStatusItem();
                     pager.setCurrentItem(1, false);
+                    showCallBadge(false);
                     return true;
 
                 case R.id.navigation_patient_information:
@@ -377,6 +378,7 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
         if (bottomNavigationView != null) {
             lottieAnimationView = itemView.findViewById(R.id.lottie);
             checkForNewMessages();
+            showCallBadge(false);
             if (tinyDB.getBoolean(Constants.pendingStatus)) {
                 lottieAnimationView.setVisibility(View.VISIBLE);
 
@@ -394,6 +396,7 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
         this.registerReceiver(this.mConnReceiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         this.registerReceiver(messageIntentReceiver, new IntentFilter(Constants.INBOX_MESSAGE_EVENT));
+        this.registerReceiver(callNotificationIntentReceiver, new IntentFilter(Constants.NOTIFICATION_MESSAGE_EVENT));
         if (!(tinyDB.getString(Constants.StateTitle).isEmpty())) {
             state = tinyDB.getString(Constants.StateTitle);
         }
@@ -440,8 +443,11 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
     protected void onPause() {
 //        h.removeCallbacks(runnable); //stop handler when activity not visible
         merlin.unbind();
-        this.unregisterReceiver(this.mConnReceiver);
-        this.unregisterReceiver(this.messageIntentReceiver);
+        unregisterReceiver(broadcastReceiver);
+        unregisterReceiver(networkReceiver);
+        unregisterReceiver(this.mConnReceiver);
+        unregisterReceiver(this.messageIntentReceiver);
+        unregisterReceiver(this.callNotificationIntentReceiver);
         super.onPause();
     }
 
@@ -450,7 +456,9 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
         unregisterReceiver(networkReceiver);
-
+        unregisterReceiver(this.mConnReceiver);
+        unregisterReceiver(this.messageIntentReceiver);
+        unregisterReceiver(this.callNotificationIntentReceiver);
     }
 
     private void init() {
@@ -542,11 +550,32 @@ public class Home extends BaseActivity implements CheckListFragment.OnFragmentIn
         inboxBadge.setVisible(show);
     }
 
+    public void showCallBadge(boolean show) {
+        BadgeDrawable inboxBadge = bottomNavigationView.getOrCreateBadge(R.id.navigation_dashboard);
+        inboxBadge.setVerticalOffset(12);
+        inboxBadge.setHorizontalOffset(6);
+        inboxBadge.setVisible(show);
+    }
+
     private BroadcastReceiver messageIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null && intent.getAction().equalsIgnoreCase(Constants.INBOX_MESSAGE_EVENT)) {
                 checkForNewMessages();
+            }
+        }
+    };
+
+    private BroadcastReceiver callNotificationIntentReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && intent.getAction().equalsIgnoreCase(Constants.NOTIFICATION_MESSAGE_EVENT)) {
+                showCallBadge(true);
+                if (bottomNavigationView.getSelectedItemId() == R.id.navigation_dashboard) {
+                    new Handler().postDelayed(() ->
+                                    showCallBadge(false)
+                            , 2000);
+                }
             }
         }
     };

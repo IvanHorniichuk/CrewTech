@@ -23,8 +23,7 @@ import java.util.Map;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private static final String TAG = "MyFirebaseMessagingServ";
-    private String messageBody, messageSound, messageTitle;
+    private static final String TAG = "MyFirebaseMessagingSer";
     private InboxMessageRepo inboxMessageRepo;
     private NotificationsHandler notificationsHandler;
 
@@ -34,22 +33,33 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         inboxMessageRepo = InboxMessageRepo.getInstance(getApplicationContext());
         notificationsHandler = NotificationsHandler.getInstance(getApplicationContext());
         //inbox message
-        if (remoteMessage.getNotification() == null) {
+        if (remoteMessage.getData().size() > 0) {
             Map<String, String> data = remoteMessage.getData();
-            if (!data.isEmpty() && data.containsKey(Constants.message_title) && data.containsKey(Constants.message_content)) {
-                InboxMessage msg = inboxMessageRepo.createNewInboxMessage(remoteMessage);
-
-                Intent intent = new Intent(Constants.INBOX_MESSAGE_EVENT);
+            if (!data.isEmpty() && data.containsKey(Constants.message_title)
+                    && data.containsKey(Constants.message_content)
+                    && data.containsKey(Constants.is_inbox_message)) {
+                String isInboxMessageStr = data.getOrDefault(Constants.is_inbox_message, null);
+                boolean isInboxMessage = (isInboxMessageStr != null) && Boolean.parseBoolean(isInboxMessageStr);
+                Intent intent;
+                if (isInboxMessage) {
+                    InboxMessage msg = inboxMessageRepo.createNewInboxMessage(remoteMessage);
+                    intent = new Intent(Constants.INBOX_MESSAGE_EVENT);
+                } else {
+                    String title = data.get(Constants.message_title);
+                    String body = data.get(Constants.message_content);
+                    notificationsHandler.publishNotification(title, body);
+                    intent = new Intent(Constants.NOTIFICATION_MESSAGE_EVENT);
+                }
                 intent.setPackage(getPackageName());
                 getApplicationContext().sendBroadcast(intent);
             }
-        } else
+        } /*else
         //notification
         {
             messageBody = remoteMessage.getNotification().getBody().toString();
             messageTitle = remoteMessage.getNotification().getTitle().toString();
             notificationsHandler.publishNotification(messageTitle, messageBody);
-        }
+        }*/
     }
 
     @Override
